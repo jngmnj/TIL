@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import CounterContainer from './containers/CounterContainer'
+import SampleContainer from './containers/SampleContainer'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <div>
-      <CounterContainer />
+      {/* <CounterContainer /> */}
+      <SampleContainer />
     </div>
   )
 }
