@@ -13,8 +13,17 @@ const SampleContainer = ({
     loadingUsers
 }) => {
     useEffect(() => {
-      getPost(1);
-      getUsers(1);
+      const fn = async() => {
+        try {
+          getPost(1);
+          getUsers(1);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      fn();
+      // useEffect 파라미터로 넘는 함수는 async를 할 수 없어서
+      // 내부에서 함수를 선언하고 호출해준다.
     }, [getPost, getUsers])
     
   return (
@@ -28,11 +37,13 @@ const SampleContainer = ({
 }
 
 export default connect(
-    ({ sample }) => ({
+    ({ sample, loading }) => ({
         post: sample.post,
         users: sample.users,
-        loadingPost: sample.loadingPost,
-        loadingUsers: sample.loadingUsers
+        // loadingPost: sample.loadingPost,
+        // loadingUsers: sample.loadingUsers
+        loadingPost: loading['sample/GET_POST'],
+        loadingUsers: loading['sample/GET_USERS']
     }),
     {
         getPost,
