@@ -1,5 +1,4 @@
 import { createAction, handleActions } from "redux-actions";
-import { delay, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 const INCREASE = "counter/INCREASE";
 const DECREASE = "counter/DECREASE";
