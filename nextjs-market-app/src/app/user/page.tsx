@@ -1,11 +1,10 @@
-import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { getServerSession } from 'next-auth'
+// import { authOptions } from '@/pages/api/auth/[...nextauth]'
+// import { getServerSession } from 'next-auth'
 import React from 'react'
-import getCurrentUser from '../actions/getCurrentUser'
+// import getCurrentUser from '../actions/getCurrentUser'
 
 const UserPage = async () => {
-  const userData = getCurrentUser();
-  console.log("유저데이터",userData)
+
   // const session = await getServerSession(authOptions);
   // console.log("server session", session)
   return (
