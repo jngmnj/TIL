@@ -16,39 +16,34 @@ const ImageUpload = ({
     console.log('result', result);
     onChange(result.info.secure_url); // image 정보 https url 제공
   }
+
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+  console.log("uploadPreste",uploadPreset)
   return (
     <CldUploadWidget
-        onUpload={handleUpload}
-        uploadPreset={'ididi'}
-        options={{
-            maxFiles: 1
-        }}    
+      onUpload={handleUpload}
+      uploadPreset={uploadPreset}
+      options={{
+        maxFiles: 1,
+      }}
     >
-        {({open}) => {
-            return (
-                <div
-                    className='relative flex flex-col items-center justify-center gap-4 p-20 transition border-2 border-dashed cursor-pointer hover:opacity-70 border-neutral-300 text-neutral-300'
-                    onClick={() => open?.()}
-                >
-                    <TbPhotoPlus
-                        size={50}
-                    />
-                    {value && (
-                        <div className='absolute inset-0 w-full h-full'>
-                            <Image
-                                fill   
-                                style={{ objectFit: 'cover'}}
-                                src={value}
-                                alt=''
-                            />  
-                        </div>
-
-                    )}
-                </div>
-            )
-        }}
+      {({ open }) => {
+        return (
+          <div
+            className="relative flex flex-col items-center justify-center gap-4 p-20 transition border-2 border-dashed cursor-pointer hover:opacity-70 border-neutral-300 text-neutral-300"
+            onClick={() => open?.()}
+          >
+            <TbPhotoPlus size={50} />
+            {value && (
+              <div className="absolute inset-0 w-full h-full">
+                <Image fill style={{ objectFit: "cover" }} src={value} alt="" />
+              </div>
+            )}
+          </div>
+        );
+      }}
     </CldUploadWidget>
-  )
+  );
 }
 
 export default ImageUpload  
