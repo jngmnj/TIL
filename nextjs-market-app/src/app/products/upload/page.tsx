@@ -6,12 +6,16 @@ import ImageUpload from "@/components/ImageUpload";
 import Input from "@/components/Input";
 import { categories } from "@/components/categories/Categoreis";
 import CategoryInput from "@/components/categories/CategoryInput";
+import axios from "axios";
 import dynamic from "next/dynamic";
+// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 const ProductUploadPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -47,7 +51,18 @@ const ProductUploadPage = () => {
   }
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
 
+    axios.post('/api/products', data)
+      .then(response => {
+        router.push(`/products/${response.data.id}`);        
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
   }
 
   return (
@@ -78,6 +93,7 @@ const ProductUploadPage = () => {
           />
           <hr />
           <Input
+            type="number"
             id="price"
             label="Price"
             formatPrice={true}

@@ -13,12 +13,12 @@ const ImageUpload = ({
 }: ImageUploadProps) => {
 
   const handleUpload = (result: any) => {
-    console.log('result', result);
+    // console.log('result', result);
     onChange(result.info.secure_url); // image 정보 https url 제공
   }
 
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-  console.log("uploadPreste",uploadPreset)
+  // console.log("uploadPreste",uploadPreset)
   return (
     <CldUploadWidget
       onUpload={handleUpload}

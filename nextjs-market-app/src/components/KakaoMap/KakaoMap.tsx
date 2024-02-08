@@ -13,13 +13,26 @@ const KakaoMap = ({
   setCustomValue,
   detailPage = false, // 상품 상세페이지 분기처리
 }: KakaoMapProps) => {
+
+  const handleClick = (mouseEvent: kakao.maps.event.MouseEvent) => {
+    // console.log(mouseEvent);
+    // if(setCustomValue) {
+    //   setCustomValue('latitude', mouseEvent.latLng.getLat());
+    //   setCustomValue("longitude", mouseEvent.latLng.getLng());
+    // }
+    if (detailPage) return; // 간결, 효율적
+    setCustomValue!('latitude', mouseEvent.latLng.getLat());
+    setCustomValue!("longitude", mouseEvent.latLng.getLng()); 
+  };
+
   return (
     <Map
-      center={{ lat: 33.5563, lng: 126.79581 }}
+      center={{ lat: latitude, lng: longitude }}
       style={{ width: "100%", height: "360px" }}
+      onClick={(_, mouseEvent) => handleClick(mouseEvent)}
     >
-      <MapMarker position={{ lat: 33.55635, lng: 126.795841 }}>
-        <div style={{ color: "#000" }}>Hello World!</div>
+      <MapMarker position={{ lat: latitude, lng: longitude }}>
+        {/* <div style={{ color: "#000" }}>Hello World!</div> */}
       </MapMarker>
     </Map>
   );

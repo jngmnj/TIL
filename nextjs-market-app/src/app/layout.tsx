@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import getCurrentUser from './actions/getCurrentUser';
 import Script from 'next/script';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -25,7 +25,7 @@ export default async function RootLayout({
         <main>{children}</main>
         <Script
           type="text/javascript"
-          src="//dapi.kakao.com/v2/maps/sdk.js?appkey=74ac4cd3ad20fa238a9d5f0a5cc0e0a5&libraries=services,clusterer"
+          src="//dapi.kakao.com/v2/maps/sdk.js?appkey=74ac4cd3ad20fa238a9d5f0a5cc0e0a5&libraries=services,clusterer&autoload=false"
         />
       </body>
     </html>
