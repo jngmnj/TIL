@@ -10,14 +10,13 @@ interface HomeParams {
 }
 export default async function Home({ searchParams }: HomeParams) {
   const products = await getProducts(searchParams);
-  console.log(products)
+  // console.log(products)
 
   const currentUser = await getCurrentUser();
 
   return (
     <Container>
       {/* Category */}
-      D
       {/* Products */}
       {products?.data.length === 0 ? <EmptyState /> : (
         <div className='grid grid-cols-1 gap-8 pt-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
