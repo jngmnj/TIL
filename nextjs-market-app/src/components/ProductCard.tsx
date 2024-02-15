@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import HeartButton from "./HeartButton";
-import dayjs from 'dayjs';
+import { fromNow } from '../helpers/dayjs';
 
 interface ProductCardProps {
   currentUser?: User | null; // prisma가 작성한 schema를 토대로 타입을 만들어줌.
@@ -37,7 +37,7 @@ const ProductCard = ({ currentUser, data }: ProductCardProps) => {
           <div>
             {data.price} <span className="font-light">원</span>
           </div>
-          <div className="">{dayjs(data.createdAt).format('YYYY-MM-DD')}</div>
+          <div className="">{fromNow(data.createdAt)}</div>
         </div>
       </div>
     </div>
