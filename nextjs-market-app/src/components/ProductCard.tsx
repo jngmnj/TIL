@@ -33,8 +33,8 @@ const ProductCard = ({ currentUser, data }: ProductCardProps) => {
 
         <div className="text-lg font-semibold ">{data.title}</div>
         <div className="font-light text-neutral-500">{data.category}</div>
-        <div>
-          <div>
+        <div className="flex flex-row items-center justify-between gap-1">
+          <div className="font-semibold">
             {data.price} <span className="font-light">원</span>
           </div>
           <div className="">{fromNow(data.createdAt)}</div>

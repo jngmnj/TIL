@@ -4,7 +4,7 @@ import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ImageUpload from "@/components/ImageUpload";
 import Input from "@/components/Input";
-import { categories } from "@/components/categories/Categoreis";
+import { categories } from "@/components/categories/Categories";
 import CategoryInput from "@/components/categories/CategoryInput";
 import axios from "axios";
 import dynamic from "next/dynamic";
