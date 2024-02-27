@@ -9,11 +9,11 @@ interface ProductInfoProps {
   user: User;
   description: string;
   createdAt: Date;
-  category?: {
+  category: {
     label: string;
     icon: IconType;
     description: string;
-  };
+  } | undefined;
 }
 const ProductInfo = ({
   user,
