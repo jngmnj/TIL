@@ -23,7 +23,7 @@ const PaginationLink = ({ page, disabled, active, children }: PaginationLinkProp
     if(params) {
         currentQuery = queryString.parse(params?.toString())
     }
-    console.log(currentQuery);
+    // console.log(currentQuery);
     
     // 라우터 쿼리에 존재하는 데이터 사용, 페이지 modify만
     const updatedQuery = {
@@ -33,7 +33,13 @@ const PaginationLink = ({ page, disabled, active, children }: PaginationLinkProp
     }
 
   return (
-    <Link href={{ query: updatedQuery }}>{children}</Link>
+    <Link 
+      href={{ query: updatedQuery }} 
+      className={`p-2 text-2xl 
+      ${active ? "font-bold text-orange-500" :""}
+      ${disabled ? "pointer-events-none text-gray-200" : ""}
+      `}
+    >{children}</Link>
   )
 }
 

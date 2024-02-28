@@ -1,7 +1,7 @@
 import Container from '@/components/Container';
 import getProducts, { ProductsParams } from '../actions/getProducts'
 import EmptyState from '@/components/EmptyState';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/components/products/ProductCard';
 import getCurrentUser from '../actions/getCurrentUser';
 import FloatingButton from '@/components/FloatingButton';
 import Categories from '@/components/categories/Categories';
@@ -16,8 +16,8 @@ export default async function Home({ searchParams }: HomeParams) {
   const pageNum = typeof page === 'string' ? Number(page) : 1;
   // const skip = searchParams?.skip;
 
-  console.log("page", page)
-  console.log("pageNum", pageNum)
+  // console.log("page", page)
+  // console.log("pageNum", pageNum)
 
   const products = await getProducts(searchParams);
   
