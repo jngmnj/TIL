@@ -1,4 +1,6 @@
 "use client";
+import Chat from "@/components/chat/Chat";
+import Contacts from "@/components/chat/Contacts";
 import { TUserWithChat } from "@/types";
 import { User } from "@prisma/client";
 import axios from "axios";
@@ -24,9 +26,9 @@ const ChatClient = ({ currentUser }: ChatClientProps) => {
   const {data: users, error, isLoading} = useSWR('/api/chat', fetcher, {
     refreshInterval: 1000
   })
-  console.log(users);
+  console.log("users",users);
 
-  users?.find((user: TUserWithChat) => user.email === currentUser?.email)
+  const currentUserWithMessage = users?.find((user: TUserWithChat) => user.email === currentUser?.email)
 
   if(isLoading) return <p>Loading...</p>
   if(error) return <p>Error</p>
@@ -38,10 +40,19 @@ const ChatClient = ({ currentUser }: ChatClientProps) => {
         {/* md보다 클때는 둘다 보여야함 */}
         {/* md보다 작고  layout이 true일때는 contact안보임 */}
         <section className={`md:flex ${layout && "hidden"}`}>
-          Contact Component
+          <Contacts 
+            users={users}
+            currentUser={currentUserWithMessage}
+            setLayout={setLayout}
+            setReceiver={setReceiver}
+          />
         </section>
         <section className={`md:flex ${!layout && "hidden"}`}>
-          Chat Component
+          <Chat 
+            currentUser={currentUserWithMessage}
+            receiver={receiver}
+            setLayout={setLayout}
+          />
         </section>
       </div>
     </main>
