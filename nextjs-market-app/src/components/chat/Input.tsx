@@ -36,7 +36,7 @@ const Input = ({
   return (
     <form 
       onSubmit={handleSubmit}
-    className='relative flex items-center justify-between w-full gap-4 p-2 pl-4 border-[1px] border-gray-300 rounded-md shadow-sm'>
+      className='relative flex items-center justify-between w-full gap-4 p-2 pl-4 border-[1px] border-gray-300 rounded-md shadow-sm'>
       <input
         className='w-full text-base outline-none'
         type='text'

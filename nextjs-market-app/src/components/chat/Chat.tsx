@@ -1,43 +1,70 @@
-import { TUserWithChat } from '@/types'
-import React from 'react'
-import Input from './Input';
+import { TUserWithChat } from "@/types";
+import React from "react";
+import Input from "./Input";
+import ChatHeader from "./ChatHeader";
+import Message from "./Message";
 
 interface ChatProps {
   currentUser: TUserWithChat;
   receiver: {
-    receiverId: string,
-    receiverName: string,
-    receiverImage: string
+    receiverId: string;
+    receiverName: string;
+    receiverImage: string;
   };
   setLayout: (layout: boolean) => void;
 }
-const Chat = ({
-    currentUser,
-    receiver,
-    setLayout
-}: ChatProps) => {
-    if(!receiver.receiverName || !currentUser) {
-        return <div className='w-full h-full'></div>
-    }
+const Chat = ({ currentUser, receiver, setLayout }: ChatProps) => {
+  const conversation = 
+    currentUser?.conversations.find((conversation) => 
+      conversation.users.find((user) => user.id === receiver.receiverId))
+
+  // 클릭 안했을때는 아무 내용 안보임
+  if (!receiver.receiverName || !currentUser) {
+    return <div className="w-full h-full"></div>;
+  }
   return (
-    <div className='w-full'>
-        {/* chat header */}
-        <div className=''>
-
-        </div>
-        {/* chat body */}
-        <div className='flex flex-col gap-8 p-4 overflow-hidden h-[calc(100vh_-_60px_-_70px_-_80px)]'>
-
-        </div>
-        {/* input */}
-        <div>
-            <Input 
-                receiverId={receiver?.receiverId}
-                currentUserId={currentUser?.id}
-            />
-        </div>
+    <div className="w-full">
+      {/* chat header */}
+      <div>
+        <ChatHeader
+          setLayout={setLayout}
+          receiverName={receiver.receiverName}
+          receiverImage={receiver.receiverImage}
+          lastMessageTime={
+            conversation?.messages
+              .filter((message) => message.receiverId === currentUser.id)
+              .slice(-1)[0]?.createdAt
+          }
+        />
+      </div>
+      {/* chat body */}
+      <div className="flex flex-col gap-8 p-4 overflow-hidden h-[calc(100vh_-_60px_-_70px_-_80px)]">
+        {conversation && 
+          conversation.messages.map((message) => {
+            return (
+              <Message 
+                key={message.id}
+                isSender={message.senderId === currentUser.id}
+                messageText={message.text}
+                messageImage={message.image}
+                receiverName={receiver.receiverName}
+                receiverImage={receiver.receiverImage}
+                senderImage={currentUser?.image}
+                time={message.createdAt}    
+              />
+            )
+          })
+        }
+      </div>
+      {/* input */}
+      <div>
+        <Input
+          receiverId={receiver?.receiverId}
+          currentUserId={currentUser?.id}
+        />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Chat
+export default Chat;

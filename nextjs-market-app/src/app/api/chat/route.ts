@@ -84,6 +84,7 @@ export async function POST(
       return NextResponse.json(error)
     }
   } else {
+    // 둘이 처음 대화하는거라면 Conversation과 Message 둘 다 생성
     const newConversation = await prisma.conversation.create({
       data: {
         senderId: body.senderId,
