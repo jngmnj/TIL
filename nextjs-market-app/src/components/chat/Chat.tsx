@@ -1,5 +1,5 @@
 import { TUserWithChat } from "@/types";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Input from "./Input";
 import ChatHeader from "./ChatHeader";
 import Message from "./Message";
@@ -14,6 +14,19 @@ interface ChatProps {
   setLayout: (layout: boolean) => void;
 }
 const Chat = ({ currentUser, receiver, setLayout }: ChatProps) => {
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef?.current?.scrollIntoView({
+      behavior: "smooth"
+    });
+  }
+
+  // 렌더링될때마다 메시지 스크롤
+  useEffect(() => {
+    scrollToBottom();
+  });
+  
   const conversation = 
     currentUser?.conversations.find((conversation) => 
       conversation.users.find((user) => user.id === receiver.receiverId))
@@ -38,7 +51,7 @@ const Chat = ({ currentUser, receiver, setLayout }: ChatProps) => {
         />
       </div>
       {/* chat body */}
-      <div className="flex flex-col gap-8 p-4 overflow-hidden h-[calc(100vh_-_60px_-_70px_-_80px)]">
+      <div className="flex flex-col gap-8 p-4 overflow-auto h-[calc(100vh_-_60px_-_70px_-_80px)]">
         {conversation && 
           conversation.messages.map((message) => {
             return (
@@ -55,6 +68,7 @@ const Chat = ({ currentUser, receiver, setLayout }: ChatProps) => {
             )
           })
         }
+        <div ref={messagesEndRef} />
       </div>
       {/* input */}
       <div>

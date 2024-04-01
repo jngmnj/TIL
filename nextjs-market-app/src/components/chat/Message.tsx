@@ -1,6 +1,7 @@
 import React from 'react'
 import Avatar from '../Avatar';
 import { fromNow } from '@/helpers/dayjs';
+import Image from 'next/image';
 
 interface MessageProps {
   isSender: boolean;
@@ -31,21 +32,29 @@ const Message = ({
       <div>
         <Avatar src={senderImage && isSender ? senderImage : receiverImage} />
       </div>
-      <div className='flex felx-col '>
-        <div>
-          <span>{isSender ? "You" : receiverName}</span>
+      <div className='flex flex-col items-start justify-center'>
+        <div className='flex items-center gap-2 mb-2 text-sm'>
+          <span className='font-medium'>{isSender ? "You" : receiverName}</span>
           <span className="text-xs text-gray-500 opacity-80">
             {fromNow(time)}
           </span>
         </div>
+        {messageImage && (
+          <div className='overflow-hidden rounded-md mx-[0.6rem] max-w-[80%] mb-1'>
+            <Image
+              src={messageImage}
+              width={300}
+              height={300}
+              alt=""
+            />
+          </div>
+        )}
         {messageText && (
           <div
-            className={`p-2 break-all text-white rounded-lg
-              ${
-                isSender
-                  ? "bg-orange-500 rounded-tr-none"
-                  : "bg-gray-400 rounded-tl-none"
-              }`}
+            className={
+              `p-2 break-all text-white rounded-lg
+              ${ isSender ? "bg-orange-500 rounded-tr-none" : "bg-gray-400 rounded-tl-none"}`
+            }
           >
             <p>{messageText}</p>
           </div>

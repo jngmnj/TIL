@@ -20,9 +20,14 @@ const NavItem = ({ mobile, currentUser }: NavItemProps) => {
         </li>
       )}
       {currentUser?.userType === "User" && (
-      <li className="py-2 text-center border-b-4 cursor-pointer">
-        <Link href="/user">{currentUser?.name}님</Link>
-      </li>
+      <>
+        <li className="py-2 text-center border-b-4 cursor-pointer">
+          <Link href="/user">{currentUser?.name}님</Link>
+        </li>
+        <li className="py-2 text-center border-b-4 cursor-pointer">
+          <Link href="/chat">채팅</Link>
+        </li>
+      </>
       )} 
       {currentUser ? (
         <li className="py-2 text-center border-b-4 cursor-pointer">
