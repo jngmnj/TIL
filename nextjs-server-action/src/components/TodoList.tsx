@@ -1,7 +1,7 @@
 import React from 'react'
 import TodoItem from './TodoItem';
 
-interface Todo {
+export interface Todo {
     userId: number;
     id: number;
     title: string;
