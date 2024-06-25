@@ -159,7 +159,7 @@ function App() {
                   </Box>
                   <ul>
                     <li>You answered: {answer.answer}</li>
-                    <li>Correct answer: {answer.correct}</li>
+                    <li>Correct answer: {answer.correctAnswer}</li>
                   </ul>
                 </div>
               </Box>

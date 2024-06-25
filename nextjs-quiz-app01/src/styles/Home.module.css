@@ -1,0 +1,27 @@
+.homeWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.description {
+    line-height: 1.8;
+}
+
+.startBtn {
+    text-align: center;
+    background-color: #fff;
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    transition: .3s ease;
+    opacity: .8;
+    color: #000;
+    font-weight: bold;
+}
+
+.startBtn:hover {
+    opacity: 1;
+}
