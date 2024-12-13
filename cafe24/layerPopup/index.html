@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="
+    https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css
+    " rel="stylesheet">
+</head>
+<body>
+    <style>
+    /* 레이어 팝업 기본 스타일 */
+    #layerPopup {
+        display: none; /* 기본적으로 숨김 */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+        padding: 20px;
+        text-align: center;
+        min-width: 300px;
+        border-radius: 16px;
+    }
+
+    /* 배경 오버레이 */
+    #overlay {
+        display: none; /* 기본적으로 숨김 */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #layerPopup img {
+        max-width: 100%;
+    }
+
+    #layerPopup .close {
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        cursor: pointer;
+        padding: 0;
+        display: flex;justify-content: center;align-items: center;
+        width: 40px;
+        height: 40px;
+        background: #000;
+        border-radius: 50%;
+        /* text-indent: -999em; */
+        overflow: hidden;
+        transition: .2s ease;
+        border: none;
+    }
+    #layerPopup .close:hover {
+        background: #3f3f3f;
+    }
+    #layerPopup .close i {
+        font-size: 20px;
+        color: #fff;
+    }
+    #layerPopup .close i::before {font-weight: bold;}
+    #layerPopup .displayCheckbox {
+        margin-top: 10px;
+        text-align: right;
+    }
+    </style>
+    <script>
+        // 하루 동안 팝업 보지 않기
+        function setCookie(name, value, expiredays) {
+            const todayDate = new Date();
+            todayDate.setDate(todayDate.getDate() + expiredays);
+            document.cookie = name + "=" + escape(value) + "; path=/; expires=" + todayDate.toUTCString() + ";";
+        }
+
+        function getCookie(name) {
+            const cookies = document.cookie.split("; ");
+            for (const cookie of cookies) {
+                const [key, value] = cookie.split("=");
+                if (key === name) return unescape(value);
+            }
+            return null;
+        }
+
+        function closeLayerPopup() {
+            const checkbox = document.querySelector("#doNotShowToday");
+            if (checkbox.checked) {
+                setCookie("ncook_popup", "done", 1); // 하루 동안 보지 않기
+            }
+            document.getElementById("layerPopup").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        function openLayerPopup() {
+            if (getCookie("ncook_popup") !== "done") {
+                document.getElementById("layerPopup").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+            }
+        }
+
+        // 페이지 로드 시 팝업 띄우기
+        window.onload = openLayerPopup;
+    </script>
+
+    <!-- 배경 오버레이 -->
+    <div id="overlay" onclick="closeLayerPopup()"></div>
+    <!-- 레이어 팝업 -->
+    <div id="layerPopup">
+        <img src="https://i.postimg.cc/BZjPMyc3/0704165615320831.jpg" alt="Popup Image">
+        <div class="displayCheckbox">
+            <label>
+            <input type="checkbox" id="doNotShowToday">
+            하루 동안 보지 않기
+            </label>
+        </div>
+        <button class="close" onclick="closeLayerPopup()">
+            <i class="mdi mdi-close"></i>
+        </button>
+    </div>
+</body>
+</html>
