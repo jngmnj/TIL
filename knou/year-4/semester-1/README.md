@@ -48,5 +48,6 @@
 | 2026-08-22 | AI네이티브가되기위한기초소양 | 13강. 올바른 AI 활용 자세 | `fundamentals-for-ai-native/lecture-13.md` |
 | 2026-08-23 | 컴파일러구성 | 1강. 컴파일러의 개요 | `compiler-construction/lecture-01.md` |
 | 2026-08-24 | 컴파일러구성 | 2강. 형식 언어와 형식 문법 | `compiler-construction/lecture-02.md` |
+| 2026-08-25 | 컴파일러구성 | 3강. 유한 오토마타 | `compiler-construction/lecture-03.md` |
 
 각 과목 폴더에는 `lecture-01.md`부터 `lecture-15.md`까지 강의별 정리 파일이 있습니다. 내용이 있는 파일은 강의 노트 형식으로 정리하고, 빈 파일은 이후 필기용 템플릿으로 남겨둡니다.
