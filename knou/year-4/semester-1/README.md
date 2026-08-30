@@ -53,5 +53,6 @@
 | 2026-08-27 | 컴파일러구성 | 5강. 어휘분석기의 설계와 구현 | `compiler-construction/lecture-05.md` |
 | 2026-08-28 | AI네이티브가되기위한기초소양 | 7강. 생성형 AI 서비스의 부가 기능과 업무 활용 | `fundamentals-for-ai-native/lecture-07.md` |
 | 2026-08-29 | AI네이티브가되기위한기초소양 | 8강. 생성형 AI 서비스를 활용한 데이터 분석 | `fundamentals-for-ai-native/lecture-08.md` |
+| 2026-08-30 | AI네이티브가되기위한기초소양 | 9강. 생성형 AI 기반 리서치 활용 | `fundamentals-for-ai-native/lecture-09.md` |
 
 각 과목 폴더에는 `lecture-01.md`부터 `lecture-15.md`까지 강의별 정리 파일이 있습니다. 내용이 있는 파일은 강의 노트 형식으로 정리하고, 빈 파일은 이후 필기용 템플릿으로 남겨둡니다.
