@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>빅데이터의이해와활용 문제집 풀이노트</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink:#111; --red:#e0151b; --blue:#1d3fbf; --line:#222; --paper:#fff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e9e9e9; color:var(--ink);
+         font-family:"Batang","바탕","Nanum Myeongjo",serif; font-size:15px; line-height:1.55; }
+  .toolbar { position:sticky; top:0; z-index:5; display:flex; gap:8px; justify-content:center;
+             padding:8px 16px; background:#333; font-family:system-ui,sans-serif; }
+  .toolbar button { border:0; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  .page { width:210mm; max-width:calc(100% - 32px); min-height:297mm; margin:16px auto; padding:14mm 12mm;
+          background:var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  h1.title { text-align:center; font-family:"Malgun Gothic",sans-serif; font-size:30px; margin:0 0 6px; letter-spacing:-1px; }
+  .meta { display:flex; justify-content:space-between; font-size:16px; border-bottom:2px solid var(--line); padding-bottom:4px; }
+  .subject { border:2px solid var(--line); width:100%; max-width:400px; margin:12px 0 4px; }
+  .subject .head { display:flex; align-items:center; border-bottom:1px solid var(--line); font-family:"Malgun Gothic",sans-serif; }
+  .subject .head b { background:#ccc; padding:2px 8px; border-right:2px solid var(--line); }
+  .subject .head span { flex:1; text-align:center; font-weight:700; font-size:18px; }
+  .subject .row { padding:2px 10px; font-size:14px; }
+  .cols { column-count:2; column-gap:12mm; column-rule:1.5px solid var(--line); margin-top:12px; }
+  .q { break-inside:avoid; margin:0 0 18px; }
+  .q .stem { margin:0 0 4px; }
+  .q .stem .no { font-weight:400; margin-right:4px; }
+  .section { break-inside:avoid; break-after:avoid; margin:4px 0 10px; font-weight:700; }
+  .missing { border:1px dashed #999; color:#777; padding:14px; text-align:center; font-size:13px; margin:6px 0; font-family:"Malgun Gothic",sans-serif; }
+  .note { color:var(--red); font-family:"Malgun Gothic",sans-serif; font-size:12px; margin-left:4px; }
+  .box { border:1px solid var(--line); padding:6px 10px; margin:6px 0; }
+  .box p { margin:2px 0; }
+  .box pre, .box code { font-family:Consolas,"D2Coding",monospace; font-size:12.5px; }
+  .box pre { margin:0; white-space:pre-wrap; word-break:break-all; }
+  .choices { list-style:none; margin:4px 0 0; padding:0 0 0 14px; }
+  .choices li { position:relative; margin:3px 0; padding-left:2px; }
+  .mark { display:inline-block; min-width:1.3em; text-align:center; }
+  .answer .mark { outline:2px solid var(--red); border-radius:50%; outline-offset:0; }
+  .fig { display:block; width:100%; height:auto; border:1px solid var(--line); margin:6px 0; }
+  .final { break-inside:avoid; margin-top:8px; border:2px solid var(--red); padding:8px 12px; color:var(--red);
+           font-family:"Malgun Gothic",sans-serif; }
+  .final h3 { margin:0 0 6px; font-size:15px; }
+  .final .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:4px 8px; font-size:13px; }
+  .final small { display:block; margin-top:6px; font-size:11px; }
+  .footer { text-align:center; margin-top:14px; border-top:1.5px solid var(--line); padding-top:4px; font-size:14px; }
+  .explain h2 { color:var(--blue); font-family:"Malgun Gothic",sans-serif; margin:0 0 14px; }
+  .explain .item { margin:0 0 12px; font-family:"Malgun Gothic",sans-serif; font-size:14px; }
+  .explain .item h4 { margin:0; color:var(--red); font-size:16px; }
+  .explain .item p { margin:2px 0 0 26px; }
+  body.hide-answers .note, body.hide-answers .final, body.hide-answers .explain-page { display:none; }
+  body.hide-answers .answer .mark { outline:none; }
+  @media (max-width:720px) { .cols { column-count:1; } .page { padding:16px; min-height:0; } }
+  @media print { body { background:#fff; } .toolbar { display:none; } .page { margin:0; box-shadow:none; page-break-after:always; } }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="toggle">정답 숨기기</button>
+  <button onclick="window.print()">인쇄 / PDF 저장</button>
+</div>
+
+<section class="page">
+  <h1 class="title">빅데이터의이해와활용</h1>
+  <div class="meta"><span>4학년 1학기</span><span>문제집 (풀이노트)</span></div>
+  <div class="subject">
+    <div class="head"><b>과목</b><span>빅데이터의이해와활용</span><span id="range" style="flex:0 0 auto;padding-right:8px;font-weight:400;font-size:14px"></span></div>
+    <div class="row">범위 : 1~15강 연습문제 (빅데이터의 개요 ~ 개인정보와 프라이버시 보호)</div>
+  </div>
+  <div class="cols" id="questions"></div>
+  <div class="footer">빅데이터의이해와활용 문제집</div>
+</section>
+
+<section class="page explain-page">
+  <div class="explain" id="explain"></div>
+</section>
+
+<script>
+/* ============================================================
+   문제 추가 방법: 아래 QUESTIONS 배열 끝에 객체 하나 추가
+   - stem    : 문제 본문 (HTML/수식 가능, 수식은 $...$)
+   - box     : (선택) 보기 박스에 들어갈 줄 배열
+   - figure  : (선택) 그림 HTML(svg/img)
+   - choices : 선택지 배열 (없으면 answerText 사용)
+   - answer  : 정답 번호 (1~4)
+   - answerText : 선택지가 없을 때 정답 표기
+   - note    : 빨간 한 줄 메모 (문제 옆)
+   - explain : 풀이노트 설명
+   ============================================================ */
+const QUESTIONS = [
+
+  /* ---------- 1강. 빅데이터의 개요 1 ---------- */
+  {
+    section: "1강. 빅데이터의 개요 1",
+    stem: "(O/X) WISE 피라미드는 데이터로부터 정보, 지식과 지혜를 만들어 가는 과정을 표현한 것이다.",
+    answerText: "X",
+    note: "WISE → DIKW 피라미드",
+    explain: "(확인 필요) 데이터 → 정보 → 지식 → 지혜의 위계를 나타낸 것은 DIKW(Data-Information-Knowledge-Wisdom) 피라미드. 이름이 WISE로 바뀐 함정으로 보고 X. 원문이 DIKW의 오기라면 내용 자체는 O."
+  },
+  {
+    stem: "(O/X) 빅데이터는 거대한 크기를 가진 정형 데이터로 생성-유통-소비가 빠르게 일어나 기존 방식으로 관리·분석이 어려운 데이터 집합이다.",
+    answerText: "X",
+    note: "정형 → 정형·비정형 포함",
+    explain: "빅데이터는 정형뿐 아니라 텍스트·이미지·영상 같은 <b>비정형·반정형</b> 데이터까지 포함(다양성, Variety). 정형 데이터로 한정한 부분이 틀림."
+  },
+  {
+    stem: "다음 중 빅데이터의 5V와 가장 <b><u>거리가 먼</u></b> 것은?",
+    choices: ["Value", "Volume", "Velocity", "Volatility"],
+    answer: 4,
+    note: "5V: 규모·속도·다양성·정확성·가치",
+    explain: "5V = Volume(규모), Velocity(속도), Variety(다양성), Veracity(정확성), Value(가치). Volatility(변동성)는 5V에 없음 → ④."
+  },
+  {
+    stem: "빅데이터가 확산된 배경과 가장 <b><u>거리가 먼</u></b> 것은?",
+    choices: ["스마트폰의 확산", "클라우드 컴퓨팅의 확산", "유무선 네트워크 환경 고도화", "개인정보보호법 제정"],
+    answer: 4,
+    note: "개인정보보호법은 오히려 규제",
+    explain: "스마트폰·클라우드·네트워크 고도화는 데이터 생성·저장·유통을 폭발적으로 늘린 기술적 배경. 개인정보보호법은 데이터 활용을 제한하는 규제 측면이라 확산 배경과 거리가 멂 → ④."
+  },
+
+  /* ---------- 2강. 빅데이터의 개요 2 ---------- */
+  {
+    section: "2강. 빅데이터의 개요 2",
+    stem: "(O/X) 빅데이터 시대의 데이터분석은 “좋은 데이터에 공정한 규칙 기반 통계모형을 적용, 얻은 결과가 최상”이라는 과정 중심이다.",
+    answerText: "X",
+    note: "과정 중심 → 결과 중심",
+    explain: "“좋은 데이터 + 공정한 규칙 기반 모형 → 최상의 결과”는 전통적 통계분석의 <b>과정 중심</b> 사고. 빅데이터 시대에는 많은 데이터로 예측이 잘 맞으면 되는 <b>결과 중심</b>으로 바뀜."
+  },
+  {
+    stem: "(O/X) 데이터과학자는 데이터 수집·보관·저장·관리·정제하고, 관련 컴퓨팅 환경을 제공하는 일을 한다.",
+    answerText: "X",
+    note: "이건 데이터 엔지니어 역할",
+    explain: "수집·저장·관리·정제와 컴퓨팅 환경 제공은 데이터 엔지니어(관리자)의 일. 데이터과학자는 데이터를 분석·모델링해 가치와 통찰을 끌어내는 역할."
+  },
+  {
+    stem: "다음 중 가장 바르게 기술한 것은?",
+    choices: [
+      "데이터의 가치는 최신일수록, 다른 데이터와 결합할수록 높아진다.",
+      "데이터의 가치는 오래될수록, 다른 데이터와 결합하지 않을수록 높아진다.",
+      "데이터의 가치는 최신일수록, 다른 데이터와 결합하지 않을수록 높아진다.",
+      "데이터의 가치는 오래될수록, 다른 데이터와 결합할수록 높아진다."
+    ],
+    answer: 1,
+    note: "최신성 + 결합",
+    explain: "데이터는 최신일수록 현재 상황을 잘 반영하고, 다른 데이터와 결합할수록 새로운 정보가 생겨 가치가 커짐 → ①."
+  },
+
+  /* ---------- 3강. 빅데이터의 수집과 활용 1 ---------- */
+  {
+    section: "3강. 빅데이터의 수집과 활용 1",
+    stem: "구글 독감 트렌드에 대해 가장 바르게 기술한 것은?",
+    choices: [
+      "구글 독감 관련 키워드의 검색 트렌드",
+      "구글 독감 환자 검색 트렌드",
+      "구글 독감 관련 키워드의 검색 수와 독감 증상이 있어서 병원을 방문한 환자 수 간의 관계를 바탕으로 독감 유행 수준의 실시간 예측 서비스",
+      "독감 환자 수를 시계열 모형으로 예측한 서비스"
+    ],
+    answer: 3,
+    note: "검색 수 ↔ 환자 수 관계로 실시간 예측",
+    explain: "구글 독감 트렌드는 독감 관련 검색어 빈도와 CDC의 독감 의심 환자(병원 방문) 수 사이의 관계를 이용해 독감 유행 수준을 실시간으로 추정한 서비스 → ③."
+  },
+  {
+    stem: "(O/X) API(Application Programming Interface)는 외부 개발자·사용자들이 사용할 수 있도록 하는 프로그래밍 인터페이스이다.",
+    answerText: "O",
+    note: "Open API로 데이터 수집",
+    explain: "API는 프로그램(서비스)의 기능·데이터를 외부 개발자가 쓸 수 있게 열어둔 인터페이스. 공공데이터포털, 네이버·카카오 Open API 등으로 데이터를 수집함 → O."
+  },
+  {
+    stem: "구글 북스(books)에서 키워드의 시간적 흐름을 살펴볼 수 있는 서비스는?",
+    choices: ["Ngram Viewer", "Trend", "Datalab", "Tracker"],
+    answer: 1,
+    note: "책 속 단어 빈도의 연도별 추이",
+    explain: "Google Books Ngram Viewer는 구글이 디지털화한 책에서 단어(n-gram)의 연도별 출현 빈도를 보여줌 → ①. Datalab은 네이버 서비스."
+  },
+
+  /* ---------- 4강. 빅데이터의 수집과 활용 2 ---------- */
+  {
+    section: "4강. 빅데이터의 수집과 활용 2",
+    stem: "(O/X) 빅카인즈는 한국언론진흥재단이 언론사들로부터 수집한 뉴스 통합 데이터베이스에 분석 접목하여 개발한 뉴스 분석 서비스이다.",
+    answerText: "O",
+    note: "BIG KINDS = 언론진흥재단",
+    explain: "빅카인즈(BIG KINDS)는 한국언론진흥재단이 언론사 뉴스를 모은 통합 DB에 빅데이터 분석 기술을 접목한 뉴스 분석 서비스 → O."
+  },
+  {
+    stem: "(O/X) MIT Billion Price 프로젝트는 리고본리와 카벨로(R. Rigobon and A. Cavallo)가 쇼핑몰 가격을 웹 스크래핑하여 데이터베이스를 만들고 이를 바탕으로 실시간 주가지수를 작성한 프로젝트이다.",
+    answerText: "X",
+    note: "주가지수 → 물가지수",
+    explain: "Billion Prices Project는 온라인 쇼핑몰 가격을 웹 스크래핑해 <b>실시간 물가지수(인플레이션)</b>를 산출한 프로젝트. 주가지수가 아님."
+  },
+  {
+    stem: "2020년 코로나 19 감염증이 확산하는 초기에 마스크 판매 관련 앱을 만들어서 문제를 해결할 때 마스크 판매현황 데이터를 수집한 곳은?",
+    choices: ["의사협회", "보건소", "건강보험심사평가원", "네이버, 카카오"],
+    answer: 3,
+    note: "심평원 → 공적 마스크 API",
+    explain: "공적 마스크 판매현황은 약국의 판매 정보를 관리하는 건강보험심사평가원(DUR 시스템)이 수집했고, 이를 공공 API로 개방해 민간 개발자들이 마스크 앱을 만듦 → ③."
+  },
+
+  /* ---------- 5강. 텍스트 빅데이터 ---------- */
+  {
+    section: "5강. 텍스트 빅데이터",
+    stem: "다음 중 자연어 처리로 할 수 있는 일과 <b><u>관계가 없는</u></b> 것은?",
+    choices: [
+      "새로 발표된 정부의 부동산 정책에 대해 사람들이 소셜미디어에 올린 의견을 분석하였다.",
+      "카페에서 로봇에게 커피를 주문했다.",
+      "올해 주가를 분석하여 내년 전망을 예측했다.",
+      "뉴욕타임즈 영문 기사를 구글 트랜슬레이터로 번역하여 한글로 읽어보았다."
+    ],
+    answer: 3,
+    note: "주가 = 수치 시계열 분석",
+    explain: "① 감성(여론) 분석 ② 음성·대화 인식 ④ 기계 번역은 모두 자연어 처리. ③ 주가 예측은 수치 데이터의 시계열 분석이라 자연어 처리와 관계가 없음."
+  },
+  {
+    stem: "(O/X) TF-IDF는 각 문서를 대표하는 중요한 단어를 찾는데 적합한 알고리즘이기 때문에 문서를 검색하는데 주로 사용된다.",
+    answerText: "O",
+    note: "TF × IDF = 문서 핵심어 가중치",
+    explain: "TF-IDF는 한 문서에 자주 나오고(TF) 다른 문서에는 드문(IDF) 단어에 높은 가중치를 줘 문서의 핵심어를 찾음. 그래서 검색 엔진의 문서 순위·유사도 계산에 널리 쓰임 → O."
+  },
+  {
+    stem: "(서술형) 다음 지문과 같이 단어사전이 구축되어 있을 때 제시된 단어의 원-핫 인코딩 행렬을 구하시오.",
+    box: [
+      `<table style="border-collapse:collapse;font-size:13px;text-align:center"><tr><th style="border:1px solid #222;padding:1px 4px">인덱스</th>${["0","1","2","3","4","5","6","7","8","9"].map(v => `<td style="border:1px solid #222;padding:1px 4px">${v}</td>`).join("")}</tr><tr><th style="border:1px solid #222;padding:1px 4px">단어</th>${["텍스트","처리","분석","문서","포함","단어","집합","사전","출연","필요"].map(v => `<td style="border:1px solid #222;padding:1px 4px">${v}</td>`).join("")}</tr></table>`,
+      "제시된 단어: <b>집합</b>"
+    ],
+    answerText: "[0,0,0,0,0,0,1,0,0,0]",
+    note: "집합 = 인덱스 6",
+    explain: "원-핫 인코딩은 사전 크기(10)만큼의 벡터에서 해당 단어의 인덱스 자리만 1, 나머지는 0. ‘집합’은 인덱스 6이므로 $[0,0,0,0,0,0,1,0,0,0]$."
+  },
+
+  /* ---------- 6강. 데이터 시각화 ---------- */
+  {
+    section: "6강. 데이터 시각화",
+    stem: "다음 중 시계열 데이터를 표현하기에 <b><u>적합하지 않은</u></b> 시각화는 무엇인가?",
+    choices: ["선 그래프", "점 그래프", "네트워크 그래프", "버블 그래프"],
+    answer: 3,
+    note: "네트워크 = 관계 표현",
+    explain: "시계열은 시간 축에 따른 값의 변화를 보여야 하므로 선·점·버블 그래프가 적합. 네트워크 그래프는 노드 간 연결 관계를 표현하는 시각화 → ③."
+  },
+  {
+    stem: "(서술형) 소셜 네트워크의 시각화에서 행위자들은 ( 가 ) 혹은 ( 나 )로 표현되고, 두 ( 가 또는 나 )를 연결하는 선을 ( 다 ) 혹은 ( 라 )라고 부른다. 괄호의 내용을 순서대로 작성하세요.",
+    answerText: "(가) 노드 (나) 버텍스 (다) 엣지 (라) 링크",
+    note: "노드/버텍스, 엣지/링크",
+    explain: "네트워크에서 행위자(점)는 노드(node) 또는 버텍스(vertex), 둘을 잇는 선은 엣지(edge) 또는 링크(link)라고 부름."
+  },
+  {
+    stem: "(O/X) 단어의 공출현(co-occurrence) 네트워크 시각화는 서로 다른 문장에 등장하는 단어들을 엣지(링크)로 연결한 것이다.",
+    answerText: "X",
+    note: "서로 다른 → 같은 문장",
+    explain: "공출현 네트워크는 <b>같은 문장(문서·윈도우) 안에 함께 등장</b>하는 단어들을 엣지로 연결함. ‘서로 다른 문장’이 틀림."
+  },
+
+  /* ---------- 7강. 추천시스템 ---------- */
+  {
+    section: "7강. 추천시스템",
+    stem: "기업의 데이터베이스에서 상품의 구매, 서비스 등 일련의 거래 또는 사건들 간의 연관성에 대한 규칙을 발견하기 위해 적용되며 마케팅에서는 손님의 장바구니에 들어 있는 품목 간의 관계를 알아본다는 의미에서 장바구니 분석이라고도 부르는 분석은 무엇인가?",
+    choices: ["앙상블 방법", "협력적 정화방법", "연관규칙 분석", "군집분석"],
+    answer: 3,
+    note: "장바구니 분석 = 연관규칙",
+    explain: "거래 품목 간 “X를 사면 Y도 산다” 형태의 규칙을 찾는 것이 연관규칙 분석(장바구니 분석) → ③."
+  },
+  {
+    stem: "개인의 선호도와 과거 상품 구매 이력 등을 분석하여 개인에게 최적인 상품을 추천을 위한 통계적 방법은 무엇인가?",
+    choices: ["협력적 정화방법", "앙상블 방법", "k 평균 군집 방법", "계층적 군집 방법"],
+    answer: 1,
+    note: "협력적 정화(CF) = 개인 추천",
+    explain: "협력적 정화(collaborative filtering)는 고객들의 선호도·구매 이력을 이용해 비슷한 고객·품목을 찾아 개인별 상품을 추천하는 방법 → ①."
+  },
+  {
+    stem: "상품들 사이의 유사성 척도를 구한 후, 관측되지 않은 $r_{ui}$를 $i$번째 품목과 유사한 상품들의 고객 $u$의 선호도를 이용하여 추정하는 방법은 무엇인가?",
+    choices: ["고객 중심 협력적 정화방법", "행렬분해를 이용한 협력적 정화방법", "연관규칙분석방법", "품목 중심 협력적 정화방법"],
+    answer: 4,
+    note: "품목 간 유사도 → 품목 중심",
+    explain: "품목(상품) 사이의 유사도를 구해 고객 $u$가 비슷한 품목에 준 평점으로 $r_{ui}$를 추정하는 것이 품목 중심(item-based) 협력적 정화 → ④. 고객 간 유사도를 쓰면 고객 중심."
+  },
+  {
+    stem: "연관규칙이 유용한 규칙일 필요조건에 대한 측도로 연관규칙의 ( )는 전체 거래들 중 품목 X와 품목 Y를 동시에 포함하는 거래의 비율로 정의된다. ( ) 안에 알맞은 말은?",
+    choices: ["지지도", "신뢰도", "향상도", "선호도"],
+    answer: 1,
+    note: "지지도 = P(X∩Y)",
+    explain: "지지도 = X와 Y를 동시에 포함한 거래 수 / 전체 거래 수 → ①. 신뢰도 = $P(Y\\mid X)$, 향상도 = 신뢰도 / $P(Y)$."
+  },
+
+  /* ---------- 8강. 기계학습 ---------- */
+  {
+    section: "8강. 기계학습",
+    stem: "빅데이터를 활용해 정보를 알아내는 것으로, 컴퓨터가 자동으로 새로운 지식을 학습하게 하는 방법론은?",
+    choices: ["군집분석", "역전파 알고리즘", "로그가능도", "기계학습"],
+    answer: 4,
+    note: "Machine Learning",
+    explain: "데이터로부터 컴퓨터가 스스로 규칙·지식을 학습하게 하는 방법론 전체를 기계학습이라 함 → ④. 군집분석·역전파는 그 안의 개별 기법."
+  },
+  {
+    stem: "생물과 인간의 뇌 구조를 모방하여 만든 수학/공학적 모형으로 입력값과 출력값 사이의 함수를 복잡한 형태의 비선형으로 가정한 모형은?",
+    choices: ["선형모형", "부스팅", "인공신경망", "군집분석"],
+    answer: 3,
+    note: "뇌 구조 모방 = 인공신경망",
+    explain: "뉴런 구조를 모방해 입력과 출력 사이를 비선형 함수로 표현하는 모형은 인공신경망 → ③."
+  },
+  {
+    stem: "시각인지과정을 모방한 신경망 모형 중 하나로 이미지 분류문제 또는 분석에서 뛰어난 성능을 보이는 딥러닝 모델은?",
+    choices: ["RNN", "덴드로그램", "CNN", "Ensemble"],
+    answer: 3,
+    note: "이미지 = CNN, 순차 = RNN",
+    explain: "합성곱 신경망(CNN)은 시각 피질의 인지 과정을 모방해 이미지 분류에 뛰어남 → ③. RNN은 순차(시계열·텍스트) 데이터용."
+  },
+  {
+    stem: "비지도학습 방법 중 하나인 차원 축소에 활용되는 오토인코더(Auto-encoder)에 대한 설명으로 옳은 것은?",
+    choices: [
+      "오토인코더는 인코더와 디코더를 거쳐 나온 출력 데이터가 입력 데이터와 최대한 비슷하게 하는 목적 함수로 학습한다.",
+      "오토인코더는 여러 개의 약한 예측 모형(weak learner)들을 활용하는 방법 중 하나이다.",
+      "오토인코더는 주성분을 선형으로 표현하여 차원을 축소하는 방법이다.",
+      "가장 대표적인 모형으로는, 구글에서 개발한 버트(BERT) 등이 있다."
+    ],
+    answer: 1,
+    note: "출력 ≈ 입력 (재구성 학습)",
+    explain: "오토인코더는 입력을 압축(인코더)했다가 복원(디코더)한 출력이 입력과 같아지도록 학습 → ①. ② 약한 모형 결합은 앙상블(부스팅) ③ 선형 차원 축소는 주성분분석(PCA) ④ BERT는 트랜스포머 언어 모델."
+  },
+
+  /* ---------- 9강. 빅데이터 의사결정 1 ---------- */
+  {
+    section: "9강. 빅데이터 의사결정 1",
+    stem: "(O/X) 메킨지가 실시한 기업들의 빅데이터 경영 환경 변화 인식 조사에서 기업들은 “그 동안 사용하지 않던 데이터를 사용해 통찰력을 도출”하는 것이 가장 많은 변화라고 응답했다.",
+    answerText: "O",
+    note: "새로운 데이터로 통찰력 도출",
+    explain: "(확인 필요) 매킨지 조사에서 빅데이터로 인한 가장 큰 변화로 기존에 쓰지 않던(새로운) 데이터를 활용해 통찰력을 얻게 된 점이 꼽힌 것으로 보고 O. 강의 자료의 조사 순위로 확인할 것."
+  },
+  {
+    stem: "(O/X) 앱이나 웹사이트에서의 고객 등록 정보, 온라인 설문조사 등은 이제 가장 기본적인 고객 데이터 소스이다.",
+    answerText: "O",
+    note: "1차(자사) 고객 데이터",
+    explain: "회원 가입 정보, 온라인 설문처럼 기업이 고객에게서 직접 받는 데이터는 가장 기본적인 고객 데이터 소스 → O."
+  },
+  {
+    stem: "다음 중 빅데이터와 기업의 경영성과에 대한 설명 중 적절한 것은?",
+    choices: [
+      "빅데이터가 기업의 경영성과에 긍정적인 영향을 미친다는 실증적인 증거는 아직 발견되지 않았다.",
+      "IT 컨설팅 업체인 캡제미니의 조사결과 빅데이터를 적극적으로 활용하는 기업과 그렇지 않은 기업 간에 직원당 수익, 고정 자산 회전율, 수익성 등에서는 큰 차이가 없었다.",
+      "경영 컨설팅 업체 메킨지의 조사 결과 응답자의 47%는 데이터와 분석이 지난 3년 동안 해당 산업의 경쟁 특성을 크게 또는 근본적으로 변화시켰다고 말했다.",
+      "2011년 MIT 경영대학원의 경제학자 에릭 브린욜프슨(Erik Brynjolfsson)의 연구에 따르면 데이터 및 분석에 기반한 의사결정을 강조하는 기업은 의사결정을 위해 직관과 경험에 의존하는 기업보다 성과 면에서 50~60% 더 나은 결과를 보였다."
+    ],
+    answer: 3,
+    note: "브린욜프슨은 5~6%",
+    explain: "① 긍정적 효과의 실증 근거는 이미 있음. ② 캡제미니 조사에서는 활용 기업이 직원당 수익·자산 회전율·수익성 모두 더 높았음. ④ 브린욜프슨 연구의 차이는 <b>5~6%</b>. 매킨지 조사(47%)가 맞는 설명 → ③."
+  },
+  {
+    stem: "다음 중 BCG가 말한 빅데이터를 활용한 가치창출의 3가지 핵심 과정에 <b><u>속하지 않는</u></b> 것은?",
+    choices: ["데이터의 확보", "통찰력의 창출", "의사결정의 실행", "외부 데이터의 공유"],
+    answer: 4,
+    note: "확보 → 통찰 → 실행",
+    explain: "BCG의 3가지 핵심 과정: 데이터 확보 → 통찰력 창출 → 의사결정 실행. 외부 데이터의 공유는 포함되지 않음 → ④."
+  },
+
+  /* ---------- 10강. 빅데이터 의사결정 2 ---------- */
+  {
+    section: "10강. 빅데이터 의사결정 2",
+    stem: "(O/X) 서술적 분석은 탐색적 분석(exploratory analytics)이라고도 하며 사업 분야에서 발생한 사건 혹은 관심 사항들의 원인을 찾는 분석이다.",
+    answerText: "X",
+    note: "원인 찾기 = 진단적 분석",
+    explain: "“왜 일어났는가”의 원인을 찾는 분석은 진단적 분석(탐색적 분석이라고도 함). 서술적 분석은 “무슨 일이 일어났는가”를 요약·보고하는 단계 → 서술적 → 진단적."
+  },
+  {
+    stem: "(O/X) 처방적 분석은 다양한 대안과 시나리오를 기반으로 어떤 일이 일어날지 이해하고 최상의 옵션을 선택하며 앞으로 일어날 일을 최적화하는 데 중점을 둔다.",
+    answerText: "O",
+    note: "처방적 = 최적 대안 선택",
+    explain: "처방적 분석은 “무엇을 해야 하는가”에 답하는 최상위 단계로, 대안·시나리오를 비교해 최적의 행동을 고름 → O."
+  },
+  {
+    stem: "빅데이터 의사결정 4단계 중 각종 모델링 기법을 사용하여 앞으로 일어날 일에 대한 통찰력을 제공하기 위해 미래를 내다보고 가정 시나리오와 위험 평가에 중점을 두는 단계는?",
+    choices: ["서술적 분석", "진단적 분석", "예측적 분석", "처방적 분석"],
+    answer: 3,
+    note: "미래 예측 = 예측적",
+    explain: "서술적(무엇이) → 진단적(왜) → 예측적(무엇이 일어날지) → 처방적(무엇을 할지). 모델링으로 미래를 내다보고 시나리오·위험을 평가하는 것은 예측적 분석 → ③."
+  },
+  {
+    stem: "한 소매업체에서 지난 달의 고객 수, 제품별 판매액 등을 참고해서 진열대의 상품 구성과 배치를 조정했다면 이는 빅데이터 의사결정의 분석 수준에서 어느 수준의 데이터 활용이라고 할 수 있는가?",
+    choices: ["서술적 분석", "진단적 분석", "예측적 분석", "처방적 분석"],
+    answer: 1,
+    note: "지난 달 실적 요약 = 서술적",
+    explain: "지난 달 고객 수·판매액처럼 이미 일어난 일을 집계·요약한 데이터를 참고한 것이므로 서술적 분석 수준 → ①. 원인 분석·예측 모형·최적화는 쓰지 않았음."
+  },
+
+  /* ---------- 11강. 빅데이터 기업 경영 1 ---------- */
+  {
+    section: "11강. 빅데이터 기업 경영 1",
+    stem: "(O/X) 관리회계에서 빅데이터는 잠재적 회계부정의 식별, 더 나은 회계 데이터의 구성, 재무제표에 대한 감사의견 예측 등에 사용될 수 있다.",
+    answerText: "X",
+    note: "관리회계 → 재무회계",
+    explain: "회계부정 식별, 회계 데이터 구성, 재무제표 감사의견 예측은 외부 보고·감사와 관련된 <b>재무회계</b> 분야의 활용. 관리회계 → 재무회계."
+  },
+  {
+    stem: "(O/X) 생산운영관리에서 빅데이터가 가장 많이 활용되는 3분야는 품질 관리, 장비 유지 관리, 공급망 관리이다.",
+    answerText: "O",
+    note: "품질·설비 유지·공급망",
+    explain: "(확인 필요) 생산운영관리에서는 불량 예측 등 품질 관리, 예지 정비 등 장비 유지 관리, 수요·재고 예측 등 공급망 관리가 대표적인 빅데이터 활용 분야로 꼽힘 → O로 판단. 강의 자료의 3분야 목록으로 확인할 것."
+  },
+  {
+    stem: "잠재적 회계부정의 식별, 더 나은 회계 데이터의 구성 등이 빅데이터로 가능해진 경영관리 분야는?",
+    choices: ["관리회계", "재무회계", "투자관리", "위험관리"],
+    answer: 2,
+    note: "회계부정·감사 = 재무회계",
+    explain: "회계부정 식별, 회계 데이터 구성, 감사의견 예측은 재무회계 분야의 빅데이터 활용 → ②. 관리회계는 원가·성과 관리 등 내부 의사결정용."
+  },
+  {
+    stem: "다음 중 개인에 관한 대체신용평가에 사용되는 데이터가 <b><u>아닌</u></b> 것은?",
+    choices: ["SNS 데이터", "이동통신사 데이터", "신문 기사", "각종 앱 사용 내역"],
+    answer: 3,
+    note: "신문 기사는 개인 데이터 아님",
+    explain: "대체신용평가는 금융 이력이 부족한 개인을 SNS·통신비 납부·앱 사용 내역 같은 비금융 개인 데이터로 평가함. 신문 기사는 개인 단위 데이터가 아님 → ③."
+  },
+
+  /* ---------- 12강. 빅데이터 기업 경영 2 ---------- */
+  {
+    section: "12강. 빅데이터 기업 경영 2",
+    stem: "(O/X) 국내 ㈜너울정보라는 회사는 반려견 목거리로 디지털 음성 데이터를 만들어 내어 사업화한, 빅데이터 창출형 비즈니스 모델을 실현하고 있다.",
+    answerText: "X",
+    note: "음성 → 활동(생체) 데이터?",
+    explain: "(확인 필요) 반려견 목걸이(웨어러블)로 활동량 등 데이터를 새로 만들어 사업화한 빅데이터 창출형 사례로 알려져 있어, ‘디지털 음성 데이터’ 부분을 함정으로 보고 X. 강의 사례 설명으로 데이터 종류를 확인할 것."
+  },
+  {
+    stem: "(O/X) 한국데이터산업진흥원의 조사에 따르면 국내 기업들이 마케팅 분야에서 빅데이터를 가장 많이 활용하는 분야는 “신상품 및 서비스 개발”이었다.",
+    answerText: "X",
+    note: "1위는 고객 분석 계열?",
+    explain: "(확인 필요) 국내 기업의 마케팅 분야 빅데이터 활용은 고객 분석·세분화(타깃 마케팅) 등이 가장 많은 것으로 보고 X. 조사 순위는 강의 자료로 확인할 것."
+  },
+  {
+    stem: "고객이 기업의 상품/서비스를 이용하는 그 순간 및 전후의 과정에서 다양한 채널들을 어떻게 이용하고 있는 지를 파악하는 것을 무엇이라고 하는가?",
+    choices: ["고객 여정 분석", "고객 맞춤화", "고객 니즈 분석", "고객 세분화"],
+    answer: 1,
+    note: "Customer Journey",
+    explain: "이용 전·중·후 전 과정에서 고객이 거치는 접점과 채널을 파악하는 것이 고객 여정 분석(customer journey analysis) → ①."
+  },
+  {
+    stem: "국내 스타트업인 제네시스랩(Genesis Lab)의 AI 기술인 '뷰인터HR'이 적용된 분야는?",
+    choices: ["직원 성과 평가", "인재 채용", "직무 훈련", "직원 배치"],
+    answer: 2,
+    note: "AI 면접 솔루션",
+    explain: "뷰인터HR은 지원자의 영상 면접에서 표정·음성·답변을 AI로 분석하는 AI 면접(채용) 솔루션 → ②."
+  },
+
+  /* ---------- 13강. 빅데이터 기술 1 ---------- */
+  {
+    section: "13강. 빅데이터 기술 1",
+    stem: "다음 중 하둡 맵리듀스에서 사용하는 요소가 <b><u>아닌</u></b> 것은?",
+    choices: ["name node", "reducer", "combiner", "mapper"],
+    answer: 1,
+    note: "name node = HDFS 구성요소",
+    explain: "맵리듀스는 mapper → (combiner) → reducer로 처리. name node는 하둡 분산 파일 시스템(HDFS)의 메타데이터 관리 노드 → ①."
+  },
+  {
+    stem: "다음 중 NoSQL 데이터베이스가 <b><u>아닌</u></b> 것은?",
+    choices: ["Pandas", "MongoDB", "아파치 HBase", "Cassandra"],
+    answer: 1,
+    note: "Pandas = 파이썬 라이브러리",
+    explain: "MongoDB(문서형), HBase·Cassandra(컬럼형)는 NoSQL DB. Pandas는 파이썬의 데이터프레임 분석 라이브러리 → ①."
+  },
+  {
+    stem: "스파크(Spark)에 대한 설명 중 가장 바른 것은?",
+    choices: [
+      "대용량 데이터 처리를 위해 만들어진 스칼라(Scala), 인-메모리 기반 오픈소스 프레임워크",
+      "대용량 데이터 처리를 위해 만들어진 스칼라, 디스크 기반 오픈소스 프레임워크",
+      "대용량 데이터 처리를 위해 만들어진 파이선(Python), 인-메모리 기반 오픈소스 프레임워크",
+      "대용량 데이터 처리를 위해 만들어진 파이선, 디스크 기반 오픈소스 프레임워크"
+    ],
+    answer: 1,
+    note: "스칼라 + 인메모리",
+    explain: "스파크는 스칼라로 작성된 인-메모리 기반 분산 처리 프레임워크(파이썬은 PySpark로 사용 가능). 디스크 기반은 하둡 맵리듀스 → ①."
+  },
+
+  /* ---------- 14강. 빅데이터 기술 2 ---------- */
+  {
+    section: "14강. 빅데이터 기술 2",
+    stem: "다음 중 대스크(Dask)의 계층 구성 요소가 <b><u>아닌</u></b> 것은?",
+    choices: ["스케줄러", "대스크 Delayed 객체", "구글 파일 시스템", "대스크 배열"],
+    answer: 3,
+    note: "GFS는 구글의 분산 파일 시스템",
+    explain: "Dask는 스케줄러(하위), Delayed·Futures(저수준 API), 배열·데이터프레임·Bag(고수준 컬렉션)으로 구성. 구글 파일 시스템(GFS)은 Dask와 무관 → ③."
+  },
+  {
+    stem: "빅데이터를 파이선(Python)으로 통계분석하는데 제약조건에 대해 바르게 기술한 것은?",
+    choices: [
+      "파이선은 모든 데이터를 메모리에 올려서 처리하기 때문에 빅데이터를 분석하는 데에는 한계가 있다.",
+      "파이선은 모든 데이터를 하드디스크에 올려서 처리하기 때문에 빅데이터를 분석하는 데에는 한계가 있다.",
+      "파이선은 빅데이터를 분석할 수 있는 함수가 없기 때문에 빅데이터를 분석하는 데에는 한계가 있다.",
+      "파이선은 빅데이터를 읽을 수 있는 함수가 없기 때문에 빅데이터를 분석하는 데에는 한계가 있다."
+    ],
+    answer: 1,
+    note: "메모리 한계 → Dask 등으로 보완",
+    explain: "pandas 등 파이썬 분석 도구는 데이터를 메모리에 모두 올려 처리하므로 메모리보다 큰 데이터는 다루기 어려움 → ①. 그래서 Dask·PySpark 같은 분산·청크 처리 도구를 씀."
+  },
+
+  /* ---------- 15강. 개인정보와 프라이버시 보호 ---------- */
+  {
+    section: "15강. 개인정보와 프라이버시 보호",
+    stem: "(O/X) 프라이버시(privacy)는 개인의 사생활 또는 남에게 알려지지 않거나 간섭받지 않을 권리이다.",
+    answerText: "O",
+    note: "홀로 있을 권리",
+    explain: "프라이버시는 사생활이 남에게 알려지지 않고 간섭받지 않을 권리(right to be let alone) → O."
+  },
+  {
+    stem: "(O/X) 옵트아웃(Opt-out) 방식은 개인에게 개인정보 수집에 대해 사전 동의를 받는 개인정보 이용 동의 방식이다.",
+    answerText: "X",
+    note: "사전 동의 = 옵트인",
+    explain: "사전 동의를 받는 방식은 옵트인(Opt-in). 옵트아웃은 먼저 수집·이용하고 당사자가 거부하면 중단하는 사후 거부 방식 → 옵트아웃 → 옵트인."
+  },
+  {
+    stem: "동일한 속성을 가지는 관측치가 일정 숫자 이상 있도록 한 프라이버시 보호 모형은?",
+    choices: ["k-익명성 모형", "l-다양성 모형", "t-근접성 모형", "차분 프라이버시 모형"],
+    answer: 1,
+    note: "같은 준식별자 ≥ k개",
+    explain: "준식별자 값이 같은 레코드가 최소 k개 이상 되도록 해 개인을 특정하지 못하게 하는 것이 k-익명성 → ①. l-다양성은 그 안의 민감정보 다양성, t-근접성은 민감정보 분포 차이를 제한."
+  }
+];
+
+const MARKS = ["①","②","③","④","⑤"];
+function render() {
+  const qEl = document.getElementById("questions");
+  const xEl = document.getElementById("explain");
+  let qs = "", grid = "", ex = "";
+  QUESTIONS.forEach((q, i) => {
+    const n = i + 1;
+    const ans = q.answerText || MARKS[q.answer - 1];
+    if (q.section) qs += `<p class="section">※ ${q.section}</p>`;
+    qs += `<div class="q"><p class="stem"><span class="no">${n}.</span>${q.stem}${q.choices ? "" : ` <span class="note">${q.note}</span>`}</p>`;
+    if (q.figure) qs += q.figure;
+    if (q.box) qs += `<div class="box">${q.box.map(l => `<p>${l}</p>`).join("")}</div>`;
+    if (q.choices) {
+      qs += `<ol class="choices">${q.choices.map((c, j) =>
+        `<li class="${j + 1 === q.answer ? "answer" : ""}"><span class="mark">${MARKS[j]}</span> ${c}${j === q.choices.length - 1 ? ` <span class="note">${q.note}</span>` : ""}</li>`).join("")}</ol>`;
+    } else {
+      qs += `<p class="note" style="margin:4px 0 0 14px;font-size:13px">정답: ${ans}</p>`;
+    }
+    qs += `</div>`;
+    grid += `<span>${n}. ${ans}</span>`;
+    ex += `<div class="item"><h4>${n}번 &nbsp;정답 ${ans}</h4><p>${q.explain}</p></div>`;
+  });
+  qs += `<div class="final"><h3>정답 (풀이노트)</h3><div class="grid">${grid}</div><small>※ 개념 요약·상세 풀이는 뒤 풀이노트 페이지 참고</small></div>`;
+  qEl.innerHTML = qs;
+  xEl.innerHTML = `<h2>풀이노트 – 빅데이터의이해와활용 (1~${QUESTIONS.length})</h2>` + ex;
+  document.getElementById("range").textContent = `(1~${QUESTIONS.length})`;
+}
+render();
+
+document.getElementById("toggle").addEventListener("click", e => {
+  const hidden = document.body.classList.toggle("hide-answers");
+  e.target.textContent = hidden ? "정답 보기" : "정답 숨기기";
+});
+window.addEventListener("load", () => {
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>클라우드컴퓨팅 문제집 풀이노트</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink:#111; --red:#e0151b; --blue:#1d3fbf; --line:#222; --paper:#fff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e9e9e9; color:var(--ink);
+         font-family:"Batang","바탕","Nanum Myeongjo",serif; font-size:15px; line-height:1.55; }
+  .toolbar { position:sticky; top:0; z-index:5; display:flex; gap:8px; justify-content:center;
+             padding:8px 16px; background:#333; font-family:system-ui,sans-serif; }
+  .toolbar button { border:0; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  .page { width:210mm; max-width:calc(100% - 32px); min-height:297mm; margin:16px auto; padding:14mm 12mm;
+          background:var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  h1.title { text-align:center; font-family:"Malgun Gothic",sans-serif; font-size:30px; margin:0 0 6px; letter-spacing:-1px; }
+  .meta { display:flex; justify-content:space-between; font-size:16px; border-bottom:2px solid var(--line); padding-bottom:4px; }
+  .subject { border:2px solid var(--line); width:100%; max-width:400px; margin:12px 0 4px; }
+  .subject .head { display:flex; align-items:center; border-bottom:1px solid var(--line); font-family:"Malgun Gothic",sans-serif; }
+  .subject .head b { background:#ccc; padding:2px 8px; border-right:2px solid var(--line); }
+  .subject .head span { flex:1; text-align:center; font-weight:700; font-size:18px; }
+  .subject .row { padding:2px 10px; font-size:14px; }
+  .cols { column-count:2; column-gap:12mm; column-rule:1.5px solid var(--line); margin-top:12px; }
+  .q { break-inside:avoid; margin:0 0 18px; }
+  .q .stem { margin:0 0 4px; }
+  .q .stem .no { font-weight:400; margin-right:4px; }
+  .section { break-inside:avoid; break-after:avoid; margin:4px 0 10px; font-weight:700; }
+  .missing { border:1px dashed #999; color:#777; padding:14px; text-align:center; font-size:13px; margin:6px 0; font-family:"Malgun Gothic",sans-serif; }
+  .note { color:var(--red); font-family:"Malgun Gothic",sans-serif; font-size:12px; margin-left:4px; }
+  .box { border:1px solid var(--line); padding:6px 10px; margin:6px 0; }
+  .box p { margin:2px 0; }
+  .box pre, .box code { font-family:Consolas,"D2Coding",monospace; font-size:12.5px; }
+  .box pre { margin:0; white-space:pre-wrap; word-break:break-all; }
+  .choices { list-style:none; margin:4px 0 0; padding:0 0 0 14px; }
+  .choices li { position:relative; margin:3px 0; padding-left:2px; }
+  .mark { display:inline-block; min-width:1.3em; text-align:center; }
+  .answer .mark { outline:2px solid var(--red); border-radius:50%; outline-offset:0; }
+  .fig { display:block; width:100%; height:auto; border:1px solid var(--line); margin:6px 0; }
+  .final { break-inside:avoid; margin-top:8px; border:2px solid var(--red); padding:8px 12px; color:var(--red);
+           font-family:"Malgun Gothic",sans-serif; }
+  .final h3 { margin:0 0 6px; font-size:15px; }
+  .final .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:4px 8px; font-size:13px; }
+  .final small { display:block; margin-top:6px; font-size:11px; }
+  .footer { text-align:center; margin-top:14px; border-top:1.5px solid var(--line); padding-top:4px; font-size:14px; }
+  .explain h2 { color:var(--blue); font-family:"Malgun Gothic",sans-serif; margin:0 0 14px; }
+  .explain .item { margin:0 0 12px; font-family:"Malgun Gothic",sans-serif; font-size:14px; }
+  .explain .item h4 { margin:0; color:var(--red); font-size:16px; }
+  .explain .item p { margin:2px 0 0 26px; }
+  body.hide-answers .note, body.hide-answers .final, body.hide-answers .explain-page { display:none; }
+  body.hide-answers .answer .mark { outline:none; }
+  @media (max-width:720px) { .cols { column-count:1; } .page { padding:16px; min-height:0; } }
+  @media print { body { background:#fff; } .toolbar { display:none; } .page { margin:0; box-shadow:none; page-break-after:always; } }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="toggle">정답 숨기기</button>
+  <button onclick="window.print()">인쇄 / PDF 저장</button>
+</div>
+
+<section class="page">
+  <h1 class="title">클라우드컴퓨팅</h1>
+  <div class="meta"><span>4학년 1학기</span><span>문제집 (풀이노트)</span></div>
+  <div class="subject">
+    <div class="head"><b>과목</b><span>클라우드컴퓨팅</span><span id="range" style="flex:0 0 auto;padding-right:8px;font-weight:400;font-size:14px"></span></div>
+    <div class="row">범위 : 1~15강 연습문제 (클라우드 컴퓨팅의 이해 ~ 일기 예보 전송 서비스 구현)</div>
+  </div>
+  <div class="cols" id="questions"></div>
+  <div class="footer">클라우드컴퓨팅 문제집</div>
+</section>
+
+<section class="page explain-page">
+  <div class="explain" id="explain"></div>
+</section>
+
+<script>
+/* ============================================================
+   문제 추가 방법: 아래 QUESTIONS 배열 끝에 객체 하나 추가
+   - stem    : 문제 본문 (HTML/수식 가능, 수식은 $...$)
+   - box     : (선택) 보기 박스에 들어갈 줄 배열
+   - figure  : (선택) 그림 HTML(svg/img)
+   - choices : 선택지 배열 (없으면 answerText 사용)
+   - answer  : 정답 번호 (1~4)
+   - answerText : 선택지가 없을 때 정답 표기
+   - note    : 빨간 한 줄 메모 (문제 옆)
+   - explain : 풀이노트 설명
+   ============================================================ */
+const QUESTIONS = [
+  /* ---------- 1강. 클라우드 컴퓨팅의 이해 ---------- */
+  {
+    section: "1강. 클라우드 컴퓨팅의 이해",
+    stem: "다음 중 클라우드 컴퓨팅의 특징이라고 <b><u>할 수 없는</u></b> 것은?",
+    choices: ["확장성", "보안성", "가용성", "정액제"],
+    answer: 4,
+    note: "정액제 ✕ → 종량제",
+    explain: "클라우드는 사용한 만큼 비용을 내는 종량제(pay-as-you-go)가 특징이다. 확장성·보안성·가용성은 클라우드의 특징 → 정액제 ④."
+  },
+  {
+    stem: "다음 중 클라우드 컴퓨팅 보급의 원인이라고 <b><u>할 수 없는</u></b> 것은?",
+    choices: [
+      "단위별 분할된 자원을 보유하고 사용자 맞춤형 세밀한 자원 제공을 통한 비용절감 효과",
+      "서버의 유휴 리소스 활용을 통합하여 효율성 향상",
+      "유연한 IT 서비스 요구",
+      "「클라우드 컴퓨팅 발전 및 이용자 보호에 관한 법률」 제정에 따른 정부의 주도"
+    ],
+    answer: 4,
+    note: "보급 원인 = 비용·효율·유연성",
+    explain: "(확인 필요) 클라우드 보급의 원인은 비용절감, 유휴 자원 통합 활용에 따른 효율성 향상, 유연한 IT 서비스 요구 등 시장·기술적 요인이다. 법률 제정에 따른 정부 주도는 보급의 원인으로 보기 어려움 → ④."
+  },
+  {
+    stem: "컴퓨팅 기술 발전 과정이 올바르게 나열된 것은?",
+    choices: [
+      "메인 프레임 → 그리드 컴퓨팅 → 클라이언트-서버 → 클라우드 컴퓨팅",
+      "클라우드 컴퓨팅 → 그리드 컴퓨팅 → 클라이언트-서버 → 메인 프레임",
+      "메인 프레임 → 클라이언트-서버 → 그리드 컴퓨팅 → 클라우드 컴퓨팅",
+      "클라이언트-서버 → 메인 프레임 → 그리드 컴퓨팅 → 클라우드 컴퓨팅"
+    ],
+    answer: 3,
+    note: "메인프레임→C/S→그리드→클라우드",
+    explain: "중앙집중식 메인 프레임 → 분산 처리의 클라이언트-서버 → 분산 자원을 묶는 그리드 컴퓨팅 → 서비스형으로 제공하는 클라우드 컴퓨팅 순 → ③."
+  },
+
+  /* ---------- 2강. 온프레미스와 클라우드 컴퓨팅 ---------- */
+  {
+    section: "2강. 온프레미스와 클라우드 컴퓨팅",
+    stem: "정보 서비스 제공에 필요한 데이터 센터의 하드웨어와 소프트웨어 설비를 조직이 직접 보유·운영하는 방식을 무엇이라고 하는가?",
+    choices: ["클라우드", "프로비저닝", "오프프레미스", "온프레미스"],
+    answer: 4,
+    note: "직접 보유·운영 = 온프레미스",
+    explain: "설비를 조직 내부에 직접 두고 운영하는 방식이 온프레미스(on-premise). 오프프레미스는 외부(클라우드 등) 설비를 이용하는 방식 → ④."
+  },
+  {
+    stem: "CSP와 사용자가 가용성 등 서비스 수준을 정량적 지표로 합의하고, 기준 미달 시의 보상이나 서비스 크레딧 등의 처리 기준을 정하는 계약은 무엇인가?",
+    choices: ["MOU", "SLA", "RFP", "각서"],
+    answer: 2,
+    note: "서비스 수준 협약 = SLA",
+    explain: "SLA(Service Level Agreement)는 가용성 등 서비스 수준을 수치로 약정하고 미달 시 보상(서비스 크레딧)을 정한 계약 → ②. RFP는 제안요청서, MOU는 양해각서."
+  },
+  {
+    stem: "클라우드 배포 모델 중 다수의 사용자가 CSP가 제공하는 서버와 저장소 등의 리소스를 공유하여 사용하는 모델은 무엇인가?",
+    choices: ["프라이빗 클라우드", "퍼블릭 클라우드", "하이브리드 클라우드", "커뮤니티 클라우드"],
+    answer: 2,
+    note: "불특정 다수 공유 = 퍼블릭",
+    explain: "CSP의 리소스를 불특정 다수 사용자가 공유하는 모델이 퍼블릭 클라우드 → ②. 프라이빗은 단일 조직 전용, 커뮤니티는 공통 목적 조직들이 공동 이용."
+  },
+
+  /* ---------- 3강. 클라우드 컴퓨팅의 도입효과 ---------- */
+  {
+    section: "3강. 클라우드 컴퓨팅의 도입효과",
+    stem: "위 지문의 내용은 클라우드 컴퓨팅의 어떤 장점에 대한 설명인가?",
+    box: ["소비자에게 온디맨드 방식으로 IT 리소스를 실시간 및 동적으로 할당하는 특성"],
+    choices: ["탄력성", "가용성", "신속성", "경제성"],
+    answer: 1,
+    note: "실시간·동적 할당 = 탄력성",
+    explain: "수요에 따라 리소스를 실시간·동적으로 할당(확장·축소)하는 것이 탄력성 → ①. 가용성은 중단 없이 서비스를 이용하는 특성, 경제성은 비용 절감."
+  },
+  {
+    stem: "위 지문은 클라우드 컴퓨팅의 관련 기술 중 어떤 기술에 대한 설명인가?",
+    box: [
+      "● 컴퓨팅 리소스가 플랫폼 상에서 논리적 리소스풀로 등록되어 풀에 포함된 리소스가 집합적으로 고성능의 컴퓨팅 환경을 제공하는 기술",
+      "● 리소스의 결합성이 매우 작고, 서로 다른 기종의 리소스들이 물리적으로 분산되어 있음"
+    ],
+    choices: ["클러스터링 기술", "그리드 컴퓨팅 기술", "가상화 기술", "서버리스 컴퓨팅 기술"],
+    answer: 2,
+    note: "이기종·분산·느슨한 결합 = 그리드",
+    explain: "서로 다른 기종의 자원이 물리적으로 분산되어 느슨하게 결합된 채 하나의 고성능 환경을 이루는 것은 그리드 컴퓨팅 → ②. 클러스터링은 동종 자원을 가까이 묶어 결합도가 높음."
+  },
+  {
+    stem: "중소기업 관점에서 클라우드 컴퓨팅의 도입 효과로 가장 적절한 것은?",
+    choices: [
+      "초기 시스템 구축 비용이 증가한다.",
+      "전문 시스템 운영 인력이 더 많이 필요하다.",
+      "IT 운영 부담을 줄이고 경영 자원을 핵심역량에 집중할 수 있다.",
+      "자체 데이터 센터 구축에 필요한 기간이 증가한다."
+    ],
+    answer: 3,
+    note: "운영 부담↓ → 핵심역량 집중",
+    explain: "클라우드 도입 시 초기 구축비·운영 인력·구축 기간이 모두 줄고, IT 운영 부담을 덜어 핵심 업무에 집중할 수 있음 → ③."
+  },
+
+  /* ---------- 4강. 클라우드 컴퓨팅의 단점과 적용 사례 ---------- */
+  {
+    section: "4강. 클라우드 컴퓨팅의 단점과 적용 사례",
+    stem: "다음 중 클라우드 환경의 보안에 대한 설명으로 가장 적절한 것은?",
+    choices: [
+      "데이터 보안은 전적으로 CSP가 책임진다.",
+      "클라우드를 이용하면 모든 보안 취약성이 제거된다.",
+      "데이터 보안에 대한 책임은 CSP와 사용자에게 나누어질 수 있다.",
+      "클라우드에서는 네트워크를 이용하지 않으므로 통신 공격의 위험이 없다."
+    ],
+    answer: 3,
+    note: "공동 책임 모델",
+    explain: "클라우드 보안은 CSP와 사용자가 책임을 나누는 공동 책임 모델(shared responsibility)이다 → ③. 클라우드도 취약점이 존재하고, 네트워크로 접근하므로 통신 공격 위험이 있음."
+  },
+  {
+    stem: "특정 CSP의 독자적인 서비스에 의존하여 다른 CSP로 시스템을 이전하기 어려워지는 현상은?",
+    choices: ["리소스 풀링", "벤더 락인", "오토 스케일링", "로드 밸런싱"],
+    answer: 2,
+    note: "특정 CSP 종속 = 벤더 락인",
+    explain: "특정 공급자의 고유 서비스에 묶여 다른 CSP로 옮기기 어려운 현상이 벤더 락인(vendor lock-in) → ②."
+  },
+  {
+    stem: "클라우드와 온프레미스의 비용을 비교할 때 가장 적절한 방법은?",
+    choices: [
+      "클라우드의 월 이용요금만 비교한다.",
+      "서버 구입비만 비교한다.",
+      "초기 구축비용만 비교한다.",
+      "이전·수정·운영 비용까지 포함한 총소유비용을 비교한다."
+    ],
+    answer: 4,
+    note: "TCO(총소유비용)로 비교",
+    explain: "일부 비용만 보면 판단이 왜곡됨. 이전·수정·운영 비용까지 포함한 총소유비용(TCO)으로 비교해야 함 → ④."
+  },
+
+  /* ---------- 5강. 클라우드 컴퓨팅의 특징 ---------- */
+  {
+    section: "5강. 클라우드 컴퓨팅의 특징",
+    stem: "리소스를 CSP 담당자의 직접적인 개입 없이 사용자가 필요할 때 자동으로 확보하는 특성은 무엇인가?",
+    choices: ["광범위 네트워크 액세스", "리소스 풀링", "서비스 사용량 측정", "온디맨드 셀프서비스"],
+    answer: 4,
+    note: "개입 없이 스스로 = 셀프서비스",
+    explain: "NIST 5대 특성 중 사용자가 제공자 개입 없이 필요할 때 리소스를 스스로 확보하는 것은 온디맨드 셀프서비스 → ④."
+  },
+  {
+    stem: "다음 중 리소스 풀링에 대한 설명으로 <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "물리·가상 리소스를 공유 리소스 풀에서 통합 관리한다.",
+      "사용자의 요청에 따라 필요한 리소스를 동적으로 할당한다.",
+      "할당된 리소스는 특정 사용자가 지속적으로 소유하고 점유한다.",
+      "사용이 끝난 리소스는 다시 공유 리소스 풀로 반환된다."
+    ],
+    answer: 3,
+    note: "사용 후 풀로 반환, 영구 점유 ✕",
+    explain: "리소스 풀링은 공유 풀에서 요청에 따라 동적으로 할당하고 사용 후 반환하는 방식. 특정 사용자가 지속적으로 점유하는 것이 아님 → ③."
+  },
+  {
+    stem: "다음 중 클라우드 컴퓨팅의 본질적 특성과 설명의 연결이 <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "광범위 네트워크 액세스 - 다양한 단말에서 표준화된 네트워크 방식으로 서비스에 접근한다.",
+      "신속한 탄력성 - 서비스 요구량에 따라 리소스를 신속하게 확장하거나 축소한다.",
+      "서비스 사용량 측정 - 리소스 사용량을 측정하지 않고 모든 사용자에게 동일한 비용을 부과한다.",
+      "온디맨드 셀프서비스 - 서비스 제공자의 직접적인 개입 없이 필요한 리소스를 확보한다."
+    ],
+    answer: 3,
+    note: "사용량 측정 → 사용한 만큼 과금",
+    explain: "서비스 사용량 측정(measured service)은 리소스 사용량을 측정·모니터링해 사용한 만큼 과금하는 특성. 측정하지 않고 동일 비용 부과는 반대 설명 → ③."
+  },
+
+  /* ---------- 6강. 클라우드 이용 모델 ---------- */
+  {
+    section: "6강. 클라우드 이용 모델",
+    stem: "사용자가 애플리케이션과 데이터를 관리하고, CSP가 런타임·미들웨어·운영체제 및 하부 인프라를 관리하는 서비스 모델은?",
+    choices: ["DBaaS", "IaaS", "PaaS", "SaaS"],
+    answer: 3,
+    note: "앱·데이터만 사용자 = PaaS",
+    explain: "PaaS는 런타임·미들웨어·OS·인프라를 CSP가 관리하고 사용자는 애플리케이션과 데이터만 관리 → ③. IaaS는 OS부터 사용자가, SaaS는 전부 CSP가 관리."
+  },
+  {
+    stem: "요청이나 이벤트가 발생할 때 등록된 함수 단위의 코드를 실행하고, 실행 리소스의 할당과 회수를 CSP가 관리하는 서비스 모델은 무엇인가?",
+    choices: ["FaaS", "DBaaS", "CaaS", "IaaS"],
+    answer: 1,
+    note: "이벤트 기반 함수 실행 = FaaS",
+    explain: "이벤트가 발생하면 함수 단위 코드를 실행하고 리소스 할당·회수를 CSP가 맡는 서버리스 모델이 FaaS(Function as a Service) → ①."
+  },
+  {
+    stem: "공통된 업무 목적, 보안 요구사항, 정책이나 규제를 가진 여러 조직이 공동으로 이용하는 클라우드 배포 모델은 무엇인가?",
+    choices: ["퍼블릭 클라우드", "하이브리드 클라우드", "프라이빗 클라우드", "커뮤니티 클라우드"],
+    answer: 4,
+    note: "공통 목적 조직들 = 커뮤니티",
+    explain: "목적·보안 요구·규제를 공유하는 여러 조직이 함께 쓰는 배포 모델은 커뮤니티 클라우드 → ④."
+  },
+
+  /* ---------- 7강. 서버 가상화 ---------- */
+  {
+    section: "7강. 서버 가상화",
+    stem: "VM을 이미지와 설정 정보로 관리하는 가상화의 특성은?",
+    choices: ["파티셔닝", "캡슐화", "격리", "하드웨어 독립성"],
+    answer: 2,
+    note: "VM = 파일(이미지)로 캡슐화",
+    explain: "VM 전체를 이미지와 설정 파일로 묶어 복사·이동·백업할 수 있게 하는 특성이 캡슐화 → ②. 파티셔닝은 한 서버에 여러 VM, 격리는 VM 간 영향 차단."
+  },
+  {
+    stem: "게스트 OS가 하이퍼콜로 제어를 요청하는 가상화 방식은?",
+    choices: ["반가상화", "전가상화", "컨테이너 가상화", "에뮬레이션"],
+    answer: 1,
+    note: "하이퍼콜 = 반가상화",
+    explain: "반가상화는 게스트 OS를 수정해 특권 명령 대신 하이퍼콜(hypercall)로 하이퍼바이저에 직접 요청 → ①. 전가상화는 게스트 OS 수정 없이 하이퍼바이저가 명령을 가로채 처리."
+  },
+  {
+    stem: "컨테이너가 VM보다 가볍고 시작이 빠른 이유는?",
+    choices: [
+      "게스트 OS를 별도로 실행한다.",
+      "물리 서버를 전용으로 사용한다.",
+      "실행에 필요한 라이브러리를 제외한다.",
+      "호스트 OS 커널을 공유한다."
+    ],
+    answer: 4,
+    note: "게스트 OS 없음, 커널 공유",
+    explain: "컨테이너는 게스트 OS 없이 호스트 OS 커널을 공유하고 앱과 라이브러리만 담으므로 가볍고 빠름 → ④. 라이브러리는 컨테이너 이미지에 포함됨(③ 틀림)."
+  },
+
+  /* ---------- 8강. 네트워크 가상화 ---------- */
+  {
+    section: "8강. 네트워크 가상화",
+    stem: "네트워크 가상화의 장점이 <b><u>아닌</u></b> 것은?",
+    choices: ["네트워크 보안 향상", "장비 구축 비용 절감", "설정·관리의 편의성 향상", "네트워크 분할마다 전용 장비 추가"],
+    answer: 4,
+    note: "전용 장비 추가 불필요",
+    explain: "네트워크 가상화는 물리 장비를 추가하지 않고 논리적으로 분할하므로 비용 절감·관리 편의·보안 향상 효과가 있음. 분할마다 전용 장비를 추가하는 것은 장점이 아님 → ④."
+  },
+  {
+    stem: "VPN의 터널링에 대한 설명으로 옳은 것은?",
+    choices: [
+      "물리적 전용회선이 필수이다.",
+      "패킷을 캡슐화해 공용망으로 전달한다.",
+      "포트의 태그로 LAN을 분할한다.",
+      "제어 기능과 패킷 전달 기능을 분리한다"
+    ],
+    answer: 2,
+    note: "캡슐화 → 공용망 위 가상 터널",
+    explain: "VPN 터널링은 원래 패킷을 다른 패킷으로 캡슐화(필요 시 암호화)해 인터넷 같은 공용망으로 전달 → ②. ③은 VLAN, ④는 SDN, 전용회선이 필요 없는 것이 VPN의 장점."
+  },
+  {
+    stem: "방화벽 기능을 서버의 소프트웨어로 구현하는 기술은?",
+    choices: ["VLAN", "VPN", "NFV", "SDN"],
+    answer: 3,
+    note: "네트워크 기능 SW화 = NFV",
+    explain: "NFV(Network Functions Virtualization)는 방화벽·로드밸런서 등 전용 장비 기능을 범용 서버의 소프트웨어로 구현 → ③. SDN은 제어부와 데이터 전달부 분리."
+  },
+
+  /* ---------- 9강. 스토리지 가상화 ---------- */
+  {
+    section: "9강. 스토리지 가상화",
+    stem: "다음 중 스토리지 관련 기술이라고 <b><u>할 수 없는</u></b> 것은?",
+    choices: ["SDN", "RAID", "NAS", "SAN"],
+    answer: 1,
+    note: "SDN은 네트워크 기술",
+    explain: "RAID(디스크 묶음), NAS(네트워크 연결 스토리지), SAN(스토리지 전용 네트워크)은 스토리지 기술. SDN은 소프트웨어 정의 네트워킹 → ①."
+  },
+  {
+    stem: "네트워크 가상화의 설명으로 올바른 것은?",
+    choices: [
+      "그룹의 이동없이 네트워크를 분할해야 하므로 복잡한 설정과 전문 네트워크 엔지니어 인력이 요구된다.",
+      "네트워크 그룹의 이동없이 네트워크가 분할되어 오히려 네트워크 보안문제가 발생한다.",
+      "네트워크 분할 시 스위치와 같은 추가적인 장비를 별도로 추가하지 않아도 되어 비용이 절감된다.",
+      "네트워크 가상화 기술로는 DLT, Docker와 같은 기술이 사용된다."
+    ],
+    answer: 3,
+    note: "추가 장비 없이 분할 → 비용↓",
+    explain: "네트워크 가상화는 물리적 이동·장비 추가 없이 논리적으로 분할하므로 비용이 절감되고 설정이 쉬우며 보안도 향상됨 → ③. 대표 기술은 VLAN·VPN·SDN·NFV이고 DLT·Docker는 아님."
+  },
+  {
+    stem: "시스템 구성 요소 중 정상적으로 동작하지 않으면 시스템 전체가 중단되는 지점 또는 장치는?",
+    choices: ["하트비트 모니터링", "SAN", "장애 조치 시스템", "SPOF"],
+    answer: 4,
+    note: "단일 장애점 = SPOF",
+    explain: "고장 나면 전체 시스템이 멈추는 단일 지점이 SPOF(Single Point of Failure) → ④. 이를 없애기 위해 이중화·장애 조치(failover)를 사용."
+  },
+
+  /* ---------- 10강. 클라우드 아키텍처 1 ---------- */
+  {
+    section: "10강. 클라우드 아키텍처 1",
+    stem: "리소스 풀링에 대한 설명으로 올바른 것은?",
+    choices: [
+      "리소스를 특정 사용자에게 영구적으로 할당한다.",
+      "요청이 발생할 때마다 물리 서버를 새로 구입한다.",
+      "필요한 리소스를 할당하고 사용 후 풀로 반환한다.",
+      "사용자가 리소스의 물리적 위치를 직접 관리한다."
+    ],
+    answer: 3,
+    note: "할당 → 사용 → 풀로 반환",
+    explain: "리소스 풀링은 공유 풀에서 필요한 만큼 할당하고 사용 후 반환하며, 물리적 위치는 사용자에게 추상화됨(위치 독립성) → ③."
+  },
+  {
+    stem: "다음 중 클라우드 아키텍처의 효율성과 가용성을 높이는 기술이 <b><u>아닌</u></b> 것은?",
+    choices: ["로드 밸런싱", "리소스 풀링", "무정지 서비스 재배치", "가상 머신"],
+    answer: 4,
+    note: "VM은 구성 요소, 아키텍처 기술 ✕",
+    explain: "(확인 필요) 로드 밸런싱·리소스 풀링·무정지 서비스 재배치는 효율성·가용성을 높이는 클라우드 아키텍처 기법. 가상 머신은 이들 아키텍처가 다루는 기본 구성 요소이므로 ④로 봄."
+  },
+  {
+    stem: "작업 부하를 여러 서버에 분산시켜 한 서버에 작업이 집중되지 않게 하는 방식의 스케일링 방법은?",
+    choices: ["수평 스케일링", "수직 스케일링", "스케일 업", "스케일 다운"],
+    answer: 1,
+    note: "서버 수 늘려 분산 = 스케일 아웃",
+    explain: "서버 대수를 늘려 부하를 분산하는 것이 수평 스케일링(스케일 아웃/인) → ①. 수직 스케일링(스케일 업/다운)은 한 서버의 사양을 높이거나 낮춤."
+  },
+
+  /* ---------- 11강. 클라우드 아키텍처 2 ---------- */
+  {
+    section: "11강. 클라우드 아키텍처 2",
+    stem: "오토 스케일링을 위해 리소스 요청 또는 반환을 가능하도록 모니터링 중 특정 상황 발생 시 이벤트를 전달하는 것은?",
+    choices: ["수평 스케일링", "클라우드 모니터", "가상 서버", "자동 확장 리스너"],
+    answer: 4,
+    note: "임곗값 감시 → 이벤트 = 리스너",
+    explain: "자동 확장 리스너(automated scaling listener)는 사용량을 모니터링하다 임곗값 도달 등 특정 상황에서 이벤트를 전달해 리소스 확장·축소를 일으킴 → ④."
+  },
+  {
+    stem: "다음 중 클라우드 버스팅에 대한 설명으로 <b><u>올바르지 않은</u></b> 것은?",
+    choices: [
+      "프라이빗 클라우드에 구성된 서비스 구조와 동일한 구성을 퍼블릭 클라우드에 구성",
+      "버스트 인을 통해 데이터 동기화를 진행",
+      "버스트 아웃을 통해 퍼블릭 클라우드의 데이터를 복제하여 프라이빗 클라우드로 전송",
+      "클라우드 버스팅을 실행해야 할 임곗값 설정 및, 대상 데이터와 애플리케이션 설정"
+    ],
+    answer: 3,
+    note: "버스트 아웃 = 프라이빗→퍼블릭",
+    explain: "버스트 아웃은 프라이빗 클라우드 부하가 임곗값을 넘을 때 퍼블릭 클라우드로 확장하는 것이고, 퍼블릭 쪽 처리를 정리해 프라이빗으로 되돌리는 것은 버스트 인. ③은 방향이 반대 → 정답 ③."
+  },
+  {
+    stem: "온프레미스 환경에서 가용성을 위한 이중화 방식 중 서버 두 대 중 하나만 운영 서버로 활용하고, 나머지 한 대는 장애 발생 시 운영 서버를 대체해서 작동하는 방식은?",
+    choices: ["액티브-액티브", "액티브-스탠바이", "스탠바이-스탠바이", "스탠바이-액티브"],
+    answer: 2,
+    note: "1대 운영 + 1대 대기",
+    explain: "한 대는 운영(액티브), 다른 한 대는 대기(스탠바이)하다 장애 시 넘겨받는 방식이 액티브-스탠바이 → ②. 액티브-액티브는 두 대 모두 운영하며 부하 분산."
+  },
+
+  /* ---------- 12강. 클라우드 컴퓨팅의 미래 ---------- */
+  {
+    section: "12강. 클라우드 컴퓨팅의 미래",
+    stem: "엣지 컴퓨팅 구조에서 중앙 클라우드에 해당하는 계층은?",
+    choices: ["프런트 엔드", "니어 엔드", "파 엔드", "단말 계층"],
+    answer: 3,
+    note: "단말=프런트, 엣지=니어, 클라우드=파",
+    explain: "엣지 컴퓨팅 3계층: 프런트 엔드(단말·IoT 기기) – 니어 엔드(엣지 서버·게이트웨이) – 파 엔드(중앙 클라우드) → ③."
+  },
+  {
+    stem: "사용자와 기기를 검증하여 최소 권한으로 필요한 애플리케이션에만 접근을 허용하는 기술은?",
+    choices: ["CASB", "ZTNA", "SWG", "SD-WAN"],
+    answer: 2,
+    note: "제로 트러스트 접근 = ZTNA",
+    explain: "ZTNA(Zero Trust Network Access)는 '항상 검증' 원칙으로 사용자·기기를 확인한 뒤 최소 권한으로 특정 앱 접근만 허용 → ②. CASB는 클라우드 접근 보안 중개, SWG는 보안 웹 게이트웨이."
+  },
+  {
+    stem: "위 지문에서 클라우드/엣지/포그 컴퓨팅 환경에서 빈칸 (가)에 들어갈 특성으로 올바른 것은?",
+    figure: '<div class="missing">[그림] 클라우드/포그/엣지 컴퓨팅 비교표, 빈칸 (가) — 원본 그림 없음</div>',
+    choices: ["신뢰성", "데이터수집 속도", "전송속도", "응답시간/처리속도"],
+    answerText: "미확인",
+    note: "비교표 그림 없어 판단 불가",
+    explain: "원본 비교표가 없어 (가) 행의 다른 칸 내용을 알 수 없으므로 정답 미확인. 일반적인 비교표에서는 클라우드(느림) – 포그(중간) – 엣지(빠름)로 비교되는 응답시간/처리속도(④) 항목이 자주 등장함."
+  },
+
+  /* ---------- 13강. 클라우드 서비스 트렌드 ---------- */
+  {
+    section: "13강. 클라우드 서비스 트렌드",
+    stem: "소버린 클라우드의 주요 목적은?",
+    choices: ["가상 서버 수량의 확대", "데이터 주권과 운영 통제권", "모든 데이터의 외부 공개", "국가별 규제의 적용 배제"],
+    answer: 2,
+    note: "소버린 = 데이터 주권",
+    explain: "소버린 클라우드는 데이터를 자국(관할) 내에 두고 국가 규제를 준수하며 데이터 주권과 운영 통제권을 확보하려는 클라우드 → ②."
+  },
+  {
+    stem: "AI와 GPU 인프라에 특화된 신흥 클라우드 사업자를 무엇이라고 하는가?",
+    choices: ["소버린 클라우드", "네오클라우드", "커뮤니티 클라우드", "하이브리드 클라우드"],
+    answer: 2,
+    note: "GPU 특화 신흥 사업자",
+    explain: "AI 학습·추론용 GPU 인프라를 전문으로 제공하는 신흥 클라우드 사업자(예: CoreWeave)를 네오클라우드라 함 → ②."
+  },
+  {
+    stem: "공공 부문의 클라우드 보안인증 제도는?",
+    choices: ["SLA", "CSP", "TPU", "CSAP"],
+    answer: 4,
+    note: "CSAP = 클라우드 보안인증",
+    explain: "CSAP(Cloud Security Assurance Program)는 공공기관에 클라우드를 공급하려는 사업자가 받는 보안인증 제도 → ④. TPU는 구글의 AI 가속 칩."
+  },
+
+  /* ---------- 14강. 클라우드 기반 데이터 분석 ---------- */
+  {
+    section: "14강. 클라우드 기반 데이터 분석",
+    stem: "ML(Machine Learning)의 과정이 올바른 순서로 나열된 것은?",
+    choices: [
+      "데이터 수집→데이터 전처리→데이터 학습→모델 평가",
+      "데이터 수집→데이터 전처리→모델 평가→데이터 학습",
+      "데이터 전처리→데이터 수집→데이터 학습→모델 평가",
+      "데이터 전처리→데이터 수집→모델 평가→데이터 학습"
+    ],
+    answer: 1,
+    note: "수집→전처리→학습→평가",
+    explain: "데이터를 먼저 수집하고, 정제·변환(전처리)한 뒤 모델을 학습시키고, 마지막으로 평가 → ①."
+  },
+  {
+    stem: "Azure ML에서 데이터 자산(data asset)를 확보할 수 있는 방법이 <b><u>아닌</u></b> 것은?",
+    choices: ["웹 파일에서", "데이터베이스에서", "로컬 파일에서", "Azure Storage에서"],
+    answer: 2,
+    note: "로컬·웹 파일, Azure Storage",
+    explain: "(확인 필요) Azure ML 스튜디오의 데이터 자산 만들기에서 데이터 원본은 로컬 파일, 웹 파일, Azure Storage(데이터 저장소) 등에서 선택함. 강의 기준으로 데이터베이스는 해당하지 않는 것으로 보아 ②."
+  },
+  {
+    stem: "다음 지문은 무엇에 대한 설명인가?",
+    box: ["ML 모델을 학습하고 검증하는 과정에서 일반적으로 학습 데이터셋을 더 작은 크기의 여러 개의 서브셋으로 나누어 모델을 학습하고 검증하는 과정"],
+    choices: ["모델검증", "데이터 전처리", "개념 증명", "교차검증"],
+    answer: 4,
+    note: "여러 서브셋(fold) = 교차검증",
+    explain: "학습 데이터를 k개의 서브셋(fold)으로 나눠 번갈아 학습·검증하는 방법이 교차검증(cross validation) → ④."
+  },
+
+  /* ---------- 15강. 일기 예보 전송 서비스 구현 ---------- */
+  {
+    section: "15강. 일기 예보 전송 서비스 구현",
+    stem: "프로그램이나 모바일 앱이 VM 구축없이 작은 코드를 실행할 수 있는 Azure의 FaaS는?",
+    choices: ["함수 앱(Functions)", "람다(Lambda)", "오픈FaaS(Open FaaS)", "클라우드 펑션(Cloud functions)"],
+    answer: 1,
+    note: "Azure = Functions(함수 앱)",
+    explain: "Azure의 FaaS는 Azure Functions(함수 앱) → ①. Lambda는 AWS, Cloud Functions는 Google Cloud, OpenFaaS는 오픈소스 프레임워크."
+  },
+  {
+    stem: "다음 위 지문은 Azure의 함수 앱의 ‘기본’ 탭이다. 소스 코드의 프로그래밍 언어를 결정하는 항목은?",
+    figure: '<div class="missing">[그림] Azure 함수 앱 만들기 \'기본\' 탭 화면 — 원본 그림 없음</div>',
+    choices: ["리소스 그룹", "함수 앱 이름", "런타임 스택", "버전"],
+    answer: 3,
+    note: "언어 선택 = 런타임 스택",
+    explain: "함수 앱 '기본' 탭의 런타임 스택에서 .NET, Node.js, Python, Java 등 코드 언어를 고르고, 버전은 그 언어의 버전을 지정함 → ③."
+  },
+  {
+    stem: "Azure 함수 앱에서 함수를 호출하는 이벤트 유형을 무엇이라고 하는가?",
+    choices: ["트리거(trigger)", "템플릿(template)", "포멧(format)", "시나리오(scenario)"],
+    answer: 1,
+    note: "함수 실행 원인 = 트리거",
+    explain: "HTTP 요청, 타이머, 큐 메시지 등 함수 실행을 일으키는 이벤트를 트리거라 함(함수당 트리거 1개) → ①."
+  }
+];
+
+const MARKS = ["①","②","③","④","⑤"];
+function render() {
+  const qEl = document.getElementById("questions");
+  const xEl = document.getElementById("explain");
+  let qs = "", grid = "", ex = "";
+  QUESTIONS.forEach((q, i) => {
+    const n = i + 1;
+    const ans = q.answerText || MARKS[q.answer - 1];
+    if (q.section) qs += `<p class="section">※ ${q.section}</p>`;
+    qs += `<div class="q"><p class="stem"><span class="no">${n}.</span>${q.stem}${q.choices ? "" : ` <span class="note">${q.note}</span>`}</p>`;
+    if (q.figure) qs += q.figure;
+    if (q.box) qs += `<div class="box">${q.box.map(l => `<p>${l}</p>`).join("")}</div>`;
+    if (q.choices) {
+      qs += `<ol class="choices">${q.choices.map((c, j) =>
+        `<li class="${j + 1 === q.answer ? "answer" : ""}"><span class="mark">${MARKS[j]}</span> ${c}${j === q.choices.length - 1 ? ` <span class="note">${q.note}</span>` : ""}</li>`).join("")}</ol>`;
+    } else {
+      qs += `<p class="note" style="margin:4px 0 0 14px;font-size:13px">정답: ${ans}</p>`;
+    }
+    qs += `</div>`;
+    grid += `<span>${n}. ${ans}</span>`;
+    ex += `<div class="item"><h4>${n}번 &nbsp;정답 ${ans}</h4><p>${q.explain}</p></div>`;
+  });
+  qs += `<div class="final"><h3>정답 (풀이노트)</h3><div class="grid">${grid}</div><small>※ 개념 요약·상세 풀이는 뒤 풀이노트 페이지 참고</small></div>`;
+  qEl.innerHTML = qs;
+  xEl.innerHTML = `<h2>풀이노트 – 클라우드컴퓨팅 (1~${QUESTIONS.length})</h2>` + ex;
+  document.getElementById("range").textContent = `(1~${QUESTIONS.length})`;
+}
+render();
+
+document.getElementById("toggle").addEventListener("click", e => {
+  const hidden = document.body.classList.toggle("hide-answers");
+  e.target.textContent = hidden ? "정답 보기" : "정답 숨기기";
+});
+window.addEventListener("load", () => {
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false
+  });
+});
+</script>
+</body>
+</html>

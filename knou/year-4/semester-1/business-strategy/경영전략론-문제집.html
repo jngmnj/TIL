@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경영전략론 문제집 풀이노트</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink:#111; --red:#e0151b; --blue:#1d3fbf; --line:#222; --paper:#fff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e9e9e9; color:var(--ink);
+         font-family:"Batang","바탕","Nanum Myeongjo",serif; font-size:15px; line-height:1.55; }
+  .toolbar { position:sticky; top:0; z-index:5; display:flex; gap:8px; justify-content:center;
+             padding:8px 16px; background:#333; font-family:system-ui,sans-serif; }
+  .toolbar button { border:0; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  .page { width:210mm; max-width:calc(100% - 32px); min-height:297mm; margin:16px auto; padding:14mm 12mm;
+          background:var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  h1.title { text-align:center; font-family:"Malgun Gothic",sans-serif; font-size:30px; margin:0 0 6px; letter-spacing:-1px; }
+  .meta { display:flex; justify-content:space-between; font-size:16px; border-bottom:2px solid var(--line); padding-bottom:4px; }
+  .subject { border:2px solid var(--line); width:100%; max-width:400px; margin:12px 0 4px; }
+  .subject .head { display:flex; align-items:center; border-bottom:1px solid var(--line); font-family:"Malgun Gothic",sans-serif; }
+  .subject .head b { background:#ccc; padding:2px 8px; border-right:2px solid var(--line); }
+  .subject .head span { flex:1; text-align:center; font-weight:700; font-size:18px; }
+  .subject .row { padding:2px 10px; font-size:14px; }
+  .cols { column-count:2; column-gap:12mm; column-rule:1.5px solid var(--line); margin-top:12px; }
+  .q { break-inside:avoid; margin:0 0 18px; }
+  .q .stem { margin:0 0 4px; }
+  .q .stem .no { font-weight:400; margin-right:4px; }
+  .section { break-inside:avoid; break-after:avoid; margin:4px 0 10px; font-weight:700; }
+  .missing { border:1px dashed #999; color:#777; padding:14px; text-align:center; font-size:13px; margin:6px 0; font-family:"Malgun Gothic",sans-serif; }
+  .note { color:var(--red); font-family:"Malgun Gothic",sans-serif; font-size:12px; margin-left:4px; }
+  .box { border:1px solid var(--line); padding:6px 10px; margin:6px 0; }
+  .box p { margin:2px 0; }
+  .box pre, .box code { font-family:Consolas,"D2Coding",monospace; font-size:12.5px; }
+  .box pre { margin:0; white-space:pre-wrap; word-break:break-all; }
+  .choices { list-style:none; margin:4px 0 0; padding:0 0 0 14px; }
+  .choices li { position:relative; margin:3px 0; padding-left:2px; }
+  .mark { display:inline-block; min-width:1.3em; text-align:center; }
+  .answer .mark { outline:2px solid var(--red); border-radius:50%; outline-offset:0; }
+  .fig { display:block; width:100%; height:auto; border:1px solid var(--line); margin:6px 0; }
+  .final { break-inside:avoid; margin-top:8px; border:2px solid var(--red); padding:8px 12px; color:var(--red);
+           font-family:"Malgun Gothic",sans-serif; }
+  .final h3 { margin:0 0 6px; font-size:15px; }
+  .final .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:4px 8px; font-size:13px; }
+  .final small { display:block; margin-top:6px; font-size:11px; }
+  .footer { text-align:center; margin-top:14px; border-top:1.5px solid var(--line); padding-top:4px; font-size:14px; }
+  .explain h2 { color:var(--blue); font-family:"Malgun Gothic",sans-serif; margin:0 0 14px; }
+  .explain .item { margin:0 0 12px; font-family:"Malgun Gothic",sans-serif; font-size:14px; }
+  .explain .item h4 { margin:0; color:var(--red); font-size:16px; }
+  .explain .item p { margin:2px 0 0 26px; }
+  body.hide-answers .note, body.hide-answers .final, body.hide-answers .explain-page { display:none; }
+  body.hide-answers .answer .mark { outline:none; }
+  @media (max-width:720px) { .cols { column-count:1; } .page { padding:16px; min-height:0; } }
+  @media print { body { background:#fff; } .toolbar { display:none; } .page { margin:0; box-shadow:none; page-break-after:always; } }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="toggle">정답 숨기기</button>
+  <button onclick="window.print()">인쇄 / PDF 저장</button>
+</div>
+
+<section class="page">
+  <h1 class="title">경영전략론</h1>
+  <div class="meta"><span>4학년 1학기</span><span>문제집 (풀이노트)</span></div>
+  <div class="subject">
+    <div class="head"><b>과목</b><span>경영전략론</span><span id="range" style="flex:0 0 auto;padding-right:8px;font-weight:400;font-size:14px"></span></div>
+    <div class="row">범위 : 1~14강 연습문제 (경영전략의 개념 ~ 성장의 유형과 전략의 실행, 8강 실습 제외)</div>
+  </div>
+  <div class="cols" id="questions"></div>
+  <div class="footer">경영전략론 문제집</div>
+</section>
+
+<section class="page explain-page">
+  <div class="explain" id="explain"></div>
+</section>
+
+<script>
+/* ============================================================
+   문제 추가 방법: 아래 QUESTIONS 배열 끝에 객체 하나 추가
+   - stem    : 문제 본문 (HTML/수식 가능, 수식은 $...$)
+   - box     : (선택) 보기 박스에 들어갈 줄 배열
+   - figure  : (선택) 그림 HTML(svg/img)
+   - choices : 선택지 배열 (없으면 answerText 사용)
+   - answer  : 정답 번호 (1~4)
+   - answerText : 선택지가 없을 때 정답 표기
+   - note    : 빨간 한 줄 메모 (문제 옆)
+   - explain : 풀이노트 설명
+   ============================================================ */
+const QUESTIONS = [
+  /* ---------- 1강. 경영전략의 개념 1 ---------- */
+  {
+    section: "1강. 경영전략의 개념 1",
+    stem: "전략적 선택의 개념이 특성이 적용되기에 <b><u>부적절한</u></b> 것은?",
+    choices: ["국가적 선택", "전체적 선택", "장기적 선택", "구조적 선택"],
+    answer: 1,
+    note: "전략 = 장기·전체·구조적",
+    explain: "전략적 선택은 전술과 비교해 시간상 장기적, 범위상 전체적, 성격상 구조적 변화를 다루는 선택이다. '국가적 선택'은 전략적 선택의 특성과 관계없음 → ①."
+  },
+  {
+    stem: "기업의 목표에 대한 설명으로서 <b><u>부적절한</u></b> 것은?",
+    choices: [
+      "세금을 많이 납부하는 것도 목표 중 하나가 될 수 있다.",
+      "이익만을 고려하는 것은 적절하지 않다.",
+      "경영자의 정치적 이해관계도 포함될 수 있다.",
+      "이해관계자의 만족은 기업의 목표와 관련이 없다."
+    ],
+    answer: 4,
+    note: "이해관계자 만족도 목표",
+    explain: "기업의 목표는 이익 하나가 아니라 납세·고용 등 사회적 기여, 경영자의 이해관계까지 다양하게 포함될 수 있다. 주주·종업원·고객 등 이해관계자의 만족은 기업 목표의 중요한 부분이므로 관련이 없다는 ④가 부적절."
+  },
+  {
+    stem: "(단답형) 전통적인 이익계산서에서 하나의 회계적 순이익을 보고하는 반면에 존 엘킹턴이 제시한 개념으로서 사회적 순이익과 환경적 순이익을 포함한 세 개의 순이익을 보고해야 한다는 개념은?",
+    answerText: "트리플 바텀라인",
+    note: "경제·사회·환경 3개 순이익",
+    explain: "엘킹턴(1994)의 트리플 바텀라인(TBL)은 회계적(경제적) 순이익에 사회적·환경적 성과를 더해 세 개의 '바텀라인'으로 기업 성과를 보고하자는 개념이다."
+  },
+
+  /* ---------- 2강. 경영전략의 개념 2 ---------- */
+  {
+    section: "2강. 경영전략의 개념 2",
+    stem: "다음 중 전사적 전략의 예로 <b><u>부적절한</u></b> 것은?",
+    choices: ["차별화 전략", "전략적 제휴", "기업인수 전략", "다각화 전략"],
+    answer: 1,
+    note: "차별화는 사업부 수준 전략",
+    explain: "전사적 전략은 어떤 사업에서 경쟁할지(사업 범위)를 정하는 전략으로 다각화·인수·전략적 제휴 등이 해당한다. 차별화(및 저비용)는 한 사업 안에서 어떻게 경쟁할지를 정하는 사업부 수준의 본원적 전략 → ①."
+  },
+  {
+    stem: "전략 실행의 도구로서 <b><u>부적절한</u></b> 것은?",
+    choices: ["조직구조", "통제시스템", "비전", "보상정책"],
+    answer: 3,
+    note: "실행 도구 = 구조·통제·보상",
+    explain: "전략 실행은 조직구조, 통제시스템(예산·권한), 보상정책으로 뒷받침한다. 비전은 전략 수립 과정의 출발점(사명·목표)에 해당하므로 실행 도구로는 부적절 → ③."
+  },
+  {
+    stem: "(O/X) 기업경영의 환경은 외부환경과 내부환경으로 구분되는데 외부환경에서는 기회와 약점, 내부환경에서는 강점과 위협 요인이 발견된다.",
+    answerText: "X (외부: 기회·위협, 내부: 강점·약점)",
+    note: "SWOT 위치가 뒤바뀜",
+    explain: "SWOT 분석에서 외부환경 분석으로 기회(O)와 위협(T)을, 내부환경 분석으로 강점(S)과 약점(W)을 찾는다. 문장은 약점과 위협의 위치가 바뀌어 틀림."
+  },
+
+  /* ---------- 3강. 외부환경 중심의 경쟁력 분석 ---------- */
+  {
+    section: "3강. 외부환경 중심의 경쟁력 분석",
+    stem: "다음 중 산업의 매력도를 분석하는 다섯 가지 세력에 포함되지 <b><u>않는</u></b> 것은?",
+    choices: ["경쟁자", "잠재적 진입자", "보완자", "대체재"],
+    answer: 3,
+    note: "5 forces에 보완자 없음",
+    explain: "포터의 다섯 가지 세력은 기존 경쟁자, 잠재적 진입자, 대체재, 공급자, 구매자이다. 보완자는 포터의 5 forces에 포함되지 않음 → ③."
+  },
+  {
+    stem: "다음 중 <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "기존 기업들이 규모의 경제를 이루면 진입장벽이 높다.",
+      "성숙기에도 제품혁신의 기회가 존재한다.",
+      "대체재의 가격이 낮으면 위협적이다.",
+      "쇠퇴기에도 기회는 존재한다."
+    ],
+    answer: 2,
+    note: "성숙기 혁신 = 공정혁신 중심",
+    explain: "(확인 필요) 산업수명주기상 성숙기에는 제품 표준이 굳어져 혁신의 중심이 제품혁신에서 공정혁신(원가 절감)으로 옮겨간다는 것이 전통적 설명이므로 ②를 정답으로 봄. 단, 강의노트는 성숙기에도 제품혁신이 가능하다고 보충하고 있어 출제 의도 확인이 필요하다. ① 규모의 경제는 대표적 진입장벽, ③ 저렴한 대체재는 위협, ④ 쇠퇴기에도 리더십·틈새·수확·철수 전략의 기회가 있음."
+  },
+  {
+    stem: "(단답형) 높은 시장점유율을 가진 뚜렷한 지배적 기업이 존재하지 않아서 수많은 기업들이 진입과 철수를 반복하는 양상을 가진 산업은 부르는 명칭은?",
+    answerText: "분산된 산업 (fragmented industry)",
+    note: "지배적 기업 없음 = 분산 산업",
+    explain: "많은 소규모 기업이 시장을 나누어 가져 지배적 기업이 없고 진입·철수가 잦은 산업을 분산된(파편화된) 산업이라 한다. 체인화·프랜차이즈 등으로 통합(consolidation)하는 기회가 있다."
+  },
+
+  /* ---------- 4강. 기업자원 중심의 경쟁력 분석 1 ---------- */
+  {
+    section: "4강. 기업자원 중심의 경쟁력 분석 1",
+    stem: "다음 중 자원기반이론과 가장 관련이 깊은 경제적 렌트의 유형은?",
+    choices: ["독점렌트", "리카르도렌트", "슘페터렌트", "애로우렌트"],
+    answer: 2,
+    note: "희소한 우수 자원 = 리카르도",
+    explain: "리카르도 렌트는 공급이 제한된 우수한 자원(비옥한 토지)의 생산성 차이에서 생기는 렌트로, 자원의 이질성·희소성을 강조하는 자원기반이론과 가장 가깝다. 독점렌트는 산업구조(포터), 슘페터렌트는 혁신과 관련 → ②."
+  },
+  {
+    stem: "다음 중 VRIO 분석의 요소가 <b><u>아닌</u></b> 것은?",
+    choices: ["가치에 대한 분석", "희소성에 대한 분석", "모방불가능성에 대한 분석", "조직구조에 대한 분석"],
+    answer: 4,
+    note: "O = 조직(배태성), 조직구조 아님",
+    explain: "(확인 필요) VRIO는 가치(V), 희소성(R), 모방불가능성(I), 조직(O)이다. 강의는 O를 '조직 배태성'(자원을 활용하도록 조직되어 있는가)으로 설명하므로 '조직구조에 대한 분석'을 요소가 아닌 것으로 봄 → ④. 다만 바니의 O 질문에 조직구조·통제·보상이 포함되므로 출제 의도 확인이 필요하다."
+  },
+  {
+    stem: "(단답형) 기업이 보유한 기업자원이 가치는 있지만 희소하지 않다면 그 자원이 창출하는 경쟁우위의 수준은?",
+    answerText: "경쟁등위",
+    note: "V○ R× → 경쟁등위",
+    explain: "VRIO 판정에서 가치 없음 → 경쟁열위, 가치 있고 희소하지 않음 → 경쟁등위, 가치·희소 있고 모방 쉬움 → 일시적 경쟁우위, V·R·I 모두 충족·조직 활용 → 지속적 경쟁우위."
+  },
+
+  /* ---------- 5강. 기업자원 중심의 경쟁력 분석 2 ---------- */
+  {
+    section: "5강. 기업자원 중심의 경쟁력 분석 2",
+    stem: "패스트푸드 업체와 만화영화제작사가 영화 캐릭터의 피규어 세트메뉴를 출시하기 위해 맺는 협력이 가진 모방불가능성의 형태는?",
+    choices: ["특이한 역사적 사건", "사회적 복잡성", "인과적 모호성", "특허"],
+    answer: 2,
+    note: "기업 간 관계 → 사회적 복잡성",
+    explain: "맥도날드-디즈니의 해피밀 제휴처럼 기업 간 신뢰·협력 관계는 단순히 구매·복제하기 어려운 사회적 복잡성에 해당한다 → ②. 역사적 사건은 시간·경로의존, 인과적 모호성은 성과의 원인이 불명확한 경우."
+  },
+  {
+    stem: "당연하게 여겨지는 행동과 관련이 깊은 모방불가능성의 형태는?",
+    choices: ["특이한 역사적 사건", "사회적 복잡성", "인과적 모호성", "특허"],
+    answer: 3,
+    note: "당연시되는 관행 → 원인 불명확",
+    explain: "구성원에게 당연하게 여겨지는(taken-for-granted) 일상적 관행은 암묵적이어서 내부자도 성과의 원인을 설명하기 어렵고, 경쟁자는 무엇을 따라 해야 할지 알 수 없다. 바니는 이를 인과적 모호성의 원천으로 봄 → ③."
+  },
+  {
+    stem: "(단답형) 과거에 발생했던 일의 결과 현재의 상태가 결정된다는 개념으로서 시간이 개입된 결과는 쉽게 바뀌기 힘들다는 의미를 가진 개념은?",
+    answerText: "경로의존성",
+    note: "과거 선택이 현재를 결정",
+    explain: "경로의존성(path dependence)은 과거의 선택과 축적 과정이 현재의 자원·역량을 결정한다는 개념으로, 시간이 필요한 자원은 경쟁자가 단기간에 모방하기 어렵다(역사적 조건에 의한 모방불가능성)."
+  },
+
+  /* ---------- 6강. 전략이론과 개념들 1 ---------- */
+  {
+    section: "6강. 전략이론과 개념들 1",
+    stem: "다음 중 비즈니스모델캔버스에 포함되는 요인이 <b><u>아닌</u></b> 것은?",
+    choices: ["가치제안", "핵심활동", "보조활동", "유통경로"],
+    answer: 3,
+    note: "보조활동은 가치사슬 용어",
+    explain: "BMC의 9개 블록: 고객 세그먼트, 가치제안, 채널(유통경로), 고객관계, 수익원, 핵심자원, 핵심활동, 핵심파트너, 비용구조. '보조활동'은 포터의 가치사슬(본원적 활동/보조활동) 용어 → ③."
+  },
+  {
+    stem: "다음 중 핵심역량개념을 비판한 개념은?",
+    choices: ["이카루스의 역설", "1만 시간의 역설", "실행을 통한 학습", "캐즘"],
+    answer: 1,
+    note: "강점 과신 → 실패 (밀러)",
+    explain: "이카루스의 역설(Danny Miller)은 기업을 성공으로 이끈 강점(핵심역량)에 대한 과신이 오히려 실패의 원인이 된다는 개념으로, 핵심역량이 핵심 경직성으로 변할 수 있다는 비판이다 → ①."
+  },
+  {
+    stem: "(O/X) 프라할라드와 하멜이 핵심역량을 설명할 때 이와 대비되는 개념은 전략사업부였다.",
+    answerText: "O",
+    note: "SBU 관점 vs 핵심역량 관점",
+    explain: "프라할라드와 하멜(1990)은 사업부(SBU)별로 성과를 관리하는 관점이 사업부를 넘어 공유되는 역량을 가둬 둔다고 비판하며, 여러 사업을 뒷받침하는 핵심역량 관점을 제시했다."
+  },
+
+  /* ---------- 7강. 전략이론과 개념들 2 ---------- */
+  {
+    section: "7강. 전략이론과 개념들 2",
+    stem: "다음 중 형식지로부터 암묵지로 전환되는 형태는?",
+    choices: ["외부화", "종합화", "내재화", "사회화"],
+    answer: 3,
+    note: "형식지 → 암묵지 = 내재화",
+    explain: "SECI 모형: 사회화(암묵→암묵), 외부화(암묵→형식), 종합화(형식→형식), 내재화(형식→암묵) → ③."
+  },
+  {
+    stem: "다음 중 <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "가치혁신 논리는 산업환경을 창출할 수 있다고 본다.",
+      "가치혁신 논리는 기존 역량에 구애되지 않는다.",
+      "가치혁신 논리는 고객이 가진 통합적 문제 해결에 관심을 둔다.",
+      "가치혁신 논리는 자기시장잠식을 중시한다."
+    ],
+    answer: 4,
+    note: "가치혁신은 잠식을 두려워 않음",
+    explain: "가치혁신 논리는 산업 조건을 주어진 것으로 보지 않고 새로 만들 수 있다고 보며, 기존 자원·역량에 얽매이지 않고, 고객의 총체적 문제 해결(토털 솔루션)을 추구한다. 기존 제품의 자기시장잠식을 걱정하는 것은 전통적 경쟁 논리 쪽 → ④."
+  },
+  {
+    stem: "(단답형) 성공적이었던 기업이 기존 고객의 니즈에 충실히 반응하다가 갑자기 위험에 빠지는 원인으로 평가되는 혁신의 형태는?",
+    answerText: "파괴적 혁신",
+    note: "혁신기업의 딜레마 (크리스텐슨)",
+    explain: "크리스텐슨의 파괴적 혁신은 저가·비소비자 시장에서 출발해 주류시장으로 올라오는 혁신으로, 기존 고객에 충실하게 지속적 혁신을 하던 선도기업이 이를 무시하다 위기에 빠진다(혁신기업의 딜레마)."
+  },
+
+  /* ---------- 9강. 본원적 전략 ---------- */
+  {
+    section: "9강. 본원적 전략",
+    stem: "다음 중 저비용 전략의 요소로 적절하지 <b><u>않은</u></b> 것은?",
+    choices: ["경험곡선의 경제", "입지", "특정 기술", "M형 구조"],
+    answer: 4,
+    note: "저비용 실행 = U형 구조",
+    explain: "저비용 전략의 원천은 규모·경험(학습)곡선, 투입요소, 입지, 특정 기술 등이다. 저비용 전략은 기능별 U형 구조로 실행하며, M형(사업부제) 구조는 다각화 기업의 구조라 저비용 전략의 요소가 아님 → ④."
+  },
+  {
+    stem: "다음 중 차별화 전략의 요소로 적절하지 <b><u>않은</u></b> 것은?",
+    choices: ["제품의 물리적 속성", "제품 이미지", "판매 경로", "학습곡선의 경제"],
+    answer: 4,
+    note: "학습곡선은 저비용 원천",
+    explain: "차별화의 원천은 제품의 형태·속성, 복잡성, 맞춤화, 이미지, 공급·판매 경로 등이다. 학습곡선의 경제는 비용을 낮추는 저비용 전략의 원천 → ④."
+  },
+  {
+    stem: "(O/X) U형 구조는 기능적 구조로서 최고경영자의 권한이 분산되는 분권형 구조이다.",
+    answerText: "X (U형은 집권형 기능별 구조)",
+    note: "U형 = 기능별·집권형",
+    explain: "U형 구조는 최고경영자 아래 생산·마케팅·재무 등 기능별 책임자를 두는 기능적 구조로, 의사결정이 최고경영자에게 집중되는 집권형 구조이다. 권한을 사업부에 위임하는 분권형은 M형 구조."
+  },
+
+  /* ---------- 10강. 기업이론 1 ---------- */
+  {
+    section: "10강. 기업이론 1",
+    stem: "다음 중 거래비용이론 설명하는 것은?",
+    choices: ["기업의 성과", "기업의 효율성", "기업의 효과성", "기업의 영역"],
+    answer: 4,
+    note: "기업의 경계(make or buy)",
+    explain: "거래비용이론(코스·윌리엄슨)은 어떤 거래를 시장에 맡기고 어떤 거래를 기업 내부(위계)로 할지, 즉 기업의 경계·영역이 어디까지인지를 설명하는 이론이다 → ④."
+  },
+  {
+    stem: "(단답형) 거래상대가 기회주의적으로 행동할 것인가 그렇지 않을 것인가에 대한 불확실성을 이르는 개념은?",
+    answerText: "행동적 불확실성",
+    note: "상대방 행동의 불확실성",
+    explain: "거래비용이론이 중시하는 불확실성은 거래상대가 약속을 어기거나 정보를 왜곡하는 등 기회주의적으로 행동할지에 대한 행동적 불확실성이다."
+  },
+  {
+    stem: "(O/X) 거래 특유의 투자를 하는 거래주체가 거래상대에 대한 통제를 할 동기를 갖는다.",
+    answerText: "O",
+    note: "특유투자 → 홀드업 → 통제",
+    explain: "거래특유투자를 한 쪽은 다른 용도로 전환하기 어려워 상대방의 기회주의(홀드업)에 취약해지므로, 상대방을 통제(내부화·계약 보호장치)하려는 동기를 갖는다."
+  },
+
+  /* ---------- 11강. 기업이론 2 ---------- */
+  {
+    section: "11강. 기업이론 2",
+    stem: "다음 실물옵션이론에 대한 설명 중 <b><u>옳지 않은</u></b> 것은?",
+    choices: ["수요의 불확실성을 중시한다.", "기술적 불확실성을 중시한다.", "풋옵션 보다는 콜옵션에 가깝다.", "자산특이성을 중시한다."],
+    answer: 4,
+    note: "자산특이성은 거래비용이론",
+    explain: "실물옵션이론은 기술·수요의 불확실성 아래에서 소규모 투자로 미래 투자 권리(콜옵션)를 확보하는 관점이다. 자산특이성(거래특유투자)을 중시하는 것은 거래비용이론 → ④."
+  },
+  {
+    stem: "(단답형) 기업이론으로서의 자원기반이론에서 중시하는 불확실성 개념은?",
+    answerText: "과정적 불확실성",
+    note: "역량 이전·통합 과정의 불확실성",
+    explain: "거래비용이론은 행동적 불확실성, 실물옵션이론은 기술·수요의 불확실성, 자원기반이론은 자원·역량을 결합하고 활용하는 과정이 잘 진행될지에 대한 과정적 불확실성을 중시한다."
+  },
+  {
+    stem: "(O/X) 실물옵션이론에서는 통제보다는 유연성이 중시된다.",
+    answerText: "O",
+    note: "단계적 투자 = 유연성",
+    explain: "실물옵션이론은 불확실성이 클 때 큰 투자를 확정하지 않고 단계적으로 투자해 유연성과 성장 기회를 확보하는 것을 중시한다. 통제를 중시하는 것은 거래비용이론."
+  },
+
+  /* ---------- 12강. 전략적 제휴 ---------- */
+  {
+    section: "12강. 전략적 제휴",
+    stem: "다음 설명 중 <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "지분 제휴는 비지분 제휴보다 더 위계적이다.",
+      "지분 제휴는 합작기업의 결과로 파생된다.",
+      "전략적 제휴는 경쟁관계를 통해 가치를 창출할 수 있다.",
+      "규모의 경제도 전략적 제휴를 통해 가능하다."
+    ],
+    answer: 2,
+    note: "합작기업이 제휴의 결과(baby firm)",
+    explain: "인과가 반대다. 합작기업(JV)이 협력 당사자들의 제휴 결과로 태어나는 별도 법인(baby firm)이다. ① 지분 제휴는 출자·지배권이 수반되어 비지분 제휴보다 위계적, ③ 상호자제 등 경쟁관계 관리로 가치 창출, ④ 공동생산으로 규모의 경제 가능 → ②."
+  },
+  {
+    stem: "네트워크 산업에서 볼 수 있는 것은?",
+    choices: ["규모에 대한 수확체증", "규모에 대한 수확불변", "규모에 대한 수확체감", "규모의 경제"],
+    answer: 1,
+    note: "네트워크 효과 = 수확체증",
+    explain: "네트워크 산업은 사용자가 늘수록 가치가 더 커지는 자기강화(네트워크 효과)가 나타나 규모에 대한 수확체증이 특징이다 → ①. 규모의 경제는 생산 측 평균비용 하락 개념으로 구분."
+  },
+  {
+    stem: "(단답형) 경쟁 상대와의 균형을 위해 여러 시장에서 경쟁하는 현상을 의미하는 개념은?",
+    answerText: "복수시장경쟁 (다중시장 접촉)",
+    note: "여러 시장에서 만나 상호자제",
+    explain: "기업들이 여러 시장에서 동시에 만나면 한 시장에서의 공격이 다른 시장의 보복을 부르므로 공격을 자제(상호자제)하며 균형을 이루게 된다. 이를 복수시장경쟁(multimarket competition)이라 한다."
+  },
+
+  /* ---------- 13강. 다각화 전략 ---------- */
+  {
+    section: "13강. 다각화 전략",
+    stem: "다음 중 관련성이 존재하지 않아야 가치를 창출하는 범위의 경제는?",
+    choices: ["활동의 공유", "핵심역량의 활용", "위험 감소", "이전가격 조정을 통한 절세"],
+    answer: 3,
+    note: "현금흐름 동조성↓ → 위험 분산",
+    explain: "위험 감소는 사업 간 현금흐름이 함께 움직이지 않을수록(관련성이 낮을수록) 효과가 크다 → ③. 활동 공유·핵심역량 활용·내부거래의 이전가격 조정은 사업 간 관련성(공유 활동·내부거래)이 있어야 가치가 생김."
+  },
+  {
+    stem: "다음 중 기업 가치를 파괴하는 다각화는?",
+    choices: ["내부자본시장을 추구하는 다각화", "절세를 추구하는 다각화", "복수시장경쟁을 추구하는 다각화", "경영자의 이익을 추구하는 다각화"],
+    answer: 4,
+    note: "경영자 사적 이익 = 가치 파괴",
+    explain: "경영자가 보수·지위·영향력을 위해 불필요한 다각화를 추진하면 편익보다 비용이 커져 기업 가치가 파괴된다 → ④. 내부자본시장, 절세, 복수시장경쟁은 가치를 창출할 수 있는 다각화 동기."
+  },
+  {
+    stem: "(단답형) 실제로는 관련 다각화 기업이지만 그렇지 않게 보이는 다각화 기업을 부르는 개념은?",
+    answerText: "유사 비관련 다각화",
+    note: "겉은 비관련, 속은 공통 기반",
+    explain: "겉으로는 제품·시장이 무관해 보이지만 경영 철학, 조직문화, 인재 육성, 관리 체계 등 내부의 공통 기반을 공유하는 다각화를 유사 비관련 다각화라 한다."
+  },
+
+  /* ---------- 14강. 성장의 유형과 전략의 실행 ---------- */
+  {
+    section: "14강. 성장의 유형과 전략의 실행",
+    stem: "다음 중 기업인수의 장점은?",
+    choices: ["신속한 사업추진", "비가역적 투자의 회피", "불법성의 회피", "정보비대칭성의 회피"],
+    answer: 1,
+    note: "M&A = 시간 단축",
+    explain: "기업인수는 필요한 자원·역량을 한 번에 확보해 사업을 신속하게 추진할 수 있다 → ①. 반면 인수는 되돌리기 어려운 대규모 투자이고, 독과점 규제(불법성) 문제와 피인수 기업에 대한 정보비대칭 위험이 따른다."
+  },
+  {
+    stem: "다음 중 지행격차의 원인이 <b><u>아닌</u></b> 것은?",
+    choices: ["타성 또는 기억", "두려움", "암묵성", "내부경쟁"],
+    answer: 3,
+    note: "말·타성·두려움·측정·내부경쟁",
+    explain: "페퍼와 서튼의 지행격차 원인: 말이 행동을 대신함, 타성·기억이 판단을 대신함, 두려움, 잘못된 성과 측정, 과도한 내부 경쟁. 암묵성은 해당하지 않음 → ③."
+  },
+  {
+    stem: "(단답형) ‘역량을 신속하게 창출하는 역량’의 개념은?",
+    answerText: "동태적 역량",
+    note: "역량을 만드는 역량 (Teece)",
+    explain: "동태적 역량(dynamic capabilities)은 환경 변화에 맞춰 자원·역량을 신속하게 만들고 재구성하는 상위 역량이다(Teece: 감지·포착·재구성)."
+  }
+];
+
+const MARKS = ["①","②","③","④","⑤"];
+function render() {
+  const qEl = document.getElementById("questions");
+  const xEl = document.getElementById("explain");
+  let qs = "", grid = "", ex = "";
+  QUESTIONS.forEach((q, i) => {
+    const n = i + 1;
+    const ans = q.answerText || MARKS[q.answer - 1];
+    if (q.section) qs += `<p class="section">※ ${q.section}</p>`;
+    qs += `<div class="q"><p class="stem"><span class="no">${n}.</span>${q.stem}${q.choices ? "" : ` <span class="note">${q.note}</span>`}</p>`;
+    if (q.figure) qs += q.figure;
+    if (q.box) qs += `<div class="box">${q.box.map(l => `<p>${l}</p>`).join("")}</div>`;
+    if (q.choices) {
+      qs += `<ol class="choices">${q.choices.map((c, j) =>
+        `<li class="${j + 1 === q.answer ? "answer" : ""}"><span class="mark">${MARKS[j]}</span> ${c}${j === q.choices.length - 1 ? ` <span class="note">${q.note}</span>` : ""}</li>`).join("")}</ol>`;
+    } else {
+      qs += `<p class="note" style="margin:4px 0 0 14px;font-size:13px">정답: ${ans}</p>`;
+    }
+    qs += `</div>`;
+    grid += `<span>${n}. ${ans}</span>`;
+    ex += `<div class="item"><h4>${n}번 &nbsp;정답 ${ans}</h4><p>${q.explain}</p></div>`;
+  });
+  qs += `<div class="final"><h3>정답 (풀이노트)</h3><div class="grid">${grid}</div><small>※ 개념 요약·상세 풀이는 뒤 풀이노트 페이지 참고</small></div>`;
+  qEl.innerHTML = qs;
+  xEl.innerHTML = `<h2>풀이노트 – 경영전략론 (1~${QUESTIONS.length})</h2>` + ex;
+  document.getElementById("range").textContent = `(1~${QUESTIONS.length})`;
+}
+render();
+
+document.getElementById("toggle").addEventListener("click", e => {
+  const hidden = document.body.classList.toggle("hide-answers");
+  e.target.textContent = hidden ? "정답 보기" : "정답 숨기기";
+});
+window.addEventListener("load", () => {
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false
+  });
+});
+</script>
+</body>
+</html>
