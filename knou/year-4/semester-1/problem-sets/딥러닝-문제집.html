@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>딥러닝 문제집 풀이노트</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink:#111; --red:#e0151b; --blue:#1d3fbf; --line:#222; --paper:#fff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e9e9e9; color:var(--ink);
+         font-family:"Batang","바탕","Nanum Myeongjo",serif; font-size:15px; line-height:1.55; }
+  .toolbar { position:sticky; top:0; z-index:5; display:flex; gap:8px; justify-content:center;
+             padding:8px 16px; background:#333; font-family:system-ui,sans-serif; }
+  .toolbar button { border:0; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  .page { width:210mm; max-width:calc(100% - 32px); min-height:297mm; margin:16px auto; padding:14mm 12mm;
+          background:var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  h1.title { text-align:center; font-family:"Malgun Gothic",sans-serif; font-size:30px; margin:0 0 6px; letter-spacing:-1px; }
+  .meta { display:flex; justify-content:space-between; font-size:16px; border-bottom:2px solid var(--line); padding-bottom:4px; }
+  .subject { border:2px solid var(--line); width:100%; max-width:400px; margin:12px 0 4px; }
+  .subject .head { display:flex; align-items:center; border-bottom:1px solid var(--line); font-family:"Malgun Gothic",sans-serif; }
+  .subject .head b { background:#ccc; padding:2px 8px; border-right:2px solid var(--line); }
+  .subject .head span { flex:1; text-align:center; font-weight:700; font-size:18px; }
+  .subject .row { padding:2px 10px; font-size:14px; }
+  .cols { column-count:2; column-gap:12mm; column-rule:1.5px solid var(--line); margin-top:12px; }
+  .q { break-inside:avoid; margin:0 0 18px; }
+  .q .stem { margin:0 0 4px; }
+  .q .stem .no { font-weight:400; margin-right:4px; }
+  .section { break-inside:avoid; break-after:avoid; margin:4px 0 10px; font-weight:700; }
+  .missing { border:1px dashed #999; color:#777; padding:14px; text-align:center; font-size:13px; margin:6px 0; font-family:"Malgun Gothic",sans-serif; }
+  .note { color:var(--red); font-family:"Malgun Gothic",sans-serif; font-size:12px; margin-left:4px; }
+  .box { border:1px solid var(--line); padding:6px 10px; margin:6px 0; }
+  .box p { margin:2px 0; }
+  .box pre, .box code { font-family:Consolas,"D2Coding",monospace; font-size:12.5px; }
+  .box pre { margin:0; white-space:pre-wrap; word-break:break-all; }
+  .choices { list-style:none; margin:4px 0 0; padding:0 0 0 14px; }
+  .choices li { position:relative; margin:3px 0; padding-left:2px; }
+  .mark { display:inline-block; min-width:1.3em; text-align:center; }
+  .answer .mark { outline:2px solid var(--red); border-radius:50%; outline-offset:0; }
+  .fig { display:block; width:100%; height:auto; border:1px solid var(--line); margin:6px 0; }
+  .final { break-inside:avoid; margin-top:8px; border:2px solid var(--red); padding:8px 12px; color:var(--red);
+           font-family:"Malgun Gothic",sans-serif; }
+  .final h3 { margin:0 0 6px; font-size:15px; }
+  .final .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:4px 8px; font-size:13px; }
+  .final small { display:block; margin-top:6px; font-size:11px; }
+  .footer { text-align:center; margin-top:14px; border-top:1.5px solid var(--line); padding-top:4px; font-size:14px; }
+  .explain h2 { color:var(--blue); font-family:"Malgun Gothic",sans-serif; margin:0 0 14px; }
+  .explain .item { margin:0 0 12px; font-family:"Malgun Gothic",sans-serif; font-size:14px; }
+  .explain .item h4 { margin:0; color:var(--red); font-size:16px; }
+  .explain .item p { margin:2px 0 0 26px; }
+  body.hide-answers .note, body.hide-answers .final, body.hide-answers .explain-page { display:none; }
+  body.hide-answers .answer .mark { outline:none; }
+  @media (max-width:720px) { .cols { column-count:1; } .page { padding:16px; min-height:0; } }
+  @media print { body { background:#fff; } .toolbar { display:none; } .page { margin:0; box-shadow:none; page-break-after:always; } }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="toggle">정답 숨기기</button>
+  <button onclick="window.print()">인쇄 / PDF 저장</button>
+</div>
+
+<section class="page">
+  <h1 class="title">딥러닝</h1>
+  <div class="meta"><span>4학년 1학기</span><span>문제집 (풀이노트)</span></div>
+  <div class="subject">
+    <div class="head"><b>과목</b><span>딥러닝</span><span id="range" style="flex:0 0 auto;padding-right:8px;font-weight:400;font-size:14px"></span></div>
+    <div class="row">범위 : 1~15강 연습문제 (신경망 기초 ~ 초거대 언어 모델)</div>
+  </div>
+  <div class="cols" id="questions"></div>
+  <div class="footer">딥러닝 문제집</div>
+</section>
+
+<section class="page explain-page">
+  <div class="explain" id="explain"></div>
+</section>
+
+<script>
+/* ============================================================
+   문제 추가 방법: 아래 QUESTIONS 배열 끝에 객체 하나 추가
+   - stem    : 문제 본문 (HTML/수식 가능, 수식은 $...$)
+   - box     : (선택) 보기 박스에 들어갈 줄 배열
+   - figure  : (선택) 그림 HTML(svg/img)
+   - choices : 선택지 배열 (없으면 answerText 사용)
+   - answer  : 정답 번호 (1~4)
+   - answerText : 선택지가 없을 때 정답 표기
+   - note    : 빨간 한 줄 메모 (문제 옆)
+   - explain : 풀이노트 설명
+   ============================================================ */
+const QUESTIONS = [
+  {
+    stem: "다음 중 인공 신경망에 대한 설명으로 옳은 것은?",
+    choices: [
+      "뉴런은 CPU와 같이 다양한 명령을 실행할 수 있는 프로세서이다.",
+      "인공 뉴런은 생물학적 뉴런과 동일한 처리 구조를 구현한 것이다.",
+      "뉴런의 활성함수는 비선형 특성을 갖는 함수를 사용하는 것이 일반적이다.",
+      "뉴런의 가중치는 설계자가 주어진 문제에 맞게 직접 지정한다."
+    ],
+    answer: 3,
+    note: "가중치는 학습으로 결정",
+    explain: "① 뉴런은 가중합 + 활성함수만 하는 단순 처리기. ② 생물학적 뉴런을 단순화·모방한 것이지 동일하지 않음. ④ 가중치는 학습 데이터로 학습해서 정함. 따라서 ③(비선형 활성함수)."
+  },
+  {
+    stem: "다음 중 활성함수에 대한 설명이 올바른 것은?",
+    choices: [
+      "단위 계단 함수: 전 구간에서 미분 가능한 연속함수이다.",
+      "시그모이드: 입력 $u$가 0보다 큰 경우는 $u$를, 그 외의 경우에는 0을 출력한다.",
+      "ReLU: 전 구간에서 미분 가능하며, 로지스틱 함수라고 부르기도 한다.",
+      "GELU: 전 구간에서 미분 가능하도록 한 ReLU의 변형이다."
+    ],
+    answer: 4,
+    note: "②는 ReLU, ③은 시그모이드 설명",
+    explain: "① 계단 함수는 $u=0$에서 불연속 → 미분 불가. ② $\\max(0,u)$는 ReLU의 정의. ③ 로지스틱 함수는 시그모이드이고, ReLU는 $u=0$에서 미분 불가. ④ GELU $=u\\,\\Phi(u)$는 ReLU를 매끄럽게 만든 변형 → 정답."
+  },
+  {
+    stem: "다음과 같이 2개의 입력이 연결된 퍼셉트론 학습에서 입력 $(x_1, x_2)$가 $(0.5, 0.1)$이고 이에 대한 레이블 $y$가 0이다. $w_1$과 $w_2$가 각각 $-0.7$과 $0.2$, $b$가 $0.5$일 때 업데이트 후 $w_1, w_2, b$의 값은? 단 학습률 $\\eta$는 0.1이다.",
+    figure: `<svg class="fig" viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg" font-family="serif" font-size="13">
+      <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z"/></marker></defs>
+      <text x="40" y="24">x₁</text><text x="40" y="84">x₂</text>
+      <g stroke="#000" fill="none"><path d="M58,20 L110,32"/><path d="M58,80 L110,68"/>
+        <path d="M134,36 L162,48" marker-end="url(#ar2)"/><path d="M134,64 L162,56" marker-end="url(#ar2)"/>
+        <path d="M175,84 L175,66" marker-end="url(#ar2)"/><path d="M175,112 L175,98"/>
+        <path d="M190,52 L214,52" marker-end="url(#ar2)"/><path d="M246,52 L300,52" marker-end="url(#ar2)"/></g>
+      <g fill="#fdf0c4" stroke="#000"><circle cx="122" cy="34" r="11"/><circle cx="122" cy="66" r="11"/><circle cx="175" cy="91" r="9"/></g>
+      <g fill="#e0151b" font-size="11" font-style="italic"><text x="114" y="38">w₁</text><text x="114" y="70">w₂</text><text x="171" y="95">b</text></g>
+      <circle cx="176" cy="52" r="14" fill="#e6e6e6"/><text x="169" y="57" font-size="15">Σ</text>
+      <text x="196" y="45" font-style="italic">u</text>
+      <circle cx="232" cy="52" r="14" fill="#e6e6e6"/><path d="M223,58 L232,58 L232,46 L241,46" fill="none" stroke="#000"/>
+      <text x="306" y="57" font-style="italic">ŷ</text><text x="171" y="120">1</text>
+    </svg>`,
+    choices: [
+      "$w_1=-0.75,\\ w_2=0.19,\\ b=0.4$",
+      "$w_1=-0.65,\\ w_2=0.21,\\ b=0.6$",
+      "$w_1=-0.7,\\ w_2=0.2,\\ b=0.5$",
+      "$w_1=-1.0,\\ w_2=0.1,\\ b=0.5$"
+    ],
+    answer: 1,
+    note: "u=0.17 → ŷ=1, 오차 −1",
+    explain: "$u=(-0.7)(0.5)+(0.2)(0.1)+0.5=0.17>0$ → 계단 함수 출력 $\\hat{y}=1$. 오차 $y-\\hat{y}=-1$. 갱신식 $w_i \\leftarrow w_i+\\eta(y-\\hat{y})x_i$, $b \\leftarrow b+\\eta(y-\\hat{y})$: $w_1=-0.7-0.05=-0.75$, $w_2=0.2-0.01=0.19$, $b=0.5-0.1=0.4$ → ①."
+  },
+  {
+    stem: "다음 중 다층 퍼셉트론(MLP)에 대한 설명으로 <b><u>옳은</u></b> 문장을 모두 나열한 것은?",
+    box: [
+      "㈀ MLP의 학습을 위한 학습 데이터에는 은닉층에 대한 레이블이 제공된다.",
+      "㈁ 층 수가 증가하면 MLP 모델의 표현력이 감소한다.",
+      "㈂ 일반적으로 은닉층의 활성함수는 비선형 함수를 사용한다.",
+      "㈃ 역전파는 MLP의 학습에 활용할 수 있는 학습 알고리즘이다.",
+      "㈄ MLP는 순환연결 방식의 구조이다."
+    ],
+    answerText: "㈂, ㈃",
+    note: "은닉층 레이블 없음, 층↑ 표현력↑, MLP는 전방향",
+    explain: "㈀ 은닉층 레이블은 주어지지 않는다(그래서 역전파로 오차를 전달). ㈁ 층이 늘면 표현력은 증가. ㈄ MLP는 전방향(feedforward) 구조이고 순환연결은 RNN. 옳은 것은 ㈂(비선형 활성함수), ㈃(역전파)."
+  },
+  {
+    stem: "다음 중 역전파 알고리즘에 대한 설명으로 적절한 것은?",
+    choices: [
+      "뉴런의 활성함수는 단위 계단 함수를 사용해야 한다.",
+      "학습 데이터에 은닉층 뉴런에 대한 레이블도 제공되어야 한다.",
+      "입력층에서 출력층 방향의 순서로 오차를 전파하여 연결 가중치를 업데이트한다.",
+      "연결 가중치에 대한 손실함수의 편미분을 체인 룰에 따라 구하여 경사 하강법으로 연결 가중치를 업데이트한다."
+    ],
+    answer: 4,
+    note: "체인 룰 + 경사 하강법",
+    explain: "① 계단 함수는 미분 불가(0) → 시그모이드 등 미분 가능한 함수 필요. ② 은닉층 레이블 불필요. ③ 오차는 출력층 → 입력층(역방향)으로 전파. 따라서 ④."
+  },
+  {
+    stem: "다음 그림에서 손실함수 $E(\\hat{\\mathbf{y}},\\mathbf{y})$를 출력층인 $L$층의 $k$번 뉴런에 연결되는 연결 가중치 $w_{jk}^{(L)}$에 대해 편미분을 하려고 한다. 다음 중 이 편미분을 체인 룰을 이용하여 표현한 것으로 적절한 것은?",
+    figure: `<svg class="fig" viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg" font-family="serif" font-size="11">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z"/></marker>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#e0151b"/></marker></defs>
+      <g fill="#fff" stroke="#000">
+        <circle cx="30" cy="25" r="10"/><circle cx="30" cy="60" r="10"/><circle cx="30" cy="110" r="10"/><circle cx="30" cy="160" r="10"/>
+      </g>
+      <text x="42" y="18">o₁⁽ᴸ⁻¹⁾</text><text x="42" y="53">o₂⁽ᴸ⁻¹⁾</text><text x="42" y="100">oⱼ⁽ᴸ⁻¹⁾</text><text x="42" y="175">oₘ⁽ᴸ⁻¹⁾</text>
+      <text x="26" y="88">⋮</text><text x="26" y="140">⋮</text>
+      <g stroke="#000" marker-end="url(#ar)"><line x1="40" y1="25" x2="160" y2="88"/><line x1="40" y1="60" x2="160" y2="90"/><line x1="40" y1="160" x2="160" y2="96"/></g>
+      <line x1="40" y1="110" x2="160" y2="93" stroke="#e0151b" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="95" y="118" fill="#e0151b">w⁽ᴸ⁾ⱼₖ</text>
+      <rect x="150" y="65" width="110" height="55" rx="8" fill="none" stroke="#1d70c0" stroke-dasharray="4 3"/>
+      <circle cx="172" cy="92" r="11" fill="#fff" stroke="#000"/><text x="166" y="96" font-size="13">Σ</text>
+      <line x1="183" y1="92" x2="218" y2="92" stroke="#000" marker-end="url(#ar)"/><text x="190" y="85">uₖ⁽ᴸ⁾</text>
+      <circle cx="230" cy="92" r="11" fill="#fff" stroke="#000"/><path d="M223,97 C230,97 228,87 237,87" fill="none" stroke="#e0151b"/>
+      <line x1="241" y1="92" x2="275" y2="92" stroke="#000" marker-end="url(#ar)"/><text x="245" y="85">oₖ⁽ᴸ⁾</text>
+      <text x="279" y="96">ŷₖ</text><text x="296" y="96" fill="#1d70c0">↔</text><text x="310" y="96">yₖ(레이블)</text>
+      <text x="215" y="58">⋮</text><text x="215" y="140">⋮</text>
+      <text x="8" y="186" fill="#1d70c0" font-family="sans-serif" font-weight="bold">은닉층(L−1)</text>
+      <text x="170" y="186" fill="#1d70c0" font-family="sans-serif" font-weight="bold">출력층(L)</text>
+    </svg>`,
+    choices: [
+      "$\\dfrac{\\partial E}{\\partial w_{jk}^{(L)}}=\\dfrac{\\partial E}{\\partial o_k^{(L)}}\\dfrac{\\partial o_k^{(L)}}{\\partial u_k^{(L)}}\\dfrac{\\partial u_k^{(L)}}{\\partial w_{jk}^{(L)}}$",
+      "$\\dfrac{\\partial E}{\\partial w_{jk}^{(L)}}=\\dfrac{\\partial E}{\\partial u_k^{(L)}}\\dfrac{\\partial o_k^{(L)}}{\\partial w_{jk}^{(L)}}$",
+      "$\\dfrac{\\partial E}{\\partial w_{jk}^{(L)}}=\\dfrac{\\partial E}{\\partial o_k^{(L)}}+\\dfrac{\\partial o_k^{(L)}}{\\partial u_k^{(L)}}+\\dfrac{\\partial u_k^{(L)}}{\\partial w_{jk}^{(L)}}$",
+      "$\\dfrac{\\partial E}{\\partial w_{jk}^{(L)}}=\\dfrac{\\partial E}{\\partial u_k^{(L)}}\\,w_{jk}^{(L)}$"
+    ],
+    answer: 1,
+    note: "w → u → o → E 경로를 곱",
+    explain: "w가 E에 영향을 주는 경로: $w_{jk}^{(L)} \\to u_k^{(L)}$(가중합) $\\to o_k^{(L)}$(활성함수) $\\to E$. 체인 룰은 경로상 편미분의 <b>곱</b> → ①. ③은 합이라 틀림, ④는 $\\partial u/\\partial w = o_j^{(L-1)}$ 이어야 하므로 틀림."
+  },
+  {
+    stem: "다음 중 역전파 알고리즘에서 모멘텀의 용도는 무엇인가?",
+    choices: [
+      "학습 과정에서 체인 룰을 적용할 필요가 없어진다.",
+      "연결 가중치의 변화가 과거 변화의 경향을 유지함으로써 변화의 방향이 급격히 변화하는 것을 완화한다.",
+      "학습 시작 전 가중치 및 바이어스 등의 파라미터를 초기화한다.",
+      "특정 가중치를 고정하고, 나머지 파라미터만 업데이트되도록 학습한다."
+    ],
+    answer: 2,
+    note: "관성 → 진동 완화",
+    explain: "모멘텀: $\\Delta w(t) = -\\eta\\,\\partial E/\\partial w + \\alpha\\,\\Delta w(t-1)$. 이전 변화량을 일부 유지(관성)해 방향 급변·진동을 줄이고 수렴을 빠르게 함 → ②."
+  },
+  {
+    stem: "다음 중 소프트맥스 활성함수에 대한 설명으로 <b><u>틀린</u></b> 것은?",
+    choices: [
+      "각각의 출력은 0과 1 사이의 값이다.",
+      "모든 출력의 합은 1이다.",
+      "여러 개의 클래스 중 하나로 분류하는 문제에 적합하다.",
+      "선형함수에 해당된다."
+    ],
+    answer: 4,
+    note: "지수함수 기반 → 비선형",
+    explain: "소프트맥스 $o_k = e^{u_k}/\\sum_i e^{u_i}$ 는 지수함수를 쓰는 비선형 함수. 출력은 (0,1), 합은 1 → 다중 클래스 분류용. 틀린 것은 ④."
+  },
+  {
+    stem: "텐서플로에서 텐서에 대한 설명으로 옳은 것은?",
+    choices: [
+      "텐서의 연산은 CPU에서 계산되도록 정해져 있다.",
+      "변수 텐서의 값을 변경하려면 assign 메소드를 사용한다.",
+      "텐서의 행렬 연산은 텐서플로에 제공되지 않지만 대신 numpy의 함수를 이용하면 된다.",
+      "텐서는 GPU에서 처리되어야 하므로 GPU가 없으면 텐서를 사용할 수 없다."
+    ],
+    answer: 2,
+    note: "tf.Variable → assign()",
+    explain: "①④ 텐서 연산은 CPU·GPU 어디서든 가능(GPU가 있으면 자동으로 GPU 사용). ③ tf.matmul 등 행렬 연산을 텐서플로가 직접 제공. tf.Variable의 값은 assign(), assign_add() 등으로 바꿈 → ②."
+  },
+  {
+    stem: "다음 중 텐서플로의 실행 모드에 대한 설명으로 옳은 것은?",
+    choices: [
+      "텐서플로 2.x 버전에서는 지연 실행(lazy execution) 모드가 기본 실행 모드이다.",
+      "즉시 실행(eager execution) 모드는 그래프 실행(graph execution) 모드에 비해 고속으로 실행된다.",
+      "‘@tf.function’ 수식어가 사용된 함수는 자동적으로 텐서플로 그래프로 변환되어 실행된다.",
+      "텐서플로 그래프를 인수로 전달하여 tf.function을 호출하면 즉시 실행 모드로 변환된 함수를 반환한다."
+    ],
+    answer: 3,
+    note: "@tf.function → 그래프 변환",
+    explain: "① TF 2.x의 기본은 즉시 실행(eager). ② 그래프 실행이 최적화되어 더 빠름. ④ tf.function은 <b>파이썬 함수</b>를 받아 그래프로 실행되는 함수를 반환(방향이 반대). 따라서 ③."
+  },
+  {
+    stem: "다음 중 텐서플로에서 자동 미분을 위해 연산을 기록하는 역할을 하는 클래스는?",
+    choices: ["tf.GradientTape", "tf.Graph", "tf.function", "tf.Variable"],
+    answer: 1,
+    note: "테이프에 연산 기록 → gradient()",
+    explain: "<code>with tf.GradientTape() as tape:</code> 블록 안의 연산을 테이프에 기록한 뒤 <code>tape.gradient(loss, vars)</code>로 미분값을 구함 → ①."
+  },
+  {
+    stem: "다음 문장에 대한 설명으로 <b><u>옳지 않은</u></b> 것은?",
+    box: ["<code>h_layer = tf.keras.layers.Dense(3, activation='softmax')</code>"],
+    choices: [
+      "완전연결층을 만든다.",
+      "이 층의 유닛에는 바이어스가 사용되지 않는다.",
+      "이 층은 3개의 출력을 낸다.",
+      "이 층의 출력은 0과 1 사이의 값이며, 전체 출력의 합은 1이다."
+    ],
+    answer: 2,
+    note: "use_bias 기본값 True",
+    explain: "Dense = 완전연결층, 첫 인수 3 = 유닛(출력) 수, softmax → 출력 (0,1)이고 합 1. Dense는 <code>use_bias=True</code>가 기본이라 바이어스를 사용함 → 옳지 않은 것은 ②."
+  },
+  {
+    stem: "다음 중 경사 하강법에 대한 설명으로 옳은 것은?",
+    choices: [
+      "목적함수가 볼록함수가 아닌 경우 경사 하강법은 최적화에 실패할 수 있다.",
+      "경사 하강법을 진행하는 도중 안장점(saddle point)에 도달하면 최적해를 찾은 것이다.",
+      "학습률은 큰 값을 사용하여 최적해에 빠르게 접근하게 하는 것이 좋다.",
+      "목적함수 경사의 양의 방향으로 파라미터를 변화시킨다."
+    ],
+    answer: 1,
+    note: "비볼록 → 지역 최소/안장점",
+    explain: "① 볼록함수가 아니면 지역 최소점·안장점에 갇혀 전역 최적해를 못 찾을 수 있음 → 정답. ② 안장점은 경사가 0이지만 최적해가 아님. ③ 학습률이 너무 크면 발산·진동. ④ 경사의 <b>음</b>의 방향으로 이동: $\\theta \\leftarrow \\theta-\\eta\\nabla E$."
+  },
+  {
+    stem: "다음 중 경사 하강법의 적용 방법에 대한 설명으로 옳은 것은? 단, 학습표본은 1000개가 있다.",
+    choices: [
+      "배치 경사 하강법은 개별 학습표본 단위로 파라미터 업데이트를 한다.",
+      "20개의 표본 단위로 미니배치를 구성할 경우 10회의 에폭이 진행되었다면 파라미터는 500번 업데이트된다.",
+      "배치 경사 하강법은 확률적 경사 하강법에 비해 파라미터의 변화 방향이 불규칙하다.",
+      "미니배치의 크기가 작을수록 계산 성능은 높아진다."
+    ],
+    answer: 2,
+    note: "1000/20 = 50회 × 10에폭 = 500",
+    explain: "① 표본 하나 단위로 업데이트하는 것은 확률적 경사 하강법(SGD). 배치 경사 하강법은 전체 1000개마다 한 번. ② 에폭당 $1000/20=50$회 × 10에폭 = 500회 → 정답. ③ 불규칙한 쪽은 SGD. ④ 미니배치가 너무 작으면 병렬 계산(GPU) 효율이 떨어짐."
+  },
+  {
+    stem: "다음 중 심층망의 학습에서 경사 소멸 문제를 개선하기 위해 사용할 수 있는 방법은?",
+    choices: [
+      "단위 계단 함수를 활성함수로 사용한다.",
+      "활성함수는 시그모이드를 사용하고 모든 가중치를 0으로 초기화한다.",
+      "심층망의 층 수를 더 늘린다.",
+      "시그모이드를 활성함수로 사용하는 대신 ReLU나 그 변형 함수를 사용한다."
+    ],
+    answer: 4,
+    note: "ReLU: u>0에서 기울기 1",
+    explain: "시그모이드 도함수의 최댓값은 0.25라서 층을 거치며 곱할수록 경사가 0에 가까워짐. ① 계단 함수는 기울기가 0. ② 가중치를 모두 0으로 초기화하면 대칭 문제가 생김. ③ 층을 늘리면 오히려 더 심해짐. ReLU 계열은 양수 구간 기울기가 1이라 개선 → ④."
+  },
+  {
+    stem: "다음과 같이 정의된 모델에서 Dense층의 가중치 초기화에 대한 설명으로 옳은 것은?",
+    box: [`<pre>from tensorflow import keras
+from tensorflow.keras import layers
+seq_model = keras.Sequential([
+    layers.InputLayer(input_shape=(8,)),
+    layers.Dense(2, activation='relu', kernel_initializer='he_normal')
+])</pre>`],
+    choices: [
+      "모든 가중치는 0으로 초기화한다.",
+      "모든 가중치는 1로 초기화한다.",
+      "평균이 0, 표준편차가 0.5인 정규분포의 랜덤값으로 초기화한다.",
+      "[-2, 2] 범위의 랜덤값으로 초기화한다."
+    ],
+    answer: 3,
+    note: "√(2/8) = 0.5",
+    explain: "He 정규 초기화: 평균 0, 표준편차 $\\sqrt{2/n_{in}}$. 입력 수 $n_{in}=8$이므로 $\\sqrt{2/8}=0.5$ → ③. (ReLU 계열에는 He 초기화, 시그모이드·tanh에는 Glorot(Xavier) 초기화를 씀)"
+  },
+
+  /* ---------- 5강. 딥러닝의 학습 기술(2) ---------- */
+  {
+    section: "5강. 딥러닝의 학습 기술(2)",
+    stem: "다음 중 최적화기의 특성을 설명한 것으로 옳은 것은?",
+    choices: [
+      "네스테로프 가속 경사(NAG)는 학습률을 적응적으로 적용한다.",
+      "Adagrad는 모멘텀을 고려한 위치에서 목적함수의 경사를 계산한다.",
+      "Adam은 1차 모멘트 대신 2차 모멘트를 반영하여 파라미터를 업데이트한다.",
+      "RMSProp은 Adagrad에서 학습률이 지나치게 작아지는 문제를 방지한다."
+    ],
+    answer: 4,
+    note: "RMSProp = 지수이동평균으로 Adagrad 보완",
+    explain: "① 모멘텀 위치에서 경사를 계산하는 것이 NAG(적응적 학습률 아님). ② 적응적 학습률은 Adagrad(①과 ②가 서로 바뀐 설명). ③ Adam은 1차 모멘트(모멘텀)와 2차 모멘트(RMSProp)를 <b>둘 다</b> 사용. ④ Adagrad는 경사 제곱을 계속 누적해 학습률이 0에 가까워지는데, RMSProp은 지수이동평균을 써서 이를 막음 → 정답."
+  },
+  {
+    stem: "어떠한 모델을 훈련하는 과정에서 에폭에 따른 훈련용 데이터 집합과 검증용 데이터 집합에 대한 손실의 변화가 다음 그림과 같다. 다음 중 적절한 조기 종료 시점은?",
+    figure: `<img class="fig" src="img/05-q2-early-stopping.png" alt="에폭별 훈련/검증 손실">`,
+    choices: ["①", "②", "③", "④"],
+    answer: 3,
+    note: "검증 손실이 최소인 지점",
+    explain: "조기 종료는 <b>검증 손실이 가장 낮은 지점</b>에서 멈추는 것이 적절함. 그 뒤로는 훈련 손실은 계속 줄지만 검증 손실이 다시 커짐(과적합 시작). 그래프에서 검증 손실이 최소인 점선 위치 → ③. ①②는 아직 덜 학습된 과소적합 구간, ④는 이미 과적합된 구간."
+  },
+  {
+    stem: "다음 중 가중치 규제에 대한 설명으로 옳은 것은?",
+    choices: [
+      "SGD에 가중치 감쇠를 적용하는 것과 $l_2$ 규제를 적용하는 것은 동등하다.",
+      "Adam에서 가중치 감쇠를 적용하는 것과 $l_1$ 규제를 적용하는 것은 동등하다.",
+      "가급적 가중치가 큰 값을 갖게 한다.",
+      "$l_2$ 규제는 과적합을 유발하는 원인을 제공한다."
+    ],
+    answer: 1,
+    note: "SGD: 가중치 감쇠 ≡ l2",
+    explain: "SGD에서는 가중치 감쇠와 $l_2$ 규제가 수식상 같음 → ①. ② Adam처럼 적응적 최적화기에서는 둘이 같지 않음(그래서 AdamW가 나옴). 게다가 $l_1$이 아님. ③ 규제는 가중치를 <b>작게</b> 유지함. ④ $l_2$ 규제는 과적합을 줄임."
+  },
+  {
+    stem: "다음 중 드롭아웃에 대한 설명에 해당되는 것은?",
+    choices: [
+      "모델의 가중치를 가급적 작은 값으로 유지한다.",
+      "모멘텀을 고려한 위치에서 목적함수의 경사를 계산한다.",
+      "학습된 모델을 이용하여 추론할 때 적절한 확률에 따라 뉴런을 무작위로 제거하여 출력을 계산한다.",
+      "모델을 학습하는 동안 적절한 확률에 따라 뉴런을 무작위로 선택하여 일시적으로 제거한다."
+    ],
+    answer: 4,
+    note: "학습 때만 제거, 추론 땐 전부 사용",
+    explain: "① 가중치 규제 ② NAG ③ 추론 때는 드롭아웃을 적용하지 않고 모든 뉴런을 사용함. 드롭아웃은 <b>학습 중</b>에 뉴런을 무작위로 일시 제거 → ④."
+  },
+  {
+    stem: "배치 정규화를 적용할 때 학습 과정에서 결정해야 하는 파라미터는?",
+    choices: [
+      "정규화를 위한 학습표본 집합의 평균 및 분산 추정치, 스케일 및 이동변환 파라미터",
+      "파라미터의 변화 이력을 적용하기 위한 모멘텀",
+      "목적함수 제곱의 이동평균",
+      "목적함수에 포함되는 $l_2$ 규제 계수 $\\lambda$"
+    ],
+    answer: 1,
+    note: "평균·분산 추정치 + γ(스케일), β(이동)",
+    explain: "배치 정규화: $\\hat{x}=(x-\\mu)/\\sqrt{\\sigma^2+\\epsilon}$, $y=\\gamma\\hat{x}+\\beta$. 학습하면서 스케일 $\\gamma$, 이동 $\\beta$를 학습하고, 추론에 쓸 평균·분산 추정치(이동평균)를 구함 → ①."
+  },
+
+  /* ---------- 6강. 합성곱 신경망(1) ---------- */
+  {
+    section: "6강. 합성곱 신경망(1)",
+    stem: "다층 퍼셉트론(MLP)에 비해 합성곱 신경망(CNN)이 이미지 처리에 훨씬 더 효과적인 이유로 가장 적절한 것은?",
+    choices: [
+      "이미지 데이터를 전결합 형태로 완전히 평탄화(펼침)한 뒤 다루기 때문이다.",
+      "필터 가중치를 공유(Weight Sharing)하고 데이터 고유의 공간적 구조 정보를 보존하기 때문이다.",
+      "층을 깊게 쌓아도 파라미터가 급격히 늘어나는 특징이 존재하기 때문이다.",
+      "기존에 사람이 만든 고정된 형태의 에지 검출 필터만을 학습에 활용하기 때문이다."
+    ],
+    answer: 2,
+    note: "가중치 공유 + 공간 구조 보존",
+    explain: "① 평탄화해서 공간 구조를 잃는 것은 MLP의 단점. ③ 가중치 공유로 파라미터가 적게 늘어남. ④ 필터는 학습으로 정해짐. 따라서 ②."
+  },
+  {
+    stem: "합성곱 층에서 가상의 외곽 픽셀을 0과 같은 값으로 메우는 패딩(Padding)을 적용하는 주요 목적이 <b><u>아닌</u></b> 것은?",
+    choices: [
+      "이미지의 외곽 모서리에 분포한 고유의 정보 유실을 최소화하기 위함이다.",
+      "합성곱 연산이 누적될수록 특징 맵의 공간 해상도가 급격히 축소되는 현상을 방지하기 위함이다.",
+      "최종 모델이 연산해야 할 필터 자체의 가중치 파라미터 수를 줄이기 위함이다.",
+      "스트라이드가 1일 때, 입력 데이터 크기와 출력 특징 맵 크기를 가급적 동일하게 맞추기 위함이다."
+    ],
+    answer: 3,
+    note: "패딩은 파라미터 수와 무관",
+    explain: "필터 파라미터 수는 (필터 크기 × 입력 채널 + 1) × 필터 개수로 정해지며 패딩과 관계없음 → ③. 나머지는 모두 패딩의 목적(외곽 정보 보존, 크기 축소 방지, same 패딩)."
+  },
+  {
+    stem: "다음 중 풀링층(Pooling Layer)의 특징에 대한 설명으로 올바르지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "풀링층의 다운샘플링 과정은 대상의 미세한 위치나 왜곡에 대해 강건한 예측력을 제공한다.",
+      "풀링 영역 내에서 미리 정해진 연산만을 수행하기 때문에 학습 가중치가 존재하지 않는다.",
+      "풀링을 거친 후에는 입력 이미지 특징 맵의 채널 수가 1개로 압축된다.",
+      "일반적으로 최대값 풀링(Max Pooling)과 평균값 풀링(Average Pooling) 등이 활용된다."
+    ],
+    answer: 3,
+    note: "풀링은 채널별로 → 채널 수 유지",
+    explain: "풀링은 채널마다 따로 적용되어 높이·너비만 줄고 <b>채널 수는 그대로</b> → ③이 틀림."
+  },
+  {
+    stem: "입력 데이터의 크기가 4 × 4이고, 합성곱 필터의 크기가 3 × 3, 패딩(Padding)이 0, 스트라이드(Stride)가 1일 때, 다음 입력 데이터와 필터를 이용한 합성곱 연산의 결과로 생성되는 특징 맵은?",
+    figure: `<img class="fig" src="img/06-q4-conv-input-filter.png" alt="4x4 입력과 3x3 필터">`,
+    choices: [
+      "$\\begin{bmatrix}2&1\\\\0&2\\end{bmatrix}$",
+      "$\\begin{bmatrix}3&2\\\\3&3\\end{bmatrix}$",
+      "$\\begin{bmatrix}3&1\\\\3&2\\end{bmatrix}$",
+      "$\\begin{bmatrix}2&3\\\\3&3\\end{bmatrix}$"
+    ],
+    answer: 4,
+    note: "결과 [[2, 3], [3, 3]]",
+    explain: "출력 크기 $=(4-3+2\\cdot0)/1+1=2$ → 2×2. 각 칸 = 겹친 3×3 영역과 필터를 원소끼리 곱해 모두 더한 값.<br>(1,1): 좌상단 영역 $[0\\,1\\,0;\\,0\\,1\\,1;\\,0\\,0\\,1]$ → $0+0+0+0+1+1+0+0+0=2$<br>(1,2): 우상단 영역 $[1\\,0\\,1;\\,1\\,1\\,0;\\,0\\,1\\,1]$ → $1+0+1+0+1+0+0+0+0=3$<br>(2,1): 좌하단 영역 $[0\\,1\\,1;\\,0\\,0\\,1;\\,1\\,0\\,0]$ → $0+0+1+0+0+1+1+0+0=3$<br>(2,2): 우하단 영역 $[1\\,1\\,0;\\,0\\,1\\,1;\\,0\\,0\\,0]$ → $1+0+0+0+1+1+0+0+0=3$<br>결과 $\\begin{bmatrix}2&3\\\\3&3\\end{bmatrix}$ → ④."
+  },
+  {
+    stem: "입력 데이터의 크기가 8 × 8이고, 합성곱 필터의 크기가 3 × 3, 패딩(Padding)이 2, 스트라이드(Stride)가 1일 때, 생성되는 최종 특징 맵의 크기는?",
+    choices: ["6×6", "8×8", "10×10", "12×12"],
+    answer: 3,
+    note: "(8+4−3)/1+1 = 10",
+    explain: "출력 크기 $=\\dfrac{N+2P-F}{S}+1=\\dfrac{8+2\\cdot2-3}{1}+1=10$ → 10×10, ③."
+  },
+  {
+    stem: "합성곱 및 풀링 단계를 거쳐 특징을 추출한 후, 다층 퍼셉트론(MLP)의 입력 구조인 완전연결층(Fully Connected Layer)으로 나아가기 위해 반드시 먼저 수행해야 하는 평탄화(Flatten) 연산의 역할은?",
+    choices: [
+      "다차원(높이, 너비, 채널) 형태로 존재하는 특징 맵 데이터를 1차원 벡터(배열) 형태로 전환한다.",
+      "데이터의 분포가 양수와 음수에 걸쳐 평평하게 정규화되도록 분포를 강제 조절한다.",
+      "필터들의 경계선을 완만하게 누그러뜨려 이미지를 전체적으로 부드럽게 보정한다.",
+      "특징 맵 내에서 가장 중요한 특정 채널만 골라내고 나머지 정보를 배제시킨다."
+    ],
+    answer: 1,
+    note: "(H, W, C) → 1차원 벡터",
+    explain: "Flatten은 값을 바꾸지 않고 (높이 × 너비 × 채널) 모양을 1차원으로 펼치기만 함 → ①."
+  },
+
+  /* ---------- 7강. 합성곱 신경망(2) ---------- */
+  {
+    section: "7강. 합성곱 신경망(2)",
+    stem: "LeNet-5에 대한 설명으로 옳은 것은?",
+    choices: [
+      "자연어 번역을 위해 개발된 순환신경망이다.",
+      "손글씨 이미지 분류를 위해 개발된 합성곱 신경망이다.",
+      "음성 인식을 위해 개발된 완전연결 신경망이다.",
+      "이미지 생성을 위해 개발된 생성적 적대 신경망이다."
+    ],
+    answer: 2,
+    note: "LeCun, 손글씨 숫자(MNIST) CNN",
+    explain: "LeNet-5(LeCun, 1998)는 손글씨 숫자 인식을 위한 초기 CNN → ②."
+  },
+  {
+    stem: "합성곱 신경망에서 이미지 데이터를 255로 나누어 0~1의 값으로 정규화하는 이유에 대한 설명으로, 가장 적합한 것은?",
+    choices: [
+      "경사소실 문제를 완화시킬 수 있기 때문에",
+      "계산이 더 간단해지기 때문에",
+      "각 픽셀의 중요도를 더 잘 파악할 수 있기 때문에",
+      "빠르게 학습할 수 있기 때문에"
+    ],
+    answer: 4,
+    note: "입력 스케일 축소 → 빠르고 안정적인 학습",
+    explain: "0~255의 큰 입력은 가중합을 크게 만들어 경사 하강이 불안정해짐. 0~1로 맞추면 최적화가 안정되어 빠르게 학습(수렴)함 → ④. 정규화해도 연산량은 같고(②), 픽셀 중요도와도 무관(③)."
+  },
+  {
+    stem: "LeNet-5의 C3 계층에 대한 설명으로 옳은 것은?",
+    choices: [
+      "서로 다른 특징 맵을 활용하여 상호보완적인 이미지의 특징을 추출한다.",
+      "풀링 연산을 수행하여 이미지 내의 중요한 정보를 추출한다.",
+      "입력 이미지의 크기를 줄이기 위해 사용된다.",
+      "완전연결층으로 직접 연결되어 신경망의 출력을 생성한다."
+    ],
+    answer: 1,
+    note: "C3: S2의 특징 맵 조합을 받는 합성곱층",
+    explain: "C3는 합성곱층으로, S2의 6개 특징 맵 중 <b>서로 다른 조합</b>을 연결받아 16개 특징 맵을 만듦(대칭 깨기 + 상호보완적 특징) → ①. ②③ 풀링·크기 축소는 S층(S2, S4)의 역할."
+  },
+  {
+    stem: "방사형 기저 함수(RBF)의 특징이 <b><u>아닌</u></b> 것은?",
+    choices: [
+      "입력값과 가중치 사이의 거리에 기반하여 값을 계산하는 함수이다.",
+      "비선형 방정식을 근사하기 위해 사용된다.",
+      "입력층과 은닉층 사이에 가중치를 업데이트 한다.",
+      "은닉층이 하나로 구성된다."
+    ],
+    answer: 3,
+    note: "가중치 학습은 은닉층→출력층",
+    explain: "RBF 네트워크는 입력과 중심(가중치 벡터) 사이의 거리로 출력을 계산하는 은닉층 하나짜리 구조. 입력층→은닉층은 거리 계산이고, 학습으로 업데이트하는 가중치는 <b>은닉층→출력층</b> 사이 → ③이 아님."
+  },
+  {
+    stem: "클래스 인덱스 방식에 대한 설명으로 가장 적절한 것은?",
+    choices: [
+      "각 클래스를 문자열로만 표현하는 방식",
+      "각 클래스를 하나의 정수로 표현하는 방식",
+      "정답에 해당하는 위치만 1로 표현하는 방식",
+      "모든 클래스를 같은 값으로 표현하는 방식"
+    ],
+    answer: 2,
+    note: "정수 레이블 (③은 원-핫)",
+    explain: "클래스 인덱스: 0, 1, 2 … 정수 하나로 표현(sparse_categorical_crossentropy 사용) → ②. ③은 원-핫 인코딩."
+  },
+
+  /* ---------- 8강. 심층 합성곱 신경망(1) ---------- */
+  {
+    section: "8강. 심층 합성곱 신경망(1)",
+    stem: "AlexNet의 특징이 <b><u>아닌</u></b> 것은?",
+    choices: [
+      "5개의 합성곱층과 3개의 완전연결층으로 구성된다.",
+      "GPU 기반의 병렬 구조이다.",
+      "Overlapping Pooling을 적용하였다.",
+      "배치 정규화 기법을 적용하였다."
+    ],
+    answer: 4,
+    note: "AlexNet은 LRN 사용 (BN은 2015년)",
+    explain: "AlexNet(2012): 합성곱 5 + 완전연결 3, GPU 2개 병렬, 겹치는 풀링, ReLU, 드롭아웃, LRN(지역 응답 정규화). 배치 정규화는 2015년에 나온 기법 → ④."
+  },
+  {
+    stem: "합성곱에서 3x3 크기의 필터를 깊게 쌓는 것이 핵심인 합성곱 신경망을 고르시오.",
+    choices: ["AlexNet", "LeNet-5", "VGGNet", "CNN"],
+    answer: 3,
+    note: "VGG = 3×3 필터 반복",
+    explain: "VGGNet은 모든 합성곱에 3×3 필터만 써서 깊게(16·19층) 쌓은 구조 → ③."
+  },
+  {
+    stem: "Data Augmentation의 특징으로 올바른 것은?",
+    choices: [
+      "데이터 크기가 줄어들어 모델의 성능이 향상된다.",
+      "모델의 복잡도가 감소하여 과적합을 유발한다.",
+      "일반화 성능이 향상된다.",
+      "데이터의 분포가 변경되어 모델의 정확도가 저하된다."
+    ],
+    answer: 3,
+    note: "데이터 증강 → 과적합↓, 일반화↑",
+    explain: "회전·반전·자르기 등으로 학습 데이터를 늘려 과적합을 줄이고 일반화 성능을 높임 → ③."
+  },
+  {
+    stem: "VGGNet16에서 숫자 ‘16’의 의미로 올바른 것을 고르시오.",
+    choices: ["파라미터", "층", "필터", "에포크"],
+    answer: 2,
+    note: "가중치 층 16개 (합성곱 13 + FC 3)",
+    explain: "VGG16 = 가중치가 있는 층 16개(합성곱 13 + 완전연결 3) → ②."
+  },
+  {
+    stem: "VGGNet에서 큰 크기의 필터 하나보다 작은 3×3 필터를 여러 번 사용하는 이유로 가장 적절한 것은?",
+    choices: [
+      "입력 이미지의 크기를 확대하고 출력 클래스의 수를 증가시키기 위해",
+      "풀링층을 제거하고 합성곱 연산을 한 번만 수행하기 위해",
+      "큰 필터와 유사한 수용 영역을 확보하면서 비선형성을 높이고, 가중치 수와 연산량을 줄이기 위해",
+      "이미지의 색상 정보를 제거하고 특징 맵의 크기를 일정하게 유지하기 위해"
+    ],
+    answer: 3,
+    note: "3×3 두 번 = 5×5 수용영역, 18 < 25",
+    explain: "3×3을 2번 쌓으면 5×5, 3번 쌓으면 7×7과 같은 수용 영역. 가중치는 $2\\cdot9=18 < 25$, $3\\cdot9=27 < 49$로 줄고, 층마다 ReLU가 들어가 비선형성이 커짐 → ③."
+  },
+
+  /* ---------- 9강. 심층 합성곱 신경망(2) ---------- */
+  {
+    section: "9강. 심층 합성곱 신경망(2)",
+    stem: "GoogLeNet에서 1×1 합성곱을 사용하는 가장 중요한 목적은 무엇인가?",
+    choices: [
+      "입력 이미지의 가로와 세로 크기를 확대하기 위해",
+      "특징 맵의 수를 조절하여 연산량을 줄이기 위해",
+      "이미지의 색상 정보를 제거하기 위해",
+      "출력 클래스의 수를 증가시키기 위해"
+    ],
+    answer: 2,
+    note: "채널 수 축소(병목) → 연산량↓",
+    explain: "1×1 합성곱은 높이·너비는 그대로 두고 채널(특징 맵) 수만 줄여서 뒤따르는 3×3, 5×5 합성곱의 연산량을 크게 줄임 → ②."
+  },
+  {
+    stem: "인셉션 모듈에서 서로 다른 크기의 합성곱 필터를 병렬로 적용하는 이유는 무엇인가?",
+    choices: [
+      "입력 이미지의 크기를 일정하게 확대하기 위해",
+      "서로 다른 크기의 특징을 동시에 추출하기 위해",
+      "모든 특징 맵의 값을 동일하게 만들기 위해",
+      "학습 데이터의 수를 자동으로 증가시키기 위해"
+    ],
+    answer: 2,
+    note: "1×1, 3×3, 5×5, 풀링 병렬 → concat",
+    explain: "여러 크기의 필터를 나란히 적용해 다양한 크기(스케일)의 특징을 한 번에 뽑고 채널 방향으로 이어 붙임 → ②."
+  },
+  {
+    stem: "GoogLeNet의 보조 분류기가 네트워크의 중간 부분에 배치된 이유는 무엇인가?",
+    choices: [
+      "입력 이미지의 해상도를 높이기 위해",
+      "네트워크의 층 수를 줄이기 위해",
+      "중간층에 학습 신호를 전달하여 기울기 소실을 완화하기 위해",
+      "최종 출력 클래스의 수를 늘리기 위해"
+    ],
+    answer: 3,
+    note: "중간에서 손실 추가 → 경사 소멸 완화",
+    explain: "깊은 망의 중간에 보조 분류기를 달아 그 손실도 역전파하면 앞쪽 층까지 경사가 잘 전달됨(추론 때는 제거) → ③."
+  },
+  {
+    stem: "전역 평균 풀링에 관한 설명으로 올바른 것은 무엇인가?",
+    choices: [
+      "각 특징 맵에서 가장 큰 값만 선택한다.",
+      "각 특징 맵의 모든 값을 평균하여 하나의 값으로 변환한다.",
+      "여러 특징 맵을 하나의 2차원 이미지로 결합한다.",
+      "특징 맵의 가로와 세로 크기를 두 배로 확대한다."
+    ],
+    answer: 2,
+    note: "H×W×C → 1×1×C",
+    explain: "GAP는 특징 맵 하나(H×W)를 평균 한 값으로 바꿔 H×W×C → C차원 벡터로 만듦. 완전연결층을 대신해 파라미터를 크게 줄임 → ②."
+  },
+  {
+    stem: "ResNet에서 숏컷 연결을 사용하는 주된 목적은 무엇인가?",
+    choices: [
+      "입력 데이터를 무작위로 변형하기 위해",
+      "합성곱 필터의 크기를 증가시키기 위해",
+      "입력 정보와 기울기를 깊은 층까지 원활하게 전달하기 위해",
+      "학습 데이터의 클래스 수를 감소시키기 위해"
+    ],
+    answer: 3,
+    note: "H(x) = F(x) + x, 잔차 학습",
+    explain: "숏컷(잔차) 연결 $H(x)=F(x)+x$로 입력과 경사가 층을 건너뛰어 전달되어 아주 깊은 망도 학습 가능 → ③."
+  },
+
+  /* ---------- 10강. 오토인코더와 적대적 생성 신경망 ---------- */
+  {
+    section: "10강. 오토인코더와 적대적 생성 신경망",
+    stem: "다음 중 오토인코더의 인코더가 수행하는 역할로 가장 적절한 것은?",
+    choices: [
+      "입력 데이터를 분류 결과로 변환한다.",
+      "입력 데이터를 저차원의 잠재 벡터로 압축한다.",
+      "잠재 벡터를 원래 데이터로 복원한다.",
+      "실제 데이터와 생성 데이터를 구별한다."
+    ],
+    answer: 2,
+    note: "인코더 = 압축, 디코더 = 복원",
+    explain: "인코더는 입력을 저차원 잠재 벡터로 압축 → ②. ③은 디코더, ④는 GAN의 판별자."
+  },
+  {
+    stem: "다음 중 입력 데이터에 노이즈를 추가한 후, 원래의 깨끗한 데이터를 복원하도록 학습하는 모델은?",
+    choices: ["기본 오토인코더", "적층 오토인코더", "노이즈 제거 오토인코더", "적대적 생성 신경망"],
+    answer: 3,
+    note: "Denoising AE",
+    explain: "노이즈 섞인 입력 → 깨끗한 원본을 목표로 학습하는 것이 노이즈 제거(denoising) 오토인코더 → ③."
+  },
+  {
+    stem: "오토인코더 학습에서 입력 데이터와 목표 데이터를 모두 동일한 데이터(x_train)로 설정하는 이유는?",
+    choices: [
+      "입력 데이터의 범주를 예측하기 위해서",
+      "학습 데이터의 개수를 증가시키기 위해서",
+      "입력 데이터를 원래 형태와 유사하게 복원하기 위해서",
+      "무작위 노이즈 데이터를 생성하기 위해서"
+    ],
+    answer: 3,
+    note: "fit(x_train, x_train) → 재구성 학습",
+    explain: "오토인코더는 출력이 입력을 다시 만들어내도록(재구성 오차 최소화) 학습하므로 입력과 목표가 같음 → ③."
+  },
+  {
+    stem: "적대적 생성 신경망에서 판별자의 역할로 가장 적절한 것은?",
+    choices: [
+      "입력 데이터를 잠재 벡터로 압축한다.",
+      "노이즈 벡터를 이용하여 새로운 데이터를 생성한다.",
+      "실제 데이터와 생성자가 만든 데이터를 구별한다.",
+      "생성된 데이터를 원래 입력 데이터로 복원한다."
+    ],
+    answer: 3,
+    note: "판별자 = 진짜/가짜 구별",
+    explain: "생성자(②)는 노이즈로 가짜 데이터를 만들고, 판별자는 진짜인지 가짜인지 구별함 → ③."
+  },
+  {
+    stem: "적대적 생성 신경망에서 생성자가 입력받아 새로운 데이터를 생성하는 데 사용하는 무작위 벡터는 무엇인가?",
+    choices: ["특징 벡터", "출력 벡터", "노이즈 벡터", "정답 벡터"],
+    answer: 3,
+    note: "z ~ 정규/균등분포 노이즈",
+    explain: "생성자는 무작위 노이즈 벡터 $z$를 입력받아 데이터를 생성 → ③."
+  },
+
+  /* ---------- 11강. RNN(1) ---------- */
+  {
+    section: "11강. RNN(1)",
+    stem: "RNN에 관한 다음 설명 중 옳은 것은?",
+    choices: [
+      "이미지 분류 작업에 적합한 모델이다.",
+      "고정된 길이의 입력 시퀀스만을 처리할 수 있다.",
+      "시퀀스 정보를 담기 위한 은닉 상태를 가지고 있다.",
+      "학습을 위해 오차역전파 방법을 사용하지 않는다."
+    ],
+    answer: 3,
+    note: "은닉 상태 h_t로 시퀀스 기억",
+    explain: "① 이미지는 CNN. ② RNN은 가변 길이 시퀀스 처리 가능. ④ 시간 펼침 역전파(BPTT)로 학습. 따라서 ③."
+  },
+  {
+    stem: "다음 중 기본적인 RNN(LSTM이나 GRU 셀을 사용하지 않은)의 단점으로 적절한 것은?",
+    choices: [
+      "시퀀스를 학습할 수 없고 테이블 형태의 데이터만 학습이 가능하다.",
+      "학습 때 사용된 데이터에서 본 최대 시퀀스 길이보다 더 긴 시퀀스는 모델의 입력으로 넣을 수 없다.",
+      "입력 시퀀스의 길이가 길어짐에 따라 모델의 성능이 저하될 수 있다.",
+      "LSTM이나 GRU에 비해 더 복잡한 구조와 많은 파라미터를 가지고 있기 때문에 과적합이 쉽게 일어날 수 있다."
+    ],
+    answer: 3,
+    note: "장기 의존성 문제 (경사 소멸/폭발)",
+    explain: "기본 RNN은 시퀀스가 길어지면 경사 소멸·폭발로 앞쪽 정보를 잊는 장기 의존성 문제가 있음 → ③. ② 같은 셀을 반복 적용하므로 더 긴 시퀀스도 입력 가능. ④ 기본 RNN이 더 단순하고 파라미터가 적음."
+  },
+  {
+    stem: "다음 중 RNN이 가지는 은닉 상태에 대해 바르게 기술한 것은?",
+    choices: [
+      "은닉 상태에는 RNN의 파라미터에 해당하는 가중치 및 바이어스가 저장된다.",
+      "은닉 상태에는 해당 시점 입력에서 추출한 정보와 이전 시점에서 넘어온 정보가 종합되어 저장된다.",
+      "은닉 상태에는 활성함수가 적용된 모델의 출력 결과가 저장된다.",
+      "은닉 상태를 생성시 이전 시점의 정보는 고려되지 않는다."
+    ],
+    answer: 2,
+    note: "h_t = tanh(W x_t + U h_{t-1} + b)",
+    explain: "$h_t=\\tanh(W_x x_t+W_h h_{t-1}+b)$ — 현재 입력과 이전 은닉 상태를 합친 정보 → ②. ① 가중치는 파라미터이지 은닉 상태가 아님. ④ 이전 시점 정보를 반드시 반영함."
+  },
+  {
+    stem: "다음 중 LSTM에 사용된 게이트의 종류가 <b><u>아닌</u></b> 것은?",
+    choices: ["망각 게이트(forget gate)", "입력 게이트(input gate)", "출력 게이트(output gate)", "은닉 게이트(hidden gate)"],
+    answer: 4,
+    note: "LSTM 게이트 = 망각·입력·출력",
+    explain: "LSTM의 게이트는 망각, 입력, 출력 3가지. 은닉 게이트는 없음 → ④. (GRU는 리셋·업데이트 게이트 2가지)"
+  },
+  {
+    stem: "LSTM에 사용된 게이트 중 망각 게이트(forget gate)의 역할을 기술한 것으로 적절한 것은?",
+    choices: [
+      "망각 게이트는 현 시점의 입력 중 어떤 부분이 셀에 추가되어야 하는지 결정한다.",
+      "망각 게이트는 이전 시점의 장기 기억 중 어떤 부분을 잊어야 하는지를 결정한다.",
+      "망각 게이트는 현 시점의 단기 기억과 장기 기억을 종합하는 역할을 한다.",
+      "망각 게이트는 네트워크의 학습율(learning rate)을 조정하는 역할을 한다."
+    ],
+    answer: 2,
+    note: "c_t = f_t ⊙ c_{t-1} + i_t ⊙ g_t",
+    explain: "망각 게이트 $f_t$는 이전 셀 상태(장기 기억) $c_{t-1}$ 중 얼마나 지울지 결정 → ②. ①은 입력 게이트의 역할."
+  },
+
+  /* ---------- 12강. RNN(2) ---------- */
+  {
+    section: "12강. RNN(2)",
+    stem: "Encoder–Decoder 구조에서 어텐션(Attention)이 도입된 주요한 이유로 가장 적절한 것은?",
+    choices: [
+      "모델의 파라미터 수를 줄여서 경량화하기 위해",
+      "입력 시퀀스를 더 짧게 만들기 위해",
+      "긴 입력 시퀀스에서 중요한 부분에 집중하기 위해",
+      "GPU 메모리 사용량을 증가시키기 위해"
+    ],
+    answer: 3,
+    note: "고정 길이 문맥벡터의 병목 해결",
+    explain: "입력 전체를 고정 길이 문맥벡터 하나에 담으면 긴 시퀀스 정보를 잃음(병목). 어텐션은 디코딩 시점마다 입력의 중요한 부분에 집중 → ③."
+  },
+  {
+    stem: "다음 그림은 어텐션을 적용하지 않은 인코더-디코더의 구조를 나타내고 있다. 관련된 설명으로 적절한 것은?",
+    figure: `<img class="fig" src="img/12-q2-encoder-decoder.png" alt="어텐션 없는 인코더-디코더 구조">`,
+    choices: [
+      "디코더는 문맥벡터 C 외에도 X들을 입력으로 받게 된다.",
+      "문맥벡터 C는 인코더의 첫번째 입력(X1)으로부터 만들어진 은닉상태 벡터이다.",
+      "Y의 시점에 따라 C의 값이 달라진다.",
+      "인코더와 디코더에 RNN을 사용할 수 있다."
+    ],
+    answer: 4,
+    note: "C = 인코더 마지막 은닉상태, 고정",
+    explain: "① 디코더는 X를 직접 받지 않고 C(와 이전 출력)만 받음. ② C는 <b>마지막</b> 입력까지 읽은 인코더의 마지막 은닉 상태. ③ 어텐션이 없으면 C는 모든 시점에서 같은 값. ④ 인코더·디코더 모두 RNN(LSTM/GRU)으로 구성 가능 → 정답."
+  },
+  {
+    stem: "다음 그림은 어텐션 메커니즘을 적용한 인코더-디코더의 구조를 나타내고 있다. 관련된 설명으로 적절한 것은? (선지에서 $c_t$는 c_t, $\\bar{h}_s$는 h_bar_s와 같이 표기한다.)",
+    figure: `<img class="fig" src="img/12-q3-attention.png" alt="어텐션 적용 인코더-디코더 구조">`,
+    choices: [
+      "문맥벡터 c_t는 디코더의 시점 t와 무관하게 동일한 값으로 만들어진다.",
+      "c_t는 h_t들의 가중 평균으로 만들어진다.",
+      "a_t 생성시에 h_t는 고려하지 않는다.",
+      "a_t는 c_t 생성시에 가중치와 같은 역할을 한다."
+    ],
+    answer: 4,
+    note: "c_t = Σ a_t(s) · h̄_s",
+    explain: "$a_t(s)=\\text{softmax}(\\text{score}(h_t,\\bar{h}_s))$, $c_t=\\sum_s a_t(s)\\,\\bar{h}_s$. ① 시점 t마다 $c_t$가 달라짐. ② 가중 평균의 대상은 인코더 은닉상태 $\\bar{h}_s$($h_t$ 아님). ③ $a_t$는 디코더 상태 $h_t$와 $\\bar{h}_s$의 점수로 계산. ④ $a_t$가 $c_t$를 만드는 가중치 → 정답."
+  },
+  {
+    stem: "다음은 어텐션이 적용된 번역 모델에서 번역 시점마다 어떤 단어에 주목하는지를 나타낸 것으로, 셀의 밝기가 밝을수록 해당 단어에 강하게 주목하고 있다는 것을 나타낸다. 관련 설명으로 적절하지 <b><u>않은</u></b> 것은?",
+    figure: `<img class="fig" src="img/12-q4-attention-heatmap.png" alt="어텐션 가중치 히트맵">`,
+    choices: [
+      "&lt;end&gt; 토큰은 문장의 끝을 나타내는 데 사용된다.",
+      "번역 대상 문장의 길이와 번역된 문장의 길이는 같아야 한다.",
+      "셀의 밝기가 밝을수록 어텐션 적용시에 해당 부분의 가중치가 높아진다.",
+      "대체로 언어 간에 비슷한 의미를 가지는 단어 사이의 셀 밝기가 밝게 나타나 있다."
+    ],
+    answer: 2,
+    note: "입력·출력 길이는 달라도 됨",
+    explain: "인코더-디코더는 입력과 출력 시퀀스 길이가 달라도 됨(히트맵도 직사각형) → ②가 틀림. 나머지는 히트맵 해석으로 맞는 설명."
+  },
+  {
+    stem: "다음은 어텐션을 적용한 번역 모델의 성능을 비교한 것이다. x축은 입력 시퀀스의 길이, y축은 번역 품질을 나타내는 점수(높을수록 좋음)이며, 30/50과 같은 숫자는 해당 모델의 학습시에 사용된 최대 시퀀스 길이를 나타낸다. 어텐션을 적용한 모델은 RNNsearch-50, RNNsearch-30 이며, 어텐션을 적용하지 않은 모델은 RNNenc-50, RNNenc-30 과 같다. 이 실험 결과에 대한 설명으로 적절하지 <b><u>않은</u></b> 것은?",
+    figure: `<img class="fig" src="img/12-q5-bleu.png" alt="문장 길이별 BLEU 점수">`,
+    choices: [
+      "모델 학습에 사용된 데이터의 최대 시퀀스 길이가 50이므로, 해당 모델들은 50보다 더 긴 길이를 가진 시퀀스를 입력으로 받아 번역할 수 없다.",
+      "똑같이 어텐션을 적용한 모델들끼리 비교하면 학습에 사용된 시퀀스의 최대 길이가 긴 경우가 sequence length 20 이상에서 더 좋은 성능을 보인다.",
+      "어텐션을 적용하지 않은 모델들끼리 비교하면 학습에 사용된 시퀀스의 최대 길이가 긴 경우가 sequence length 20 이상에서 더 좋은 성능을 보인다.",
+      "어텐션을 적용한 RNNsearch-50 모델의 경우, 입력 시퀀스의 길이가 길어져도 성능 저하가 별로 나타나지 않는다."
+    ],
+    answer: 1,
+    note: "RNN은 학습 때보다 긴 입력도 처리 가능",
+    explain: "RNN은 같은 셀을 시점마다 반복 적용하므로 학습 때 본 최대 길이(50)보다 긴 문장도 입력할 수 있음(그래프 x축도 50을 넘어감) → ①이 틀림. 나머지는 그래프에서 읽히는 내용(Bahdanau et al., 2015)."
+  },
+
+  /* ---------- 13강. 트랜스포머(1) ---------- */
+  {
+    section: "13강. 트랜스포머(1)",
+    stem: "다음 트랜스포머의 특징을 설명한 내용 중 적절하지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "출력을 계산하는 과정에서 RNN과 달리 병렬처리가 가능하다.",
+      "정보 전달 과정에서의 최대 경로 길이가 RNN보다 짧다고 할 수 있다.",
+      "멀티 헤드 어텐션을 통해 여러 가지 특징을 추출할 수 있다.",
+      "RNN이 트랜스포머보다 상대적으로 더 긴 시퀀스를 잘 다룰 수 있다."
+    ],
+    answer: 4,
+    note: "최대 경로 길이 O(1) → 긴 시퀀스에 유리",
+    explain: "셀프 어텐션은 모든 위치를 직접 연결해 최대 경로 길이가 O(1)(RNN은 O(n)) → 트랜스포머가 긴 시퀀스를 더 잘 다룸. ④가 틀림."
+  },
+  {
+    stem: "트랜스포머에 사용된 어텐션 메커니즘에 관한 다음 설명 중 적절하지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "셀프 어텐션은 value의 가중 평균으로 계산되며, 가중치는 query와 key의 점곱을 통해 만들어진다.",
+      "크로스 어텐션의 경우에 query는 디코더의 값으로부터 생성되며, value와 key는 인코더에서 나온 값으로부터 생성된다.",
+      "인과 셀프 어텐션에서는 마스킹이 적용된다.",
+      "인과 셀프 어텐션에서 마스킹은 현재 시점 앞쪽의 정보를 보지 못하도록 적용된다."
+    ],
+    answer: 4,
+    note: "마스킹 대상은 뒤쪽(미래)",
+    explain: "$\\text{Attention}(Q,K,V)=\\text{softmax}(QK^T/\\sqrt{d_k})V$. 인과 셀프 어텐션의 마스킹은 현재보다 <b>뒤쪽(미래)</b> 토큰을 보지 못하게 함 → ④가 틀림."
+  },
+  {
+    stem: "다음 중 트랜스포머를 구성하는 인코더와 디코더 사이에서 일어나는 어텐션 메커니즘을 가리키는 용어로 적절한 것은?",
+    choices: ["셀프 어텐션", "크로스 어텐션", "인과 셀프 어텐션", "멀티 헤드 어텐션"],
+    answer: 2,
+    note: "Q: 디코더, K·V: 인코더",
+    explain: "디코더의 query가 인코더 출력(key, value)을 참조하는 인코더-디코더 어텐션 = 크로스 어텐션 → ②."
+  },
+  {
+    stem: "다음 중 현 시점보다 뒤쪽의 시퀀스를 보지 못하게 하기 위해서 마스킹(masking)을 사용하는 어텐션을 일컫는 용어로 가장 적절한 것은?",
+    choices: ["셀프 어텐션", "크로스 어텐션", "인과 셀프 어텐션", "멀티 헤드 어텐션"],
+    answer: 3,
+    note: "Causal(Masked) Self-Attention",
+    explain: "디코더에서 미래 토큰을 가리는 어텐션 = 인과(causal, masked) 셀프 어텐션 → ③."
+  },
+  {
+    stem: "다음 중 셀프 어텐션의 직관적인 의미와 장점을 기술한 것으로 적절하지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "시퀀스에서 모델의 목적에 필요한 부분에 더 집중할 수 있다.",
+      "RNN에 비해 더 긴 시퀀스를 다룰 수 있다.",
+      "계산을 병렬적으로 할 수 있기 때문에 같은 양의 데이터를 학습하는데 RNN보다 더 오랜 시간이 걸린다.",
+      "시퀀스 내의 모든 단어 사이에 연결이 존재하기 때문에, 멀리 떨어진 단어들 사이의 관계도 잘 파악할 수 있다."
+    ],
+    answer: 3,
+    note: "병렬 계산 → 학습 시간 더 짧음",
+    explain: "병렬 계산이 가능하므로 RNN보다 학습이 <b>빠름</b>. ③은 앞뒤가 맞지 않는 설명 → 정답. (④는 강의실 화면에서 일부가 잘려 문맥에 맞게 보충함)"
+  },
+
+  /* ---------- 14강. 트랜스포머(2) ---------- */
+  {
+    section: "14강. 트랜스포머(2)",
+    stem: "트랜스포머에서 Add &amp; Norm 단계의 주요 역할은?",
+    choices: [
+      "입력을 합성곱(convolution) 연산으로 변환",
+      "드롭아웃(dropout) 비율 조정",
+      "잔차 연결(Residual Connection)과 계층 정규화(Layer Normalization) 수행",
+      "시퀀스 길이 보정"
+    ],
+    answer: 3,
+    note: "Add = 잔차, Norm = LayerNorm",
+    explain: "Add &amp; Norm: $\\text{LayerNorm}(x+\\text{Sublayer}(x))$ — 잔차 연결 후 계층 정규화 → ③."
+  },
+  {
+    stem: "Pre-LN(Layer Normalization) 구조의 장점으로 가장 적절한 것은?",
+    choices: [
+      "파라미터 수를 줄인다.",
+      "학습 안정성을 높이고 warm-up 단계를 생략할 수 있다.",
+      "학습 속도를 느리게 하지만 성능을 향상시킨다.",
+      "어텐션 계산량을 줄인다."
+    ],
+    answer: 2,
+    note: "LN을 서브층 앞에 → 경사 안정",
+    explain: "Pre-LN은 정규화를 서브층 <b>앞</b>에 두어($x+\\text{Sublayer}(\\text{LN}(x))$) 경사가 안정되고, Post-LN에서 필요한 학습률 warm-up을 생략할 수 있음 → ②."
+  },
+  {
+    stem: "트랜스포머의 인코더(Encoder)와 디코더(Decoder)에 대한 설명으로 옳은 것은?",
+    choices: [
+      "디코더는 인코더 출력을 사용하지 않는다.",
+      "인코더는 입력 시퀀스를 벡터로 변환하여 디코더로 전달한다.",
+      "인코더와 디코더는 각각 CNN으로 구성된다.",
+      "인코더는 디코더의 출력을 받아 입력을 재구성한다."
+    ],
+    answer: 2,
+    note: "인코더 출력 → 디코더 크로스 어텐션",
+    explain: "인코더는 입력 시퀀스를 문맥 벡터(표현)로 바꿔 디코더의 크로스 어텐션에 전달 → ②. ① 디코더는 인코더 출력을 사용. ③ 어텐션 + 피드포워드로 구성(CNN 아님)."
+  },
+  {
+    stem: "트랜스포머 구조에 대한 다음 설명 중 적절하지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "하나의 인코더는 여러 개의 Multi-Head Attention 층을 가질 수 있다.",
+      "하나의 디코더는 단 하나의 피드포워드 계층만을 가질 수 있다.",
+      "인코더와 디코더 사이의 크로스 어텐션(Cross Attention) 메커니즘이 존재한다.",
+      "인코더와 디코더로 이루어져 있다."
+    ],
+    answer: 2,
+    note: "N개 블록마다 피드포워드 존재",
+    explain: "인코더·디코더는 같은 블록을 N개(원 논문 6개) 쌓은 구조이고, 블록마다 피드포워드 층이 있음. 그래서 디코더에 피드포워드가 하나만 있는 것이 아님 → ②가 틀림."
+  },
+  {
+    stem: "트랜스포머의 디코더에서 Masked Multi-Head Attention을 사용하는 목적으로 가장 적절한 것은?",
+    choices: [
+      "인코더 출력을 무시하기 위해서",
+      "미래의 단어 정보를 미리 보지 못하게 하기 위해서",
+      "학습 속도를 높이기 위해서",
+      "피드포워드 계층을 단순화하기 위해서"
+    ],
+    answer: 2,
+    note: "미래 토큰 가리기 (자기회귀)",
+    explain: "학습 때 정답 시퀀스를 한꺼번에 넣으므로, 현재 위치가 미래 단어를 보지 못하게 마스킹함 → ②."
+  },
+
+  /* ---------- 15강. 초거대 언어 모델 ---------- */
+  {
+    section: "15강. 초거대 언어 모델",
+    stem: "다음 중 OpenAI에 의해 사전학습 및 미세조정 단계를 거쳐 만들어진 트랜스포머 기반 모델에 해당하는 것은?",
+    choices: ["GPT", "BERT", "GPT-2", "GPT-3"],
+    answer: 1,
+    note: "GPT-1: 사전학습 + 미세조정",
+    explain: "GPT(GPT-1, 2018)는 비지도 사전학습 후 과제별 미세조정. GPT-2·GPT-3은 미세조정 없이 zero/few-shot으로 쓰는 방향. BERT는 Google 모델 → ①."
+  },
+  {
+    stem: "다음 중 트랜스포머의 인코더 부분만을 사용해서 만들어진 모델에 해당하는 것은?",
+    choices: ["GPT", "BERT", "GPT-2", "GPT-3"],
+    answer: 2,
+    note: "BERT = 인코더, GPT = 디코더",
+    explain: "BERT는 트랜스포머 인코더만, GPT 계열은 디코더만 사용 → ②."
+  },
+  {
+    stem: "다음 중 희소(sparse) 어텐션이 사용된 언어 모델은?",
+    choices: ["GPT", "BERT", "GPT-2", "GPT-3"],
+    answer: 4,
+    note: "GPT-3: dense/sparse 어텐션 교차",
+    explain: "GPT-3은 층마다 dense 어텐션과 지역 띠 형태의 희소(sparse) 어텐션을 번갈아 사용(Sparse Transformer 방식) → ④."
+  },
+  {
+    stem: "다음 중 GPT-3.5를 교정하여 ChatGPT를 만드는 데 사용된 교정방식을 가리키는 말로 가장 적절한 것은?",
+    choices: [
+      "전이 학습(Transfer Learning)",
+      "자기지도학습(Self–Supervised Learning)",
+      "사전 학습(Pre-Training)",
+      "RLHF(Reinforcement Learning from Human Feedback)"
+    ],
+    answer: 4,
+    note: "사람 피드백 기반 강화학습",
+    explain: "ChatGPT는 지도 미세조정 → 보상 모델 학습 → PPO 강화학습으로 이어지는 RLHF로 교정됨 → ④."
+  },
+  {
+    stem: "다음 ChatGPT 관련 설명 중 옳지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "기존 언어 모델이 보였던 Toxicity나 사실이 아닌 내용을 지어내는 문제를 교정하여 만들어진 모델이라고 할 수 있다.",
+      "단어들의 확률분포를 예측하는 언어 모델의 특성 상, ChatGPT에 같은 프롬프트를 여러 번 주게 되면 랜덤하게 답변이 달라질 수 있다.",
+      "프롬프트에서 예제나 패턴을 얼마나 보여주는지와 답변의 품질 사이에는 관련이 없다.",
+      "프롬프트에 진실성 또는 존중하는 태도를 요구하는 내용을 포함하게 되면 답변이 이와 같은 요구사항을 어느 정도 반영할 것으로 기대할 수 있다."
+    ],
+    answer: 3,
+    note: "few-shot 예시 → 품질 향상",
+    explain: "프롬프트에 예시를 보여주는 few-shot은 답변 품질을 크게 높임(in-context learning). 관련이 없다는 ③이 틀림."
+  }
+];
+
+const MARKS = ["①","②","③","④","⑤"];
+function render() {
+  const qEl = document.getElementById("questions");
+  const xEl = document.getElementById("explain");
+  let qs = "", grid = "", ex = "";
+  QUESTIONS.forEach((q, i) => {
+    const n = i + 1;
+    const ans = q.answerText || MARKS[q.answer - 1];
+    if (q.section) qs += `<p class="section">※ ${q.section}</p>`;
+    qs += `<div class="q"><p class="stem"><span class="no">${n}.</span>${q.stem}${q.choices ? "" : ` <span class="note">${q.note}</span>`}</p>`;
+    if (q.figure) qs += q.figure;
+    if (q.box) qs += `<div class="box">${q.box.map(l => `<p>${l}</p>`).join("")}</div>`;
+    if (q.choices) {
+      qs += `<ol class="choices">${q.choices.map((c, j) =>
+        `<li class="${j + 1 === q.answer ? "answer" : ""}"><span class="mark">${MARKS[j]}</span> ${c}${j === q.choices.length - 1 ? ` <span class="note">${q.note}</span>` : ""}</li>`).join("")}</ol>`;
+    } else {
+      qs += `<p class="note" style="margin:4px 0 0 14px;font-size:13px">정답: ${ans}</p>`;
+    }
+    qs += `</div>`;
+    grid += `<span>${n}. ${ans}</span>`;
+    ex += `<div class="item"><h4>${n}번 &nbsp;정답 ${ans}</h4><p>${q.explain}</p></div>`;
+  });
+  qs += `<div class="final"><h3>정답 (풀이노트)</h3><div class="grid">${grid}</div><small>※ 개념 요약·상세 풀이는 뒤 풀이노트 페이지 참고</small></div>`;
+  qEl.innerHTML = qs;
+  xEl.innerHTML = `<h2>풀이노트 – 딥러닝 (1~${QUESTIONS.length})</h2>` + ex;
+  document.getElementById("range").textContent = `(1~${QUESTIONS.length})`;
+}
+render();
+
+document.getElementById("toggle").addEventListener("click", e => {
+  const hidden = document.body.classList.toggle("hide-answers");
+  e.target.textContent = hidden ? "정답 보기" : "정답 숨기기";
+});
+window.addEventListener("load", () => {
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>컴파일러구성 문제집 풀이노트</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root { --ink:#111; --red:#e0151b; --blue:#1d3fbf; --line:#222; --paper:#fff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e9e9e9; color:var(--ink);
+         font-family:"Batang","바탕","Nanum Myeongjo",serif; font-size:15px; line-height:1.55; }
+  .toolbar { position:sticky; top:0; z-index:5; display:flex; gap:8px; justify-content:center;
+             padding:8px 16px; background:#333; font-family:system-ui,sans-serif; }
+  .toolbar button { border:0; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  .page { width:210mm; max-width:calc(100% - 32px); min-height:297mm; margin:16px auto; padding:14mm 12mm;
+          background:var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  h1.title { text-align:center; font-family:"Malgun Gothic",sans-serif; font-size:30px; margin:0 0 6px; letter-spacing:-1px; }
+  .meta { display:flex; justify-content:space-between; font-size:16px; border-bottom:2px solid var(--line); padding-bottom:4px; }
+  .subject { border:2px solid var(--line); width:100%; max-width:400px; margin:12px 0 4px; }
+  .subject .head { display:flex; align-items:center; border-bottom:1px solid var(--line); font-family:"Malgun Gothic",sans-serif; }
+  .subject .head b { background:#ccc; padding:2px 8px; border-right:2px solid var(--line); }
+  .subject .head span { flex:1; text-align:center; font-weight:700; font-size:18px; }
+  .subject .row { padding:2px 10px; font-size:14px; }
+  .cols { column-count:2; column-gap:12mm; column-rule:1.5px solid var(--line); margin-top:12px; }
+  .q { break-inside:avoid; margin:0 0 18px; }
+  .q .stem { margin:0 0 4px; }
+  .q .stem .no { font-weight:400; margin-right:4px; }
+  .section { break-inside:avoid; break-after:avoid; margin:4px 0 10px; font-weight:700; }
+  .dtbl { border-collapse:collapse; margin:6px auto; font-size:13px; }
+  .dtbl caption { font-size:11px; color:#555; caption-side:bottom; }
+  .dtbl th, .dtbl td { border:1px solid #333; padding:2px 10px; text-align:center; }
+  .missing { border:1px dashed #999; color:#777; padding:14px; text-align:center; font-size:13px; margin:6px 0; font-family:"Malgun Gothic",sans-serif; }
+  .note { color:var(--red); font-family:"Malgun Gothic",sans-serif; font-size:12px; margin-left:4px; }
+  .box { border:1px solid var(--line); padding:6px 10px; margin:6px 0; }
+  .box p { margin:2px 0; }
+  .box pre, .box code { font-family:Consolas,"D2Coding",monospace; font-size:12.5px; }
+  .box pre { margin:0; white-space:pre-wrap; word-break:break-all; }
+  .choices { list-style:none; margin:4px 0 0; padding:0 0 0 14px; }
+  .choices li { position:relative; margin:3px 0; padding-left:2px; }
+  .mark { display:inline-block; min-width:1.3em; text-align:center; }
+  .answer .mark { outline:2px solid var(--red); border-radius:50%; outline-offset:0; }
+  .fig { display:block; width:100%; height:auto; border:1px solid var(--line); margin:6px 0; }
+  .final { break-inside:avoid; margin-top:8px; border:2px solid var(--red); padding:8px 12px; color:var(--red);
+           font-family:"Malgun Gothic",sans-serif; }
+  .final h3 { margin:0 0 6px; font-size:15px; }
+  .final .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:4px 8px; font-size:13px; }
+  .final small { display:block; margin-top:6px; font-size:11px; }
+  .footer { text-align:center; margin-top:14px; border-top:1.5px solid var(--line); padding-top:4px; font-size:14px; }
+  .explain h2 { color:var(--blue); font-family:"Malgun Gothic",sans-serif; margin:0 0 14px; }
+  .explain .item { margin:0 0 12px; font-family:"Malgun Gothic",sans-serif; font-size:14px; }
+  .explain .item h4 { margin:0; color:var(--red); font-size:16px; }
+  .explain .item p { margin:2px 0 0 26px; }
+  body.hide-answers .note, body.hide-answers .final, body.hide-answers .explain-page { display:none; }
+  body.hide-answers .answer .mark { outline:none; }
+  @media (max-width:720px) { .cols { column-count:1; } .page { padding:16px; min-height:0; } }
+  @media print { body { background:#fff; } .toolbar { display:none; } .page { margin:0; box-shadow:none; page-break-after:always; } }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button id="toggle">정답 숨기기</button>
+  <button onclick="window.print()">인쇄 / PDF 저장</button>
+</div>
+
+<section class="page">
+  <h1 class="title">컴파일러구성</h1>
+  <div class="meta"><span>4학년 1학기</span><span>문제집 (풀이노트)</span></div>
+  <div class="subject">
+    <div class="head"><b>과목</b><span>컴파일러구성</span><span id="range" style="flex:0 0 auto;padding-right:8px;font-weight:400;font-size:14px"></span></div>
+    <div class="row">범위 : 1~15강 연습문제 (컴파일러 개요 ~ 코드의 최적화와 코드의 생성)</div>
+  </div>
+  <div class="cols" id="questions"></div>
+  <div class="footer">컴파일러구성 문제집</div>
+</section>
+
+<section class="page explain-page">
+  <div class="explain" id="explain"></div>
+</section>
+
+<script>
+/* ============================================================
+   문제 추가 방법: 아래 QUESTIONS 배열 끝에 객체 하나 추가
+   - stem    : 문제 본문 (HTML/수식 가능, 수식은 $...$)
+   - box     : (선택) 보기 박스에 들어갈 줄 배열
+   - figure  : (선택) 그림 HTML(svg/img)
+   - choices : 선택지 배열 (없으면 answerText 사용)
+   - answer  : 정답 번호 (1~4)
+   - answerText : 선택지가 없을 때 정답 표기
+   - note    : 빨간 한 줄 메모 (문제 옆)
+   - explain : 풀이노트 설명
+   ============================================================ */
+const QUESTIONS = [
+  /* ---------- 1강. 컴파일러 개요 ---------- */
+  {
+    section: "1강. 컴파일러 개요",
+    stem: "다음 중 저급언어를 저급언어로 번역하는 기능을 갖고 있는 번역기는?",
+    choices: ["어셈블러", "컴파일러", "프리프로세서", "인터프리터"],
+    answer: 1,
+    note: "어셈블리어 → 기계어",
+    explain: "어셈블러는 저급언어인 어셈블리어를 역시 저급언어인 기계어로 번역함 → ①. 컴파일러는 고급언어 → 저급언어, 프리프로세서는 고급언어 → 고급언어."
+  },
+  {
+    stem: "다음 중 컴파일러 기법에 대한 설명 중 <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "사용자에게 많은 융통성을 준다.",
+      "실행시간이 효율적이다.",
+      "번역기법이라고도 한다.",
+      "입출력 포맷 등 큰 기억장소를 요구한다."
+    ],
+    answer: 1,
+    note: "융통성은 인터프리터",
+    explain: "컴파일러 기법(번역기법)은 한 번 번역해 두면 실행이 빠르지만 큰 기억장소가 필요함. 사용자에게 융통성을 주는 것은 인터프리터 기법의 특징 → ①."
+  },
+  {
+    stem: "다음 중 프로그래밍 언어에 유용한 기능들을 추가하여 언어를 확장하는 경우 주로 사용되는 것은?",
+    choices: ["어셈블러", "컴파일러", "프리프로세서", "인터프리터"],
+    answer: 3,
+    note: "고급 → 고급, 언어 확장",
+    explain: "프리프로세서(전처리기)는 매크로·파일 포함 등 기능을 추가해 확장된 언어를 원래 고급언어로 바꿔 줌 → ③."
+  },
+  {
+    stem: "혼합형 연산을 하는 경우 정수를 실수로 바꾸어 주어야 한다. 다음 중 어느 단계와 관계 있는가?",
+    choices: ["어휘분석", "구문분석", "의미분석", "최적화"],
+    answer: 3,
+    note: "형 검사·형 변환 = 의미분석",
+    explain: "피연산자의 자료형을 검사하고 필요한 형 변환(정수 → 실수)을 넣는 일은 의미분석 단계에서 함 → ③."
+  },
+  {
+    stem: "다음은 컴파일러의 물리적 구조에 대한 설명이다. <b><u>틀린</u></b> 것은?",
+    choices: [
+      "컴파일러의 논리적 구조를 구현한 것을 패스(pass)라고 하며, 패스는 논리적 구조와 순서가 같게 구현해야 한다.",
+      "1-패스 컴파일러는 초창기에 컴파일러를 만들 때 사용했던 방법이다.",
+      "2-패스 컴파일러는 중간코드를 기점으로 하여 전반부 (front-end)와 후반부(back-end)로 구성하는 방법이다.",
+      "1-패스 컴파일러는 backpatching이 요구된다."
+    ],
+    answer: 1,
+    note: "패스는 논리 순서와 무관",
+    explain: "패스는 원시 프로그램(또는 중간 표현)을 한 번 읽어 처리하는 물리적 단위로, 여러 논리 단계를 한 패스에 묶을 수도 있어 논리적 구조와 순서·개수가 꼭 같을 필요는 없음 → ①."
+  },
+  {
+    stem: "컴파일러의 논리적 구조가 올바르게 나열된 것은?",
+    choices: [
+      "어휘분석-구문분석-의미분석-중간코드 생성-코드최적화-코드생성",
+      "어휘분석-의미분석-구문분석-중간코드 생성-코드최적화-코드생성",
+      "어휘분석-구문분석-의미분석-코드최적화-중간코드 생성-코드생성",
+      "어휘분석-구문분석-중간코드 생성-의미분석-코드최적화-코드생성"
+    ],
+    answer: 1,
+    note: "어휘→구문→의미→중간→최적→생성",
+    explain: "토큰 분리(어휘) → 구문 트리(구문) → 형 검사(의미) → 중간코드 생성 → 최적화 → 목적코드 생성 순서 → ①."
+  },
+
+  /* ---------- 2강. 형식언어와 형식문법 ---------- */
+  {
+    section: "2강. 형식언어와 형식문법",
+    stem: "T = {a, b, c} 가 주어졌을 때 다음 설명 중 <b><u>틀린</u></b> 것은?",
+    choices: [
+      "a<sup>n</sup> = abc",
+      "|abc| = 3",
+      "T* = {ε, a, b, c, aa, ab, ac, …}",
+      "T<sup>+</sup> = {a, b, c, aa, ab, ac, …}"
+    ],
+    answer: 1,
+    note: "aⁿ = a를 n번 연결",
+    explain: "a<sup>n</sup>은 a를 n번 연결한 aa…a 이므로 abc가 될 수 없음 → ①. |abc|=3(길이), T*는 ε 포함, T<sup>+</sup>=T*−{ε}."
+  },
+  {
+    stem: "촘스키 분류법에 따르면 문법 G는 어디에 속하는가?",
+    box: ["문법 G = ({S, B, C}, {a, b}, P, S)", "<pre>P: S → aS | aB\n   B → bC\n   C → aC | a</pre>"],
+    choices: ["type 0", "type 1", "type 2", "type 3"],
+    answer: 4,
+    note: "A → tB | t 꼴 = 정규문법",
+    explain: "모든 규칙이 A → tB 또는 A → t (우선형) 꼴이므로 정규문법 = type 3 → ④."
+  },
+  {
+    stem: "문법 G가 생성할 수 <b><u>없는</u></b> 것은?",
+    box: ["문법 G = ({S, B, C}, {a, b}, P, S)", "<pre>P: S → aS | aB\n   B → bC\n   C → aC | a</pre>"],
+    choices: ["aba", "ababa", "aabaaa", "abaaa"],
+    answer: 2,
+    note: "b는 정확히 한 번",
+    explain: "S → a…aB(a 1개 이상) → b → C → a…a(1개 이상). 즉 L(G) = { a<sup>m</sup>ba<sup>n</sup> | m, n ≥ 1 }. b가 두 번 나오는 ababa는 생성 불가 → ②."
+  },
+  {
+    stem: "문법 G가 생성하는 언어를 정규표현으로 표현한 것은?",
+    box: ["문법 G = ({S, B, C}, {a, b}, P, S)", "<pre>P: S → aS | aB\n   B → bC\n   C → aC | a</pre>"],
+    choices: ["a*ba*", "a*aba*a", "a*ab*a*a", "a*+aba*a"],
+    answer: 2,
+    note: "a⁺ b a⁺ = a*a b a*a",
+    explain: "C = aC + a → C = a*a, B = bC = ba*a, S = aS + aB → S = a*aB = a*aba*a → ②. (①은 b 양쪽에 a가 없어도 되므로 틀림)"
+  },
+  {
+    stem: "다음 문법에서 생성될 수 <b><u>없는</u></b> 것은? (단, 출발 기호 = V0)",
+    box: ["<pre>P: V0 → aV1\n   V1 → bV0\n   V1 → a</pre>"],
+    choices: ["aa", "aba", "abaa", "ababaa"],
+    answer: 2,
+    note: "L = (ab)*aa",
+    explain: "V0 = aV1, V1 = bV0 + a → V0 = abV0 + aa → V0 = (ab)*aa. 항상 aa로 끝나야 하므로 aba는 생성 불가 → ②. (aa, abaa, ababaa는 가능)"
+  },
+  {
+    stem: "다음의 production rule에 대한 설명 중 올바른 것은?",
+    box: ["<pre>&lt;절대정수&gt; ::= &lt;숫자&gt; | &lt;절대정수&gt; &lt;숫자&gt;\n&lt;숫자&gt;     ::= 0 | 1 | 2 | 3 | 4 | 5</pre>"],
+    choices: [
+      "절대정수로 11, 45, 112, 2315 등이 허용된다.",
+      "절대정수로 0을 포함하는 모든 수를 의미한다.",
+      "절대정수로 1을 포함하는 모든 수를 의미한다.",
+      "절대정수로 1, 5, 9, 10, 13 등이 허용된다."
+    ],
+    answer: 1,
+    note: "숫자는 0~5만 사용",
+    explain: "&lt;절대정수&gt;는 &lt;숫자&gt;(0~5)를 1개 이상 이어 붙인 것. 11, 45, 112, 2315는 모두 0~5로만 구성 → ①. ④의 9는 사용할 수 없는 숫자."
+  },
+
+  /* ---------- 3강. 유한오토마타 ---------- */
+  {
+    section: "3강. 유한오토마타",
+    stem: "다음의 오토마타가 인식 할 수 <b><u>없는</u></b> 문자열은? M = (Q, Σ, δ, q0, q1), 단 Q = {q0, q1}, Σ = {a, b, c, …, z, 0, 1, …, 9}",
+    figure: '<img class="fig" src="img/compiler-03-q1-table.png" alt="q0, q1 전이표">',
+    choices: ["123", "abc", "ab123", "korea"],
+    answer: 1,
+    note: "식별자 인식기: 첫 글자는 문자",
+    explain: "전이표에서 q0는 영문자를 읽으면 q1, 숫자를 읽으면 ø(전이 없음). q1은 영문자·숫자 모두 q1로 가고 종료 상태. 즉 첫 글자가 영문자인 식별자만 인식. 숫자로 시작하는 123은 q0에서 막혀 인식 불가 → ①."
+  },
+  {
+    stem: "다음은 NFA를 DFA로 변환하는 과정이다. ε-closure(0)을 구하라.",
+    figure: '<img class="fig" src="img/compiler-03-enfa.png" alt="(a+b)*abb ε-NFA, 상태 0~10">',
+    choices: ["0,1", "0,1,2,4", "0,1,2,4,7", "0,1,2,4,7,8"],
+    answer: 3,
+    note: "0→1, 0→7, 1→2, 1→4 (ε)",
+    explain: "ε-closure는 ε 전이만으로 갈 수 있는 상태 + 자기 자신. 0에서 ε로 1과 7, 1에서 ε로 2와 4. 7→8은 b 전이라 포함 안 됨. 따라서 {0,1,2,4,7} → ③."
+  },
+  {
+    stem: "ε-closure(0)을 상태 A라 하자. 그러면 입력기호 a에 의한 다음 상태는?",
+    figure: '<img class="fig" src="img/compiler-03-enfa.png" alt="(a+b)*abb ε-NFA, 상태 0~10">',
+    choices: ["ε-closure(1)", "ε-closure(2)", "ε-closure(3)", "ε-closure(4)"],
+    answer: 3,
+    note: "move(A, a) = {3}",
+    explain: "A = {0,1,2,4,7}에서 a를 읽을 수 있는 전이는 2 →a→ 3 하나뿐(7은 b 전이). 따라서 다음 상태 = ε-closure(move(A,a)) = ε-closure(3) → ③."
+  },
+  {
+    stem: "ε-closure(0)을 상태 A 라 하자. 상태 A 에서 입력기호 b 에 의한 다음 상태는?",
+    figure: '<img class="fig" src="img/compiler-03-enfa.png" alt="(a+b)*abb ε-NFA, 상태 0~10">',
+    choices: ["ε-closure(5,7)", "ε-closure(5,8)", "ε-closure(5,9)", "ε-closure(5,10)"],
+    answer: 2,
+    note: "move(A, b) = {5, 8}",
+    explain: "A = {0,1,2,4,7}에서 b 전이는 4 →b→ 5, 7 →b→ 8 두 개. 따라서 다음 상태 = ε-closure(5,8) → ②."
+  },
+  {
+    stem: "다음은 NFA를 DFA로 변환하는 과정이다. NFA M = ({q0, q1}, {0, 1}, δ, q0, {q1}) 를 변환한 DFA의 상태전이 함수에서 빈칸 ‘가’에 알맞은 것은?",
+    figure: '<img class="fig" src="img/compiler-03-nfa-table.png" alt="NFA 전이표"><img class="fig" src="img/compiler-03-dfa-table.png" alt="빈칸 가·나가 있는 DFA 전이표">',
+    choices: ["φ", "[q0]", "[q1]", "[q0, q1]"],
+    answer: 4,
+    note: "δ'([q1],1) = δ(q1,1)",
+    explain: "‘가’는 [q1] 행, 입력 1 칸. NFA 표에서 δ(q1,1) = {q0,q1}이므로 [q0, q1] → ④."
+  },
+  {
+    stem: "위 NFA → DFA 변환에서 빈칸 ‘나’에 알맞은 것은? (NFA M = ({q0, q1}, {0, 1}, δ, q0, {q1}))",
+    figure: '<img class="fig" src="img/compiler-03-nfa-table.png" alt="NFA 전이표"><img class="fig" src="img/compiler-03-dfa-table.png" alt="빈칸 가·나가 있는 DFA 전이표">',
+    choices: ["φ", "[q0]", "[q1]", "[q0, q1]"],
+    answer: 4,
+    note: "δ(q0,0) ∪ δ(q1,0)",
+    explain: "‘나’는 [q0,q1] 행, 입력 0 칸. δ(q0,0) ∪ δ(q1,0) = {q0,q1} ∪ φ = {q0,q1}이므로 [q0, q1] → ④."
+  },
+
+  /* ---------- 4강. DFA 와 동치관계 ---------- */
+  {
+    section: "4강. DFA 와 동치관계",
+    stem: "다음은 오토마타를 구현한 파스칼 프로그램의 일부이다. 프로그램의 진행으로 보아서 전이함수표가 작성되는 곳은?",
+    figure: '<table class="dtbl"><caption>오토마타 (그림을 전이표로 옮김 · → 시작, ( ) 종료 상태)</caption><tr><th>δ</th><th>a</th><th>b</th><th>c</th></tr><tr><th>→S0</th><td>S1</td><td>S0</td><td>S2</td></tr><tr><th>S1</th><td>S2</td><td>S0</td><td>S0</td></tr><tr><th>(S2)</th><td>S0</td><td>S0</td><td>S1</td></tr></table>',
+    box: ["<pre>program DFA(input, output);\n  :\nfunction delta(s : state; c : sigma) : state;\nfunction deltabar(s : state) : state;\nfunction accept : boolean;\n  begin\n    accept := deltabar(s0) in finalstate\n  end;\nprocedure initialize;\n  :\nbegin {Start main program DFA.}\n  initialize;\n  if accept then writeln('accepted')\n            else writeln('rejected');\nend.</pre>"],
+    choices: ["delta", "deltabar", "accept", "initialize"],
+    answer: 4,
+    note: "초기화에서 전이표 구성",
+    explain: "메인에서 가장 먼저 호출되는 initialize가 상태·입력 집합과 전이함수표를 준비하고, delta는 그 표를 조회, deltabar는 문자열 전체를 읽으며 delta를 반복 적용함 → ④."
+  },
+  {
+    stem: "문제의 오토마타를 볼 때 밑줄친 <u>finalstate</u> 의 값은?",
+    figure: '<table class="dtbl"><caption>오토마타 (그림을 전이표로 옮김 · → 시작, ( ) 종료 상태)</caption><tr><th>δ</th><th>a</th><th>b</th><th>c</th></tr><tr><th>→S0</th><td>S1</td><td>S0</td><td>S2</td></tr><tr><th>S1</th><td>S2</td><td>S0</td><td>S0</td></tr><tr><th>(S2)</th><td>S0</td><td>S0</td><td>S1</td></tr></table>',
+    box: ["<pre>accept := deltabar(s0) in finalstate</pre>"],
+    choices: ["S0", "S1", "S2", "S0, S2"],
+    answer: 3,
+    note: "종료 상태 집합",
+    explain: "그림에서 이중원(종료 상태)은 S2 하나. finalstate는 종료 상태 집합이므로 {S2} → ③."
+  },
+  {
+    stem: "다음은 DFA의 상태수를 최소화하는 과정이다. 다음의 함수전이표에서 동치류가 같지 <b><u>않은</u></b> 것은?",
+    figure: '<table class="dtbl"><caption>함수전이표</caption><tr><th>δ</th><th>a</th><th>b</th></tr><tr><th>A</th><td>B</td><td>C</td></tr><tr><th>B</th><td>B</td><td>D</td></tr><tr><th>C</th><td>B</td><td>C</td></tr><tr><th>D</th><td>B</td><td>E</td></tr><tr><th>E</th><td>B</td><td>C</td></tr></table>',
+    choices: ["B", "C", "D", "E"],
+    answer: 3,
+    note: "b로 종료 상태로 가는 D",
+    explain: "E가 종료 상태인 (a+b)*abb DFA. 처음 분할 {A,B,C,D} / {E}에서 b 입력의 결과를 보면 A→C, B→D, C→C는 비종료 그룹으로 가지만 D만 b로 E(종료 그룹)로 감. 따라서 D의 동치류가 달라 먼저 분리됨 → ③. (다음 단계에서 B도 분리되어 최종 {A,C},{B},{D},{E})"
+  },
+  {
+    stem: "다음은 DFA의 상태수를 최소화하는 과정이다. 동치류를 표현한 두 번째 표에서 빈칸에 알맞은 것은?",
+    figure: '<div class="missing">[그림] 전이표와 동치류 번호를 적은 두 번째 표(빈칸) — 원본 그림 없음</div>',
+    choices: ["1 1", "1 2", "2 1", "2 2"],
+    answerText: "미확인",
+    note: "그림의 표 확인 필요",
+    explain: "빈칸이 어느 상태의 행인지, 동치류 번호를 어떻게 매겼는지가 그림에 있어 판단 불가. 해당 상태가 각 입력(a, b)으로 가는 상태의 현재 동치류 번호를 차례로 적으면 됨."
+  },
+  {
+    stem: "다음의 유한 오토마타를 보고 정규문법으로 바꾼 내용들이다. <b><u>틀린</u></b> 것은?",
+    figure: '<table class="dtbl"><caption>유한 오토마타 (A: a|b 자기루프, A →a→ B →b→ D, D 종료)</caption><tr><th>δ</th><th>a</th><th>b</th></tr><tr><th>→A</th><td>{A, B}</td><td>{A}</td></tr><tr><th>B</th><td>-</td><td>{D}</td></tr><tr><th>(D)</th><td>-</td><td>-</td></tr></table>',
+    choices: ["A → aA | bA", "A → aB", "B → bD", "D → εD"],
+    answer: 4,
+    note: "종료 상태는 D → ε",
+    explain: "상태 → 논터미널, 전이 → 규칙, 종료 상태 → ε 규칙. 종료 상태 D는 D → ε로 써야 하며 D → εD는 잘못된 형태 → ④. "
+  },
+  {
+    stem: "위 유한 오토마타를 정규표현으로 표현한 것은?",
+    figure: '<table class="dtbl"><caption>유한 오토마타 (A: a|b 자기루프, A →a→ B →b→ D, D 종료)</caption><tr><th>δ</th><th>a</th><th>b</th></tr><tr><th>→A</th><td>{A, B}</td><td>{A}</td></tr><tr><th>B</th><td>-</td><td>{D}</td></tr><tr><th>(D)</th><td>-</td><td>-</td></tr></table>',
+    choices: ["(a+b)*ab", "(a+a)*ab", "(a*+b*)ab", "a(a+b)*b"],
+    answer: 1,
+    note: "A = (a+b)A + aB",
+    explain: "D = ε, B = bD = b, A = (a+b)A + ab → A = (a+b)*ab → ①. (앞 문항의 정규문법 A → aA | bA | aB, B → bD, D → ε 기준)"
+  },
+
+  /* ---------- 5강. 어휘분석기와 LEX ---------- */
+  {
+    section: "5강. 어휘분석기와 LEX(실습과정 소개)",
+    stem: "토큰을 종류별로 구분했을 때이다. <b><u>관계없는</u></b> 것은?",
+    choices: ["식별자", "예약어", "피연산자", "구분자"],
+    answer: 3,
+    note: "토큰 5종: 식별자·상수·연산자·예약어·구분자",
+    explain: "토큰은 식별자, 상수, 연산자, 예약어(지정어), 구분자 5종류. 피연산자는 토큰 종류가 아님 → ③."
+  },
+  {
+    stem: "다음은 토큰에 대한 설명이다. <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "식별자 : SUM, A, B와 같은 일반적으로 프로그래머가 정의하는 변수들",
+      "상수 : 1, 2, 3, 'abc'와 같이 정수형 상수, 실수형 상수, 문자형 상수들",
+      "구분자 : (, [, ;, :, , 등과 같이 단어와 단어를 구분하기 위해 사용되는 기호들",
+      "연산자 : DO, IF, WHILE 등과 같이 언어 구현시 이미 정의되는 지정어"
+    ],
+    answer: 4,
+    note: "DO·IF·WHILE은 예약어",
+    explain: "DO, IF, WHILE처럼 미리 정의된 지정어는 예약어(지정어)임. 연산자는 +, −, *, := 등 → ④."
+  },
+  {
+    stem: "다음은 어휘분석기를 설계하는 과정이다. <b><u>틀린</u></b> 것은?",
+    choices: [
+      "정규문법이 주어지고 정규표현으로 표시한다. 그리고 주어진 문법에 대한 기호표를 작성한다.",
+      "5 종류의 토큰들 중에서 어느 것이 사용되는가를 조사하여 토큰표를 작성한다. 토큰표에는 토큰이름, 토큰번호, 토큰값을 표시한다.",
+      "문법을 보고 NFA 를 구성하고 이를 다시 DFA 변환한 후 최소화 한다.",
+      "예약어표 검색은 상태전이도로 구현하거나, 표를 만들어 저장한 다음 검색하도록 한다."
+    ],
+    answer: 1,
+    note: "설계 단계에서 기호표 작성 X",
+    explain: "(확인 필요) 설계 절차는 정규문법 → 정규표현 → NFA → DFA → 최소화 → 프로그램 구현, 그리고 토큰표·예약어표 준비. 기호표는 설계 단계가 아니라 실행 중 식별자를 만날 때 채워지는 것이므로 ①이 틀린 것으로 봄."
+  },
+  {
+    stem: "다음은 어휘분석에 대한 설명이다. <b><u>옳지 않은</u></b> 것은?",
+    choices: [
+      "토큰은 식별자, 상수, 연산자, 예약어, 구분자로 구성된다.",
+      "토큰은 토큰번호(token number)와 토큰값(token value)의 순서쌍으로 표현되며 토큰들은 문법에 상관없이 항상 사용되므로 토큰 값을 미리 정해 놓아야 한다.",
+      "어휘분석기 생성기는 컴파일러 생성기(compiler generator) 또는 컴파일러-컴파일러(compiler compiler)의 일부분으로서 어휘분석기를 자동으로 생성하는 도구이다.",
+      "LEX는 1975년 Bell 연구소의 Lesk와 Schmidt에 의해서 개발되었다. Lex는 사용자가 정의한 정규표현과 수행코드를 입력으로 받아, 일반 범용언어인 C로 쓰여진 프로그램을 출력한다."
+    ],
+    answer: 2,
+    note: "미리 정하는 건 토큰 번호",
+    explain: "토큰 번호는 토큰 종류별로 미리 정해 두지만, 토큰 값(기호표·상수표 위치 등)은 분석 중에 정해짐. 또 사용되는 토큰은 문법(언어)에 따라 달라짐 → ②."
+  },
+  {
+    stem: "다음 중 어휘분석기 생성기가 <b><u>아닌</u></b> 것은?",
+    choices: ["Lex", "Scan gen", "YACC", "Flex"],
+    answer: 3,
+    note: "YACC = 구문분석기 생성기",
+    explain: "Lex, Flex, Scan gen은 어휘분석기 생성기, YACC는 LALR 구문분석기 생성기 → ③."
+  },
+
+  /* ---------- 6강. Context-free 언어와 문법의 효율화 ---------- */
+  {
+    section: "6강. Context-free 언어와 문법의 효율화",
+    stem: "다음은 aaaa를 좌단유도하는 과정이다. 빈 칸에 알맞은 것은? S ⇒ aAS ⇒ (  ) ⇒ … ⇒ aaaa",
+    box: ["<pre>1) S → aAS   2) S → a\n3) A → SbA   4) A → SS   5) A → b</pre>"],
+    choices: ["aAa", "aaSS", "aSSa", "aSSS"],
+    answer: 4,
+    note: "가장 왼쪽 A부터 → A→SS",
+    explain: "좌단유도는 가장 왼쪽 논터미널(A)부터 바꿈. b가 없으므로 A → SS: S ⇒ aAS ⇒ aSSS ⇒ aaSS ⇒ aaaS ⇒ aaaa → ④."
+  },
+  {
+    stem: "다음은 aaaa 를 우단유도하는 과정이다. 빈 칸에 알맞은 것은? S ⇒ aAS ⇒ (  ) ⇒ … ⇒ aaaa",
+    box: ["<pre>1) S → aAS   2) S → a\n3) A → SbA   4) A → SS   5) A → b</pre>"],
+    choices: ["aAa", "aaSS", "aSSa", "aSSS"],
+    answer: 1,
+    note: "가장 오른쪽 S부터 → S→a",
+    explain: "우단유도는 가장 오른쪽 논터미널(S)부터 바꿈: S ⇒ aAS ⇒ aAa ⇒ aSSa ⇒ aSaa ⇒ aaaa → ①."
+  },
+  {
+    stem: "다음의 문법을 보고 답하라. 위 문법의 특성은?",
+    box: ["<pre>E → E + E | E * E | id\nid → 숫자</pre>"],
+    choices: ["모호하다.", "정규 문법이다.", "유일한 유도트리를 생성한다.", "단일 생성 규칙을 갖는다."],
+    answer: 1,
+    note: "id+id*id 트리 2개",
+    explain: "id + id * id는 (id+id)*id와 id+(id*id) 두 가지 유도트리가 가능 → 모호한 문법 → ①. 우선순위·결합법칙이 문법에 반영되지 않음."
+  },
+  {
+    stem: "다음 문법을 ε-free 문법으로 바꾸려 한다. 빈칸에 알맞지 <b><u>않은</u></b> 것은?",
+    box: ["<pre>P : S → bSaS | ε\nP': S' → S | ε,  S → (    )</pre>"],
+    choices: ["ba", "SaS", "baS", "bSaS"],
+    answer: 2,
+    note: "S → bSaS | baS | bSa | ba",
+    explain: "bSaS에서 S 자리에 ε을 넣은 경우를 모두 추가: S → bSaS | baS | bSa | ba. SaS는 나올 수 없음 → ②."
+  },
+  {
+    stem: "다음 문법과 <b><u>관계없는</u></b> 것은?",
+    box: ["<pre>S → cAd\nA → a | ab</pre>"],
+    choices: [
+      "같은 기호들을 prefix로 갖는 2개 이상의 생성규칙이 존재한다.",
+      "left-factoring을 해 주면 문제가 해결된다.",
+      "단일 생성규칙을 갖고 있다.",
+      "backtracking 이 발생한다."
+    ],
+    answer: 3,
+    note: "A → a | ab: 공통 접두사",
+    explain: "A → a | ab는 공통 접두사 a 때문에 top-down 분석 시 backtracking이 생기고, A → aA', A' → b | ε로 left-factoring하면 해결. 단일 생성규칙(A → B 꼴)은 없음 → ③."
+  },
+  {
+    stem: "푸시다운 오토마타는 7개의 요소로 구성된다. M = (Q, Σ, T, δ, q0, z0, F). 다음 설명 중 <b><u>틀린</u></b> 것은?",
+    choices: ["Q : 상태들의 유한집합", "Σ : 입력기호들의 유한집합", "T : 스택기호들의 유한집합", "z0 : 시작상태"],
+    answer: 4,
+    note: "z0 = 스택 시작 기호",
+    explain: "q0가 시작 상태이고 z0는 스택의 시작 기호(bottom 표시) → ④."
+  },
+
+  /* ---------- 7강. 구문분석 개요 ---------- */
+  {
+    section: "7강. 구문분석 개요",
+    stem: "다음 설명 중 잘못 설명된 것은?",
+    choices: [
+      "Top-down 구문분석 방법은 backtracking 문제를 갖고 있다.",
+      "Bottom-up 방법은 터미널 노드부터 시작하여 루트 노드로 반면에, Top-down 방법은 루트 노드로부터 터미널 노드를 향하여 파스트리를 만들어 나간다.",
+      "Shift-reduce 구문분석은 Top-down 구문분석이다.",
+      "backtracking을 방지하기 위하여 LL(k) 문법을 사용하게 되었다."
+    ],
+    answer: 3,
+    note: "shift-reduce = Bottom-up",
+    explain: "shift-reduce는 입력을 스택에 쌓다가 핸들을 환원하는 Bottom-up 방식 → ③."
+  },
+  {
+    stem: "다음은 주어진 문법을 보고 id*id+id를 shift-reduce 구문분석하는 과정이다. 빈칸 ‘가’에 알맞은 것은?",
+    box: ["<pre>1) E → E * E   2) E → E + E   3) E → id</pre>"],
+    figure: '<img class="fig" src="img/compiler-07-shift-reduce.png" alt="id*id+id shift-reduce 과정표">',
+    choices: ["id", "E → id", "E → E*E", "E → E+E"],
+    answer: 1,
+    note: "단계 0: 입력 첫 기호 id를 shift",
+    explain: "단계 0은 스택이 $뿐이고 입력이 id*id+id$이므로 첫 기호 id를 스택에 올림(shift id) → ①."
+  },
+  {
+    stem: "위 shift-reduce 구문분석(id*id+id) 과정에서 빈칸 ‘나’에 알맞은 것은?",
+    box: ["<pre>1) E → E * E   2) E → E + E   3) E → id</pre>"],
+    figure: '<img class="fig" src="img/compiler-07-shift-reduce.png" alt="id*id+id shift-reduce 과정표">',
+    choices: ["id", "E → id", "E → E*E", "E → E+E"],
+    answer: 2,
+    note: "스택 top id → E → id로 환원",
+    explain: "단계 1에서 스택 $id의 top id가 핸들이므로 E → id로 reduce → ②."
+  },
+  {
+    stem: "위 shift-reduce 구문분석(id*id+id) 과정에서 빈칸 ‘다’에 알맞은 것은?",
+    box: ["<pre>1) E → E * E   2) E → E + E   3) E → id</pre>"],
+    figure: '<img class="fig" src="img/compiler-07-shift-reduce.png" alt="id*id+id shift-reduce 과정표">',
+    choices: ["id", "E → id", "E → E*E", "E → E+E"],
+    answer: 4,
+    note: "스택 $E*E+E → E+E 먼저 환원",
+    explain: "단계 8 스택이 $E*E+E. top의 E+E가 핸들이므로 E → E+E로 reduce하고(단계 9 스택 $E*E), 이어서 E → E*E → accept → ④. 이 표는 *보다 +를 먼저 환원한 과정임."
+  },
+  {
+    stem: "다음 문법을 보고 First(E)를 구하면?",
+    box: ["<pre>1) E → E + T   2) E → T\n3) T → T * F   4) T → F\n5) F → (E)     6) F → id</pre>"],
+    choices: ["+, )", "+, *, )", "(, id", "+, ), (, id"],
+    answer: 3,
+    note: "FIRST(E)=FIRST(T)=FIRST(F)",
+    explain: "E → T → F 로 내려가므로 FIRST(E) = FIRST(T) = FIRST(F) = { (, id } → ③."
+  },
+  {
+    stem: "다음 문법을 보고 Follow(E)를 구하면?",
+    box: ["<pre>1) E → E + T   2) E → T\n3) T → T * F   4) T → F\n5) F → (E)     6) F → id</pre>"],
+    choices: ["+, )", "<code>$</code>, +, )", "<code>$</code>, *, )", "*, +, ), <code>$</code>"],
+    answer: 2,
+    note: "시작기호 → <code>$</code> 포함",
+    explain: "E는 시작 기호라 <code>$</code> 포함, E → E + T에서 +, F → (E)에서 ). FOLLOW(E) = { <code>$</code>, +, ) } → ②. (*는 FOLLOW(T)에 들어감)"
+  },
+
+  /* ---------- 8강. 순위관계에 의한 구문분석 ---------- */
+  {
+    section: "8강. 순위관계에 의한 구문분석",
+    stem: "다음 중 단순 순위문법과 <b><u>관계없는</u></b> 것은?",
+    choices: [
+      "ε-생성규칙을 갖지 않는다.",
+      "오른쪽 부분이 같은 생성규칙은 존재하지 않는다.",
+      "두 개의 기호 사이에 많아야 한 개의 순위 관계를 갖는다.",
+      "두 문자열 사이에 많아야 한 개의 순위관계를 갖는다."
+    ],
+    answer: 4,
+    note: "순위관계는 기호 사이",
+    explain: "단순 순위문법 조건: ε-규칙 없음, 우변이 같은 규칙 없음, 두 <b>기호</b> 사이에 순위관계(&lt;·, ≐, ·&gt;)가 많아야 하나. 문자열 사이 조건은 없음 → ④."
+  },
+  {
+    stem: "다음은 단순순위문법을 이용해서 기호들 사이의 순위관계를 정하는 과정이다. 빈칸 ‘가’에 알맞은 것은?",
+    box: ["E ⇒ E1 ⇒ T1 ⇒ T ⇒ T*F ⇒ T * id ( ‘가’ ) ⇒ F * id (F ·&gt; *) ⇒ id * id (id ·&gt; *)"],
+    choices: ["T &lt;· *", "* &lt;· id", "T ·&gt; *", "id ·&gt; *"],
+    answer: 2,
+    note: "핸들 id의 왼쪽: * &lt;· id",
+    explain: "T*id에서 핸들은 id(F → id로 환원). 핸들 왼쪽 기호와 핸들 첫 기호 사이는 &lt;· 이므로 * &lt;· id → ②. (T와 *는 같은 우변 T*F에 이웃하므로 T ≐ *)"
+  },
+  {
+    stem: "다음은 SLR 파싱표를 이용하여 문장 id+id*id을 구문분석하는 과정이다. 빈칸 (가)의 내용은?",
+    figure: '<table class="dtbl"><caption>SLR 파싱표 (1) E→E+T 2) E→T 3) T→T*F 4) T→F 5) F→(E) 6) F→id)</caption><tr><th>상태</th><th>id</th><th>+</th><th>*</th><th>(</th><th>)</th><th><code>$</code></th><th>E</th><th>T</th><th>F</th></tr><tr><th>0</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr><tr><th>1</th><td></td><td>S6</td><td></td><td></td><td></td><td>acc</td><td></td><td></td><td></td></tr><tr><th>2</th><td></td><td>r2</td><td>S7</td><td></td><td>r2</td><td>r2</td><td></td><td></td><td></td></tr><tr><th>3</th><td></td><td>r4</td><td>r4</td><td></td><td>r4</td><td>r4</td><td></td><td></td><td></td></tr><tr><th>4</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>8</td><td>2</td><td>3</td></tr><tr><th>5</th><td></td><td>r6</td><td>r6</td><td></td><td>r6</td><td>r6</td><td></td><td></td><td></td></tr><tr><th>6</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td>9</td><td>3</td></tr><tr><th>7</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td></td><td>10</td></tr><tr><th>8</th><td></td><td>S6</td><td></td><td></td><td>S11</td><td></td><td></td><td></td><td></td></tr><tr><th>9</th><td></td><td>r1</td><td>S7</td><td></td><td>r1</td><td>r1</td><td></td><td></td><td></td></tr><tr><th>10</th><td></td><td>r3</td><td>r3</td><td></td><td>r3</td><td>r3</td><td></td><td></td><td></td></tr><tr><th>11</th><td></td><td>r5</td><td>r5</td><td></td><td>r5</td><td>r5</td><td></td><td></td><td></td></tr></table><table class="dtbl"><caption>id+id*id 구문분석 과정</caption><tr><th>단계</th><th>스택</th><th>입력</th><th>행동</th></tr><tr><th>0</th><td>0</td><td>id+id*id<code>$</code></td><td>shift 5</td></tr><tr><th>⋮</th><td>⋮</td><td>⋮</td><td>⋮</td></tr><tr><th>15</th><td>0E1+6T9*7id5</td><td><code>$</code></td><td>reduce 6</td></tr><tr><th>16</th><td>0E1+6T9*7F</td><td><code>$</code></td><td>goto 10</td></tr><tr><th>17</th><td>0E1+6T9*7F10</td><td><code>$</code></td><td>( 가 )</td></tr><tr><th>18</th><td>0E1+6T</td><td><code>$</code></td><td>( 나 )</td></tr><tr><th>19</th><td>0E1+6T9</td><td><code>$</code></td><td>( 다 )</td></tr><tr><th>20</th><td>0E</td><td><code>$</code></td><td>( 라 )</td></tr><tr><th>21</th><td>0E1</td><td><code>$</code></td><td>accept</td></tr></table>',
+    choices: ["reduce 3", "reduce 5", "goto 3", "shift 3"],
+    answer: 1,
+    note: "action[10, $] = r3",
+    explain: "단계 17: 스택 top 상태 10, 입력 <code>$</code> → 표에서 r3, 즉 T → T*F로 reduce(우변 3기호 pop) → ①."
+  },
+  {
+    stem: "위 SLR 구문분석(id+id*id) 과정에서 빈칸 (나)의 내용은?",
+    figure: '<table class="dtbl"><caption>SLR 파싱표 (1) E→E+T 2) E→T 3) T→T*F 4) T→F 5) F→(E) 6) F→id)</caption><tr><th>상태</th><th>id</th><th>+</th><th>*</th><th>(</th><th>)</th><th><code>$</code></th><th>E</th><th>T</th><th>F</th></tr><tr><th>0</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr><tr><th>1</th><td></td><td>S6</td><td></td><td></td><td></td><td>acc</td><td></td><td></td><td></td></tr><tr><th>2</th><td></td><td>r2</td><td>S7</td><td></td><td>r2</td><td>r2</td><td></td><td></td><td></td></tr><tr><th>3</th><td></td><td>r4</td><td>r4</td><td></td><td>r4</td><td>r4</td><td></td><td></td><td></td></tr><tr><th>4</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>8</td><td>2</td><td>3</td></tr><tr><th>5</th><td></td><td>r6</td><td>r6</td><td></td><td>r6</td><td>r6</td><td></td><td></td><td></td></tr><tr><th>6</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td>9</td><td>3</td></tr><tr><th>7</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td></td><td>10</td></tr><tr><th>8</th><td></td><td>S6</td><td></td><td></td><td>S11</td><td></td><td></td><td></td><td></td></tr><tr><th>9</th><td></td><td>r1</td><td>S7</td><td></td><td>r1</td><td>r1</td><td></td><td></td><td></td></tr><tr><th>10</th><td></td><td>r3</td><td>r3</td><td></td><td>r3</td><td>r3</td><td></td><td></td><td></td></tr><tr><th>11</th><td></td><td>r5</td><td>r5</td><td></td><td>r5</td><td>r5</td><td></td><td></td><td></td></tr></table><table class="dtbl"><caption>id+id*id 구문분석 과정</caption><tr><th>단계</th><th>스택</th><th>입력</th><th>행동</th></tr><tr><th>0</th><td>0</td><td>id+id*id<code>$</code></td><td>shift 5</td></tr><tr><th>⋮</th><td>⋮</td><td>⋮</td><td>⋮</td></tr><tr><th>15</th><td>0E1+6T9*7id5</td><td><code>$</code></td><td>reduce 6</td></tr><tr><th>16</th><td>0E1+6T9*7F</td><td><code>$</code></td><td>goto 10</td></tr><tr><th>17</th><td>0E1+6T9*7F10</td><td><code>$</code></td><td>( 가 )</td></tr><tr><th>18</th><td>0E1+6T</td><td><code>$</code></td><td>( 나 )</td></tr><tr><th>19</th><td>0E1+6T9</td><td><code>$</code></td><td>( 다 )</td></tr><tr><th>20</th><td>0E</td><td><code>$</code></td><td>( 라 )</td></tr><tr><th>21</th><td>0E1</td><td><code>$</code></td><td>accept</td></tr></table>',
+    choices: ["shift 6", "reduce 6", "goto 9", "shift 9"],
+    answer: 3,
+    note: "goto[6, T] = 9",
+    explain: "단계 18: T*F를 T로 환원한 뒤 스택 0E1+6T. 상태 6에서 T의 GOTO는 9이므로 goto 9 → ③."
+  },
+  {
+    stem: "위 SLR 구문분석(id+id*id) 과정에서 빈칸 (다)의 내용은?",
+    figure: '<table class="dtbl"><caption>SLR 파싱표 (1) E→E+T 2) E→T 3) T→T*F 4) T→F 5) F→(E) 6) F→id)</caption><tr><th>상태</th><th>id</th><th>+</th><th>*</th><th>(</th><th>)</th><th><code>$</code></th><th>E</th><th>T</th><th>F</th></tr><tr><th>0</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr><tr><th>1</th><td></td><td>S6</td><td></td><td></td><td></td><td>acc</td><td></td><td></td><td></td></tr><tr><th>2</th><td></td><td>r2</td><td>S7</td><td></td><td>r2</td><td>r2</td><td></td><td></td><td></td></tr><tr><th>3</th><td></td><td>r4</td><td>r4</td><td></td><td>r4</td><td>r4</td><td></td><td></td><td></td></tr><tr><th>4</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>8</td><td>2</td><td>3</td></tr><tr><th>5</th><td></td><td>r6</td><td>r6</td><td></td><td>r6</td><td>r6</td><td></td><td></td><td></td></tr><tr><th>6</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td>9</td><td>3</td></tr><tr><th>7</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td></td><td>10</td></tr><tr><th>8</th><td></td><td>S6</td><td></td><td></td><td>S11</td><td></td><td></td><td></td><td></td></tr><tr><th>9</th><td></td><td>r1</td><td>S7</td><td></td><td>r1</td><td>r1</td><td></td><td></td><td></td></tr><tr><th>10</th><td></td><td>r3</td><td>r3</td><td></td><td>r3</td><td>r3</td><td></td><td></td><td></td></tr><tr><th>11</th><td></td><td>r5</td><td>r5</td><td></td><td>r5</td><td>r5</td><td></td><td></td><td></td></tr></table><table class="dtbl"><caption>id+id*id 구문분석 과정</caption><tr><th>단계</th><th>스택</th><th>입력</th><th>행동</th></tr><tr><th>0</th><td>0</td><td>id+id*id<code>$</code></td><td>shift 5</td></tr><tr><th>⋮</th><td>⋮</td><td>⋮</td><td>⋮</td></tr><tr><th>15</th><td>0E1+6T9*7id5</td><td><code>$</code></td><td>reduce 6</td></tr><tr><th>16</th><td>0E1+6T9*7F</td><td><code>$</code></td><td>goto 10</td></tr><tr><th>17</th><td>0E1+6T9*7F10</td><td><code>$</code></td><td>( 가 )</td></tr><tr><th>18</th><td>0E1+6T</td><td><code>$</code></td><td>( 나 )</td></tr><tr><th>19</th><td>0E1+6T9</td><td><code>$</code></td><td>( 다 )</td></tr><tr><th>20</th><td>0E</td><td><code>$</code></td><td>( 라 )</td></tr><tr><th>21</th><td>0E1</td><td><code>$</code></td><td>accept</td></tr></table>',
+    choices: ["goto 1", "reduce 1", "goto 10", "shift 9"],
+    answer: 2,
+    note: "action[9, $] = r1",
+    explain: "단계 19: top 상태 9, 입력 <code>$</code> → r1, 즉 E → E+T로 reduce → ②."
+  },
+  {
+    stem: "위 SLR 구문분석(id+id*id) 과정에서 빈칸 (라)의 내용은?",
+    figure: '<table class="dtbl"><caption>SLR 파싱표 (1) E→E+T 2) E→T 3) T→T*F 4) T→F 5) F→(E) 6) F→id)</caption><tr><th>상태</th><th>id</th><th>+</th><th>*</th><th>(</th><th>)</th><th><code>$</code></th><th>E</th><th>T</th><th>F</th></tr><tr><th>0</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr><tr><th>1</th><td></td><td>S6</td><td></td><td></td><td></td><td>acc</td><td></td><td></td><td></td></tr><tr><th>2</th><td></td><td>r2</td><td>S7</td><td></td><td>r2</td><td>r2</td><td></td><td></td><td></td></tr><tr><th>3</th><td></td><td>r4</td><td>r4</td><td></td><td>r4</td><td>r4</td><td></td><td></td><td></td></tr><tr><th>4</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td>8</td><td>2</td><td>3</td></tr><tr><th>5</th><td></td><td>r6</td><td>r6</td><td></td><td>r6</td><td>r6</td><td></td><td></td><td></td></tr><tr><th>6</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td>9</td><td>3</td></tr><tr><th>7</th><td>S5</td><td></td><td></td><td>S4</td><td></td><td></td><td></td><td></td><td>10</td></tr><tr><th>8</th><td></td><td>S6</td><td></td><td></td><td>S11</td><td></td><td></td><td></td><td></td></tr><tr><th>9</th><td></td><td>r1</td><td>S7</td><td></td><td>r1</td><td>r1</td><td></td><td></td><td></td></tr><tr><th>10</th><td></td><td>r3</td><td>r3</td><td></td><td>r3</td><td>r3</td><td></td><td></td><td></td></tr><tr><th>11</th><td></td><td>r5</td><td>r5</td><td></td><td>r5</td><td>r5</td><td></td><td></td><td></td></tr></table><table class="dtbl"><caption>id+id*id 구문분석 과정</caption><tr><th>단계</th><th>스택</th><th>입력</th><th>행동</th></tr><tr><th>0</th><td>0</td><td>id+id*id<code>$</code></td><td>shift 5</td></tr><tr><th>⋮</th><td>⋮</td><td>⋮</td><td>⋮</td></tr><tr><th>15</th><td>0E1+6T9*7id5</td><td><code>$</code></td><td>reduce 6</td></tr><tr><th>16</th><td>0E1+6T9*7F</td><td><code>$</code></td><td>goto 10</td></tr><tr><th>17</th><td>0E1+6T9*7F10</td><td><code>$</code></td><td>( 가 )</td></tr><tr><th>18</th><td>0E1+6T</td><td><code>$</code></td><td>( 나 )</td></tr><tr><th>19</th><td>0E1+6T9</td><td><code>$</code></td><td>( 다 )</td></tr><tr><th>20</th><td>0E</td><td><code>$</code></td><td>( 라 )</td></tr><tr><th>21</th><td>0E1</td><td><code>$</code></td><td>accept</td></tr></table>',
+    choices: ["goto 0", "reduce 1", "goto 1", "shift 1"],
+    answer: 3,
+    note: "goto[0, E] = 1",
+    explain: "단계 20: E+T를 E로 환원해 스택 0E. 상태 0에서 E의 GOTO는 1이므로 goto 1 → ③. 이후 action[1, $] = acc."
+  },
+
+  /* ---------- 9강. SLR 구문분석 ---------- */
+  {
+    section: "9강. SLR 구문분석",
+    stem: "GOTO(I0, E) 를 보기에서 고르시오.",
+    box: [
+      "<pre>증가문법 0) S' → E   1) E → E+T   2) E → T\n         3) T → T*F  4) T → F     5) F → (E)   6) F → id\nI0 = closure([S' → ·E]) = {[S' → ·E], [E → ·E+T], [E → ·T],\n     [T → ·T*F], [T → ·F], [F → ·(E)], [F → ·id]}</pre>",
+      "[보기] (가) [T → F·] (나) [E → T·], [T → T·*F] (다) [S' → E·], [E → E·+T] (라) [T → T*·F], [F → ·(E)], [F → ·id]"
+    ],
+    choices: ["(가)", "(나)", "(다)", "(라)"],
+    answer: 3,
+    note: "·E 인 항목의 점을 넘김",
+    explain: "I0에서 점 뒤가 E인 항목 [S' → ·E], [E → ·E+T]의 점을 넘기면 {[S' → E·], [E → E·+T]} (closure 추가 없음) → ③."
+  },
+  {
+    stem: "GOTO(I0, T) 항목을 보기에서 고르시오.",
+    box: [
+      "<pre>증가문법 0) S' → E   1) E → E+T   2) E → T\n         3) T → T*F  4) T → F     5) F → (E)   6) F → id\nI0 = closure([S' → ·E]) = {[S' → ·E], [E → ·E+T], [E → ·T],\n     [T → ·T*F], [T → ·F], [F → ·(E)], [F → ·id]}</pre>",
+      "[보기] (가) [F → id·] (나) [T → F·] (다) [E → T·], [T → T·*F] (라) [S' → E·], [E → E·+T]"
+    ],
+    choices: ["(가)", "(나)", "(다)", "(라)"],
+    answer: 3,
+    note: "[E→T·], [T→T·*F]",
+    explain: "점 뒤가 T인 [E → ·T], [T → ·T*F]의 점을 넘기면 {[E → T·], [T → T·*F]} → ③."
+  },
+  {
+    stem: "다음 중 GOTO(I0, F) 항목은?",
+    box: [
+      "<pre>증가문법 0) S' → E   1) E → E+T   2) E → T\n         3) T → T*F  4) T → F     5) F → (E)   6) F → id\nI0 = closure([S' → ·E]) = {[S' → ·E], [E → ·E+T], [E → ·T],\n     [T → ·T*F], [T → ·F], [F → ·(E)], [F → ·id]}</pre>"
+    ],
+    choices: ["[F → id·]", "[E → T·], [T → T·*F]", "[S' → E·], [E → E·+T]", "[T → F·]"],
+    answer: 4,
+    note: "I3 = {[T → F·]}",
+    explain: "점 뒤가 F인 항목은 [T → ·F] 하나 → GOTO(I0, F) = {[T → F·]} → ④. ①은 GOTO(I0, id)."
+  },
+  {
+    stem: "파싱표를 이용하여 문장 id+id 을 구문분석하는 과정이다. 빈칸 (가)의 내용은?",
+    figure: '<img class="fig" src="img/compiler-09-q4-slr.png" alt="">',
+    choices: ["shift 5", "reduce 4", "goto 3", "reduce 6"],
+    answer: 3,
+    note: "0F에서 goto[0,F] = 3",
+    explain: "단계 1에서 F → id로 환원해 스택이 0F. 상태 0에서 F의 GOTO가 3이므로 (가) = goto 3 → ③. 다음 단계 0F3에서 action[3,+] = r4."
+  },
+  {
+    stem: "다음은 GOTO 그래프를 이용하여 SLR 파싱표를 구하는 과정이다. SLR 파싱표 0행 id 열인 ‘가’에 알맞은 내용은?",
+    figure: '<div class="missing">[그림] GOTO 그래프와 SLR 파싱표 — 원본 그림 없음</div>',
+    choices: ["1", "S4", "S5", "accept"],
+    answer: 3,
+    note: "GOTO(I0, id) = I5",
+    explain: "표준 교재 그림(I0~I11 GOTO 그래프)을 가정함. [F → ·id]가 있는 I0에서 id를 읽으면 I5 = {[F → id·]}로 가므로 ACTION[0, id] = S5 → ③. (S4는 '(' 입력)"
+  },
+
+  /* ---------- 10강. CLR 구문분석 ---------- */
+  {
+    section: "10강. CLR 구문분석",
+    stem: "다음은 CLR 그래프를 이용하여 파싱표를 구성하고 구문분석을 하는 과정이다. 빈칸 ‘가’에 알맞은 것은?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<img class="fig" src="img/compiler-10-clr-graph.png" alt=""><img class="fig" src="img/compiler-10-q1-table.png" alt="">',
+    choices: ["S4", "S7", "2", "r3"],
+    answer: 1,
+    note: "I0 →d→ I4 이므로 S4",
+    explain: "(가)는 상태 0, 입력 d 칸. CLR 그래프에서 I0가 d를 읽으면 I4([C → d·, c/d])로 가므로 shift 4 = S4 → ①."
+  },
+  {
+    stem: "다음은 LR(1) 항목 집합의 canonical collection 들이다. 보기에서 I0 는?",
+    box: [
+      "<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>",
+      "I0 = closure([S' → ·S, <code>$</code>]), I1 = GOTO(I0, S), I2 = GOTO(I0, C)",
+      "[보기] (가) [S' → ·S, <code>$</code>], [S → ·CC, <code>$</code>], [C → ·cC, c/d], [C → ·d, c/d]",
+      "(나) [S → C·C, <code>$</code>], [C → ·cC, <code>$</code>], [C → ·d, <code>$</code>]",
+      "(다) [S' → S·, <code>$</code>] &nbsp; (라) [C → d·, c/d]"
+    ],
+    choices: ["(가)", "(나)", "(다)", "(라)"],
+    answer: 1,
+    note: "C 항목 lookahead = FIRST(C) = c/d",
+    explain: "closure: [S → ·CC, <code>$</code>]에서 C 뒤의 C가 있으므로 C 항목의 lookahead = FIRST(C<code>$</code>) = {c, d} → (가) ①. (나)는 I2, (다)는 I1, (라)는 I4."
+  },
+  {
+    stem: "다음은 CLR 파싱표를 이용하여 구문분석하는 과정이다. 문장 cdcd에 대한 구문분석의 일부이다. 빈칸 ‘가’에 알맞은 것은?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<img class="fig" src="img/compiler-10-q3-trace.png" alt="">',
+    choices: ["shift 6", "shift 7", "reduce 3", "goto 2"],
+    answer: 4,
+    note: "goto[0, C] = 2",
+    explain: "단계 4에서 C → cC로 환원(reduce 2)해 스택이 0C. 상태 0에서 C의 GOTO가 2이므로 (가) = goto 2 → ④. 다음 단계 0C2에서 c를 읽고 shift 6."
+  },
+  {
+    stem: "다음은 CLR 그래프를 이용하여 파싱표를 구성하는 과정이다. 빈칸 ‘가’에 알맞은 것은?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<img class="fig" src="img/compiler-10-q4.png" alt="">',
+    choices: ["r1", "r2", "r3", "r4"],
+    answer: 3,
+    note: "I7 = [C → d·, $] → r3",
+    explain: "(가)는 상태 7, 입력 <code>$</code> 칸. I7은 [C → d·, <code>$</code>]로 점이 끝에 있고 lookahead가 <code>$</code>이므로 3번 규칙 C → d로 reduce = r3 → ③."
+  },
+  {
+    stem: "다음은 CLR 그래프를 이용하여 파싱표를 구성하는 과정이다. 빈칸 ‘가’에 알맞은 것은?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<img class="fig" src="img/compiler-10-q5.png" alt="">',
+    choices: ["S6", "S7", "r3", "acc"],
+    answer: 4,
+    note: "I1 = [S' → S·, $] → acc",
+    explain: "(가)는 상태 1, 입력 <code>$</code> 칸. I1은 [S' → S·, <code>$</code>]로 증가문법의 시작 규칙이 끝났으므로 accept(acc) → ④."
+  },
+
+  /* ---------- 11강. LALR 구문분석 ---------- */
+  {
+    section: "11강. LALR 구문분석",
+    stem: "다음은 LALR 구문분석에 관한 설명이다. <b><u>틀린</u></b> 것은?",
+    choices: [
+      "lookahead 정보를 이용하기 때문에 SLR 방법보다 훨씬 강력하다.",
+      "LALR 파싱표를 구성하기 위해서는 반드시 CLR 파싱표를 구해야만 한다.",
+      "lookahead 기호를 구하는데 상당한 시간과 노력이 소요된다.",
+      "CLR 파싱표보다 LALR 파싱표가 훨씬 작다."
+    ],
+    answer: 2,
+    note: "LR(0) 항목 + lookahead로도 가능",
+    explain: "LALR 표는 CLR 그래프에서 core가 같은 상태를 합쳐 만들 수도 있지만, LR(0) 항목집합(GOTO 그래프)에 lookahead를 구해 붙이는 방법도 있어 CLR 표가 반드시 필요하지 않음 → ②."
+  },
+  {
+    stem: "다음은 CLR 그래프를 이용하여 파싱표를 구성하는 과정이다. CLR 그래프로부터 LALR의 파싱표를 구할 수 있다. 다음은 core가 같은 상태를 찾는 과정인데 <b><u>틀리는</u></b> 것은?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<div class="missing">[그림] S → CC, C → cC | d 문법의 표준 CLR 그래프 I0~I9 — 원본 그림 없음</div>',
+    choices: ["I1 ∪ I5 ⇒ I15", "I3 ∪ I6 ⇒ I36", "I4 ∪ I7 ⇒ I47", "I8 ∪ I9 ⇒ I89"],
+    answer: 1,
+    note: "I1=[S'→S·], I5=[S→CC·]",
+    explain: "표준 CLR 그래프 가정: I3/I6(C → c·C), I4/I7(C → d·), I8/I9(C → cC·)는 core가 같고 lookahead만 다름. I1 = {[S' → S·, <code>$</code>]}, I5 = {[S → CC·, <code>$</code>]}는 core가 달라 합칠 수 없음 → ①."
+  },
+  {
+    stem: "다음은 CLR 그래프로부터 LALR의 파싱표를 구하는 과정이다. I47 을 구하면?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<div class="missing">[그림] 표준 CLR 그래프 I0~I9 — 원본 그림 없음</div>',
+    choices: ["[C → d·]", "[C → d·, <code>$</code>]", "[C → d·, c/d]", "[C → d·, c/d/<code>$</code>]"],
+    answer: 4,
+    note: "lookahead 합집합",
+    explain: "표준 CLR 그래프 가정: I4 = [C → d·, c/d], I7 = [C → d·, <code>$</code>] → 합치면 [C → d·, c/d/<code>$</code>] → ④."
+  },
+  {
+    stem: "다음은 CLR 그래프로부터 LALR의 파싱표를 구하는 과정이다. I89 을 구하면?",
+    box: ["<pre>0) S' → S   1) S → CC   2) C → cC   3) C → d</pre>"],
+    figure: '<div class="missing">[그림] 표준 CLR 그래프 I0~I9 — 원본 그림 없음</div>',
+    choices: ["[C → cC·]", "[C → cC·, <code>$</code>]", "[C → cC·, c/d]", "[C → cC·, c/d/<code>$</code>]"],
+    answer: 4,
+    note: "c/d ∪ <code>$</code>",
+    explain: "표준 CLR 그래프 가정: I8 = [C → cC·, c/d], I9 = [C → cC·, <code>$</code>] → I89 = [C → cC·, c/d/<code>$</code>] → ④."
+  },
+  {
+    stem: "다음은 LALR 파싱표를 구하기 위하여 LR(0) 항목집합의 Canonical Collection으로 구성된 GOTO 그래프이다. I8 에서 lookahead를 구하면?",
+    figure: '<div class="missing">[그림] LR(0) GOTO 그래프 — 원본 그림 없음 (교재 예제 S → L=R | R, L → *R | id, R → L 로 추정)</div>',
+    choices: ["=", "<code>$</code>", "=, <code>$</code>", "=, *, <code>$</code>"],
+    answer: 3,
+    note: "I8 = [R → L·], lookahead =/<code>$</code>",
+    explain: "(확인 필요) 표준 교재 그림(S → L=R | R, L → *R | id, R → L의 I0~I9)을 가정함. I8 = GOTO(I4, L) = {[R → L·]}. I4(L → *·R)는 I0·I6 양쪽에서 오므로 L의 lookahead {=, <code>$</code>}가 전파되어 I8의 lookahead = {=, <code>$</code>} → ③."
+  },
+
+  /* ---------- 12강. Top-down 구문분석 ---------- */
+  {
+    section: "12강. Top-down 구문분석",
+    stem: "다음 구문분석에 대한 설명 중 <b><u>틀린</u></b> 것은?",
+    choices: [
+      "LR 파싱표를 구성하는 방법은 SLR, CLR, LALR 방법이 있다.",
+      "SLR은 구현하기 쉽지만 완전하지 못하고, CLR은 완전하지만 파싱표가 크고 lookahead를 구해야 하므로 구현하는데 비효율적이다.",
+      "Top-down 구문분석 중 backtracking과 left-recursion 문제가 해결된 것을 LL 구문분석이라고 한다.",
+      "Bottom-up 구문분석의 종류에는 Recursive-descent 구문분석과 Predictive 구문분석이 있다."
+    ],
+    answer: 4,
+    note: "재귀하강·예측 = Top-down",
+    explain: "Recursive-descent와 Predictive 구문분석은 LL(Top-down) 방식 → ④가 틀림."
+  },
+  {
+    stem: "다음 중 Top-down 구문분석과 관계 있는 것은?",
+    choices: ["LL 구문분석", "SLR 구문분석", "CLR 구문분석", "LALR 구문분석"],
+    answer: 1,
+    note: "LL = Top-down, LR = Bottom-up",
+    explain: "SLR, CLR, LALR은 모두 LR(Bottom-up) 방식. Top-down은 LL → ①."
+  },
+  {
+    stem: "Top-down 구문분석과 관계 <b><u>없는</u></b> 것은?",
+    choices: ["back tracking", "left recursion", "우파스", "left factoring"],
+    answer: 3,
+    note: "Top-down = 좌파스",
+    explain: "Top-down은 좌단유도 순서의 규칙 번호열(좌파스)을, Bottom-up은 우단유도의 역순(우파스)을 만듦. backtracking·left recursion·left factoring은 Top-down의 문제와 해결책 → ③."
+  },
+  {
+    stem: "다음 중 Top-down 구문분석에 대한 설명 중 <b><u>틀린</u></b> 것은?",
+    choices: [
+      "backtracking의 경우 효율을 떨어뜨리므로 left-factoring을 해야 한다.",
+      "left-recursion의 경우 무한 루프에 빠지므로 right-recursion으로 바꾸어주어야 한다.",
+      "이러한 문제점을 해결한 결정적인 구문분석을 LL 구문분석이라고 한다.",
+      "문법에 제약이 없어 일반적으로 Bottom up 방식보다 편리하므로 자주 사용된다."
+    ],
+    answer: 4,
+    note: "LL은 문법 제약이 큼",
+    explain: "Top-down(LL)은 left-recursion 제거·left-factoring 등 문법 제약이 있고, 실제로는 더 넓은 문법을 다루는 Bottom-up(LR)이 많이 쓰임 → ④."
+  },
+  {
+    stem: "다음은 Top-Down 구문분석에서 predictive 파싱표를 구성하는 과정이다. 빈칸 ‘가’에 들어갈 내용은?",
+    box: [
+      "<pre>1) E → TE'    2) E' → +TE'   3) E' → ε\n4) T → FT'    5) T' → *FT'   6) T' → ε\n7) F → (E)    8) F → id</pre>",
+      "FIRST(E) = FIRST(T) = FIRST(F) = { (, id }",
+      "FOLLOW(E) = FOLLOW(E') = { ), <code>$</code> }, FOLLOW(T) = FOLLOW(T') = { +, ), <code>$</code> }, FOLLOW(F) = { +, *, ), <code>$</code> }"
+    ],
+    figure: '<img class="fig" src="img/compiler-12-q5-ll.png" alt="">',
+    choices: ["E' → ε", "E → TE'", "F → (E)", "E' → +TE'"],
+    answer: 1,
+    note: "E' 행 ) 열 = E' → ε",
+    explain: "(가)는 E' 행, ) 열. E' → ε는 FOLLOW(E') = {), <code>$</code>}의 각 기호 칸에 들어가므로 ) 열은 E' → ε → ①. (<code>$</code> 열에도 같은 규칙이 있음)"
+  },
+
+  /* ---------- 13강. YACC와 BISON ---------- */
+  {
+    section: "13강. YACC와 BISON(실습과정 소개)",
+    stem: "Bell 연구소에서 Stephen C. Johnson을 중심으로 개발된 LALR(1) 구문분석기 생성기로 선언부분(declaration), 변환규칙 부분(translation rules), 사용자 프로그램 부분(user program) 등의 세 부분으로 구성된 것은?",
+    choices: ["Lex", "Scan gen", "YACC", "Bison"],
+    answer: 3,
+    note: "YACC = Yet Another Compiler-Compiler",
+    explain: "Bell 연구소 S. C. Johnson이 만든 LALR(1) 구문분석기 생성기는 YACC → ③. Bison은 GNU의 YACC 호환 무료 버전."
+  },
+  {
+    stem: "다음 빈 괄호에 알맞은 것은? YACC의 입력은 문법규칙과 각 규칙에 대한 수행코드들이며 선언부분, (  ), 사용자 프로그램 부분 등의 세 부분으로 구성된다.",
+    choices: ["토큰 선언 부분", "변환규칙 부분", "정규표현 부분", "파싱표 부분"],
+    answer: 2,
+    note: "선언 %% 변환규칙 %% 사용자",
+    explain: "YACC 입력 = 선언부분 %% 변환규칙(translation rules) 부분 %% 사용자 프로그램 부분 → ②."
+  },
+  {
+    stem: "다음 빈칸의 A, B에 들어갈 내용이 알맞은 것은?",
+    figure: '<div class="missing">[그림] 원시프로그램 → A → 토큰 → B → … 형태의 구성도로 추정 — 원본 그림 없음</div>',
+    choices: ["A: 어휘분석기, B: YACC", "A: YACC, B: 어휘분석기", "A: YACC, B: Bison", "A: 어휘분석기, B: LEX"],
+    answer: 1,
+    note: "토큰 → YACC 구문분석기",
+    explain: "(확인 필요) 그림이 원시프로그램 → A → 토큰 → B 순서의 구성도라고 가정함. 원시프로그램을 토큰으로 나누는 것은 어휘분석기(LEX 생성), 토큰을 받아 구문분석하는 것은 YACC(가 만든 구문분석기) → ①."
+  },
+  {
+    stem: "LALR(1) 구문 분석 생성기로써 무료 소프트웨어인 것은?",
+    choices: ["LEX", "Scan gen", "YACC", "Bison"],
+    answer: 4,
+    note: "GNU Bison",
+    explain: "Bison은 GNU 프로젝트의 무료 LALR(1) 구문분석기 생성기(YACC 호환) → ④."
+  },
+  {
+    stem: "다음과 같은 형식을 입력으로 하는 구문 분석 생성기는?",
+    box: ["<pre>선언 부분(Declaration Part)\n%%\n변환규칙 부분(Translation Rules Part)\n%%\n사용자 프로그램 부분(User Program Part)</pre>"],
+    choices: ["LEX", "Scan gen", "YACC", "LALR GEN"],
+    answer: 3,
+    note: "구문분석 생성기 = YACC",
+    explain: "%%로 구분된 세 부분 형식은 LEX도 같지만, 구문분석기 생성기이면서 '변환규칙 부분'을 갖는 것은 YACC → ③."
+  },
+
+  /* ---------- 14강. 의미분석과 중간언어 ---------- */
+  {
+    section: "14강. 의미분석과 중간언어",
+    stem: "다음은 의미분석 과정에서 하는 일들에 대한 설명이다. <b><u>틀린</u></b> 것은?",
+    choices: [
+      "상수의 이름이 기호표에 들어가고, 각 상수는 정의된 값을 기호표에 보관하여, 이후 적당한 기회에 기억장소를 배정받고 초기값을 갖는다.",
+      "주어진 생성규칙들의 의미에 의하여 유형의 해당 자료구조가 구성되며, 유형설명자를 만들어서 이후 유형들이 기억장소 배정을 받을 때 필요한 정보를 제공하게 한다.",
+      "선언되는 변수들이 선언된 유형에 의하여 설명자가 주어지고 변수명칭과 유형 설명자가 모두 같이 기호표에 들어가며 기억장소를 배정 받는다.",
+      "문법의 각 생성규칙들과 그와 결합된 의미수행코드들을 구성하고 호출되면 중간코드를 만든다."
+    ],
+    answer: 1,
+    note: "상수는 기억장소 배정 X",
+    explain: "(확인 필요) 상수 선언은 이름과 값을 기호표에 보관만 하고, 사용 시 그 값으로 바꿔 쓰므로 기억장소를 배정받지 않음. 기억장소를 배정받는 것은 변수(③) → ①이 틀린 것으로 봄."
+  },
+  {
+    stem: "다음은 의미분석에 대한 설명이다. 빈칸 ‘가’, ‘나’, ‘다’ 에 각각 알맞은 것을 순서대로 나열한 것은? ( 가 ) 이외의 ( 나 )의 의미분석은 ( 다 ) 를 이용하여 중간코드를 생산하는 일을 하게 된다. 여러 가지 형태의 문들을 원래 뜻과 같은 중간코드로 생산하는 것이 의미분석의 목표가 된다.",
+    choices: ["선언문-실행문-기호표", "선언문-실행문-해쉬함수", "선언문-실행문-트리구조", "선언문-실행문-선형리스트"],
+    answer: 1,
+    note: "선언문이 채운 기호표 이용",
+    explain: "선언문의 의미분석은 기호표를 채우고, 그 외 실행문의 의미분석은 기호표 정보를 이용해 중간코드를 생성 → ①."
+  },
+  {
+    stem: "기호표에 n 개의 식별자 개수가 있을 때 삽입과 조회 연산의 평균시간에 대한 설명이다. <b><u>틀린</u></b> 것은?",
+    choices: [
+      "선형 리스트 구조 : t개의 이름에 대한 삽입과 m개의 조회에 대한 모든 시간은 c(t+m)이다. 단, c 는 연산에 필요한 평균시간",
+      "이진트리 구조 : t개의 이름을 삽입하는 데 필요한 시간은 t log n이고, m개의 조회를 하는 데 필요한 시간은 m log n이다.",
+      "이진트리 구조 : t개의 이름 삽입과 m개의 조회에 필요한 시간은 (t+m)log n 이다. 만일 n이 50보다 크다면 선형리스트보다 효율적이다.",
+      "해쉬기호표 : t개의 식별자 이름의 추가와 m개의 조회가 있다면, 전체적으로 필요한 시간은 (t+m)log k 이다. 단, 해쉬표가 k개의 단어로 구성되어 있다."
+    ],
+    answer: 4,
+    note: "해쉬는 log가 아니라 n/k 비례",
+    explain: "해쉬 기호표는 버킷당 평균 n/k개를 탐색하므로 전체 시간은 (t+m)·n/k에 비례(k가 크면 거의 상수). log k가 아님 → ④."
+  },
+  {
+    stem: "번역과정에서 중간언어를 사용함으로써 얻어지는 장점이 <b><u>아닌</u></b> 것은?",
+    choices: [
+      "원시 프로그램의 이식성(portability)을 증가시킬 수 있다.",
+      "고급 원시언어와 저급 목적코드간의 의미적 차이를 이어주는 교량 역할을 중간코드가 담당함으로써 번역과정이 좀더 쉽게 표현되고 효율적으로 처리될 수 있다.",
+      "중간코드를 이용하여 최적화를 수행함으로써 기계와 독립적인 최적화가 가능해졌으며 또한 기계코드로 바뀐 상태에서 행하는 것보다 훨씬 효율적인 최적화를 수행할 수 있다.",
+      "중간언어를 사용함으로써 목적코드로 직접 번역하는 것보다 효율적인 코드를 생산한다."
+    ],
+    answer: 4,
+    note: "직접 번역보다 비효율적일 수 있음",
+    explain: "중간언어는 이식성·번역 단순화·기계 독립 최적화가 장점. 단계가 하나 더 생겨 직접 번역보다 코드가 비효율적일 수 있는 것이 단점 → ④."
+  },
+  {
+    stem: "다음 중 인터프리터에서 많이 사용되며 코드 이동을 할 수가 없어서 최적화에는 부적합한 중간언어는?",
+    choices: ["후위표현", "triple 표현", "간접 triple 표현", "quadruple 표현"],
+    answer: 2,
+    note: "결과를 위치 번호로 참조",
+    explain: "triple은 (연산자, 피연산자1, 피연산자2)로 결과를 명령의 위치 번호로 참조하므로 코드 순서를 옮기면 참조가 깨짐 → 최적화 부적합, 인터프리터에서 사용 → ②. 간접 triple·quadruple은 코드 이동 가능."
+  },
+  {
+    stem: "다음은 A := -B*(C+D)를 3 주소 코드로 표현한 것이다. 이 방법의 이름은?",
+    figure: '<div class="missing">[그림] 3주소 코드 표(연산자/피연산자1/피연산자2/결과 4필드로 추정) — 원본 그림 없음</div>',
+    choices: ["triple", "간접 triple", "U코드", "quadruple"],
+    answer: 4,
+    note: "결과 필드 있음 = quadruple",
+    explain: "(확인 필요) 같은 기출 문항의 표가 (op, arg1, arg2, result) 4필드이므로 quadruple로 봄 → ④. 예: (−, B, , T1), (+, C, D, T2), (*, T1, T2, T3), (:=, T3, , A). 결과 필드 없이 번호로 참조하면 triple."
+  },
+
+  /* ---------- 15강. 코드의 최적화와 코드의 생성 ---------- */
+  {
+    section: "15강. 코드의 최적화와 코드의 생성",
+    stem: "다음은 최적화의 분류에 관한 설명이다. <b><u>틀린</u></b> 것은?",
+    choices: [
+      "지역최적화(local)와 전역최적화(global)",
+      "단일문에서의 최적화와 루프(loop)에서의 최적화",
+      "실행속도 측면과 기억장소 절약측면에서 최적화",
+      "중복명령어의 최적화와 제어흐름 최적화"
+    ],
+    answer: 4,
+    note: "④는 핍홀 최적화 기법",
+    explain: "(확인 필요) 최적화는 적용 범위(지역/전역), 대상(단일문/루프), 목적(실행속도/기억장소)으로 분류함. 중복 명령어 제거·제어흐름 최적화는 분류 기준이 아니라 핍홀(peephole) 최적화의 구체적 기법 → ④."
+  },
+  {
+    stem: "최적화를 위하여 치환문을 삭제하고 삭제된 치환문의 l-value 대신에 r-value를 사용하는 것은?",
+    choices: ["상수전파", "복사전파", "루프전개", "루프융합"],
+    answer: 2,
+    note: "x := y 후 x 대신 y",
+    explain: "x := y 같은 복사 치환문을 없애고 이후 x(l-value) 자리에 y(r-value)를 쓰는 것이 복사전파 → ②. r-value가 상수이면 상수전파."
+  },
+  {
+    stem: "다음 코드최적화 방법 중 소요 기억용량의 최적화 방법과 가장 거리가 <b><u>먼</u></b> 것은?",
+    choices: ["루프전개", "복사전파", "레지스터 할당", "부프로그램화"],
+    answer: 1,
+    note: "루프전개 = 속도↑, 코드 크기↑",
+    explain: "루프전개는 루프 본문을 복제해 반복·분기 횟수를 줄이는 실행속도 최적화로, 오히려 코드 크기(기억용량)가 늘어남 → ①."
+  },
+  {
+    stem: "다음 중 목적코드를 생성하는 데 고려사항으로서 적합하지 <b><u>않은</u></b> 것은?",
+    choices: [
+      "어떤 명령어를 생산할 것인가?",
+      "계산과정을 어떤 순서로 할 것인가?",
+      "중간코드를 어떻게 분석할 것인가?",
+      "피연산자를 레지스터에 어떻게 배정할 것인가?"
+    ],
+    answer: 3,
+    note: "명령어 선택·계산 순서·레지스터 배정",
+    explain: "코드 생성의 3대 고려사항은 명령어 선택, 계산 순서 결정, 레지스터 할당. 중간코드 분석은 고려사항이 아님 → ③."
+  },
+  {
+    stem: "다음 중 목적코드 설계상 중요한 것으로 볼 수 <b><u>없는</u></b> 것은?",
+    choices: [
+      "프로시저의 입구/출구의 목적 프로그램",
+      "프로시저 호출의 목적 프로그램",
+      "변수의 기억영역 할당 목적 프로그램",
+      "코드 이동의 목적 프로그램"
+    ],
+    answer: 4,
+    note: "코드 이동은 최적화 기법",
+    explain: "목적코드 설계는 프로시저 입구·출구, 호출, 변수 기억영역 할당 등의 코드 형태를 정하는 것. 코드 이동은 (루프) 최적화 기법 → ④."
+  },
+  {
+    stem: "산술식에 대한 목적코드를 생성하기 위해서 우선적으로 알아야 하는 것은?",
+    choices: ["누산기(accumulator)의 갯수", "프로그램 카운터(program counter)", "스택 포인터(stack pointer)", "기호표의 크기"],
+    answer: 1,
+    note: "레지스터(누산기) 수에 따라 코드 달라짐",
+    explain: "산술식 코드는 중간 결과를 담을 누산기(레지스터)가 몇 개인지에 따라 생성 방식(임시 저장 여부, 계산 순서)이 달라짐 → ①."
+  }
+]
+
+const MARKS = ["①","②","③","④","⑤"];
+function render() {
+  const qEl = document.getElementById("questions");
+  const xEl = document.getElementById("explain");
+  let qs = "", grid = "", ex = "";
+  QUESTIONS.forEach((q, i) => {
+    const n = i + 1;
+    const ans = q.answerText || MARKS[q.answer - 1];
+    if (q.section) qs += `<p class="section">※ ${q.section}</p>`;
+    qs += `<div class="q"><p class="stem"><span class="no">${n}.</span>${q.stem}${q.choices ? "" : ` <span class="note">${q.note}</span>`}</p>`;
+    if (q.figure) qs += q.figure;
+    if (q.box) qs += `<div class="box">${q.box.map(l => `<p>${l}</p>`).join("")}</div>`;
+    if (q.choices) {
+      qs += `<ol class="choices">${q.choices.map((c, j) =>
+        `<li class="${j + 1 === q.answer ? "answer" : ""}"><span class="mark">${MARKS[j]}</span> ${c}${j === q.choices.length - 1 ? ` <span class="note">${q.note}</span>` : ""}</li>`).join("")}</ol>`;
+    } else {
+      qs += `<p class="note" style="margin:4px 0 0 14px;font-size:13px">정답: ${ans}</p>`;
+    }
+    qs += `</div>`;
+    grid += `<span>${n}. ${ans}</span>`;
+    ex += `<div class="item"><h4>${n}번 &nbsp;정답 ${ans}</h4><p>${q.explain}</p></div>`;
+  });
+  qs += `<div class="final"><h3>정답 (풀이노트)</h3><div class="grid">${grid}</div><small>※ 개념 요약·상세 풀이는 뒤 풀이노트 페이지 참고</small></div>`;
+  qEl.innerHTML = qs;
+  xEl.innerHTML = `<h2>풀이노트 – 컴파일러구성 (1~${QUESTIONS.length})</h2>` + ex;
+  document.getElementById("range").textContent = `(1~${QUESTIONS.length})`;
+}
+render();
+
+document.getElementById("toggle").addEventListener("click", e => {
+  const hidden = document.body.classList.toggle("hide-answers");
+  e.target.textContent = hidden ? "정답 보기" : "정답 숨기기";
+});
+window.addEventListener("load", () => {
+  if (window.renderMathInElement) renderMathInElement(document.body, {
+    delimiters: [{ left: "$", right: "$", display: false }], throwOnError: false
+  });
+});
+</script>
+</body>
+</html>
